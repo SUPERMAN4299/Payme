@@ -81,8 +81,8 @@ function getLanIP() {
 app.listen(PORT, '0.0.0.0', () => {
   const lanIP = getLanIP();
   console.log('\n🚀  PayMe server started!\n');
-  console.log(`   Local:    http://localhost:${PORT}`);
-  console.log(`   Network:  http://${lanIP}:${PORT}  <- open this on other devices\n`);
+  //console.log(`   Local:    http://localhost:${PORT}`);
+  //console.log(`   Network:  http://${lanIP}:${PORT}  <- open this on other devices\n`);
   console.log(`📄  Payments will be saved to server.json`);
   console.log('--------------------------------------------------');
 });
