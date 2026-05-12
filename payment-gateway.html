@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PayMe — Secure Payment</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink: #0d0d0d;
+      --paper: #f5f1eb;
+      --cream: #ede8df;
+      --gold: #c9a84c;
+      --gold-light: #e8c96a;
+      --green: #2d6a4f;
+      --red: #9b2335;
+      --shadow: rgba(13,13,13,0.12);
+      --card-bg: #ffffff;
+      --muted: #7a7368;
+      --border: #d8d2c8;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--paper);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Grain texture overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Decorative circles */
+    .bg-circle {
+      position: fixed;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .bg-circle-1 {
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(201,168,76,0.12) 0%, transparent 70%);
+      top: -150px; right: -150px;
+    }
+    .bg-circle-2 {
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(45,106,79,0.08) 0%, transparent 70%);
+      bottom: -100px; left: -100px;
+    }
+
+    /* Main wrapper */
+    .wrapper {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 480px;
+    }
+
+    /* Brand */
+    .brand {
+      text-align: center;
+      margin-bottom: 2rem;
+      animation: fadeDown 0.6s ease both;
+    }
+    .brand-logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .brand-icon {
+      width: 40px; height: 40px;
+      background: var(--ink);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .brand-icon::after {
+      content: '◈';
+      color: var(--gold);
+      font-size: 1.3rem;
+      line-height: 1;
+    }
+    .brand-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      color: var(--ink);
+      letter-spacing: -0.03em;
+    }
+    .brand-name span { color: var(--gold); }
+    .brand-tagline {
+      margin-top: 0.35rem;
+      font-size: 0.75rem;
+      color: var(--muted);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-family: 'DM Mono', monospace;
+    }
+
+    /* Card */
+    .card {
+      background: var(--card-bg);
+      border-radius: 20px;
+      padding: 2.4rem 2.2rem 2.2rem;
+      box-shadow:
+        0 1px 3px var(--shadow),
+        0 8px 32px rgba(13,13,13,0.09),
+        0 0 0 1px rgba(13,13,13,0.04);
+      animation: fadeUp 0.6s ease 0.1s both;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--gold), var(--gold-light), var(--gold));
+      background-size: 200% 100%;
+      animation: shimmer 3s linear infinite;
+    }
+
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    /* Secure badge */
+    .secure-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: rgba(45,106,79,0.08);
+      border: 1px solid rgba(45,106,79,0.2);
+      color: var(--green);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.3rem 0.7rem;
+      border-radius: 100px;
+      margin-bottom: 1.6rem;
+    }
+    .secure-badge::before { content: '🔒'; font-size: 0.7rem; }
+
+    /* Section titles */
+    .section-title {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.6rem;
+    }
+
+    /* Amount block */
+    .amount-block {
+      margin-bottom: 1.8rem;
+    }
+    .amount-display {
+      display: flex;
+      align-items: baseline;
+      gap: 0.3rem;
+      background: var(--cream);
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 0.9rem 1.1rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      cursor: text;
+    }
+    .amount-display:focus-within {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(201,168,76,0.12);
+    }
+    .currency-symbol {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      color: var(--muted);
+      user-select: none;
+    }
+    #amount-input {
+      font-family: 'DM Mono', monospace;
+      font-size: 2rem;
+      font-weight: 500;
+      color: var(--ink);
+      background: transparent;
+      border: none;
+      outline: none;
+      width: 100%;
+      letter-spacing: -0.02em;
+    }
+    #amount-input::placeholder { color: #ccc5b8; }
+
+    /* Quick amounts */
+    .quick-amounts {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.7rem;
+      flex-wrap: wrap;
+    }
+    .quick-btn {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      padding: 0.3rem 0.75rem;
+      border-radius: 100px;
+      border: 1.5px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.18s;
+    }
+    .quick-btn:hover {
+      border-color: var(--gold);
+      color: var(--ink);
+      background: rgba(201,168,76,0.06);
+    }
+
+    /* Form fields */
+    .form-group {
+      margin-bottom: 1.2rem;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.9rem;
+    }
+    .form-label {
+      display: block;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.45rem;
+    }
+    .form-control {
+      width: 100%;
+      background: var(--cream);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 0.7rem 0.9rem;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.9rem;
+      color: var(--ink);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .form-control::placeholder { color: #c8c0b0; font-size: 0.85rem; }
+    .form-control:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(201,168,76,0.12);
+    }
+
+    /* Card visual */
+    .card-visual {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      border-radius: 12px;
+      padding: 1.1rem 1.2rem;
+      margin-bottom: 1.4rem;
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+    }
+    .card-visual::before {
+      content: '';
+      position: absolute;
+      top: -30px; right: -30px;
+      width: 100px; height: 100px;
+      border-radius: 50%;
+      background: rgba(201,168,76,0.15);
+    }
+    .card-visual::after {
+      content: '';
+      position: absolute;
+      bottom: -20px; right: 30px;
+      width: 70px; height: 70px;
+      border-radius: 50%;
+      background: rgba(201,168,76,0.08);
+    }
+    .card-chip {
+      width: 30px; height: 22px;
+      background: linear-gradient(135deg, #d4af37, #f0d060, #b8860b);
+      border-radius: 4px;
+      margin-bottom: 0.7rem;
+      position: relative;
+      z-index: 1;
+    }
+    .card-number-display {
+      font-family: 'DM Mono', monospace;
+      font-size: 1rem;
+      letter-spacing: 0.2em;
+      color: rgba(255,255,255,0.85);
+      margin-bottom: 0.5rem;
+      position: relative;
+      z-index: 1;
+    }
+    .card-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      position: relative;
+      z-index: 1;
+    }
+    .card-holder-name {
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.6);
+      font-family: 'DM Mono', monospace;
+    }
+    .card-holder-value {
+      font-size: 0.88rem;
+      color: rgba(255,255,255,0.9);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+    }
+    .card-expiry-label {
+      font-size: 0.65rem;
+      color: rgba(255,255,255,0.5);
+      font-family: 'DM Mono', monospace;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .card-expiry-value {
+      font-size: 0.88rem;
+      color: rgba(255,255,255,0.9);
+      font-family: 'DM Mono', monospace;
+    }
+
+    /* Divider */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      margin: 1.4rem 0;
+      color: var(--border);
+    }
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+    .divider span {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* Pay button */
+    .pay-btn {
+      width: 100%;
+      padding: 1rem 1.5rem;
+      background: var(--ink);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.2s;
+      letter-spacing: 0.01em;
+    }
+    .pay-btn:hover {
+      background: #1a1a1a;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(13,13,13,0.25);
+    }
+    .pay-btn:active { transform: translateY(0); }
+    .pay-btn .btn-amount {
+      font-family: 'DM Mono', monospace;
+      font-weight: 600;
+      color: var(--gold-light);
+    }
+    .pay-btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent);
+      transform: translateX(-100%);
+    }
+    .pay-btn:hover::after {
+      animation: btnShine 0.5s ease forwards;
+    }
+    @keyframes btnShine {
+      to { transform: translateX(100%); }
+    }
+
+    /* Loading state */
+    .pay-btn.loading {
+      pointer-events: none;
+      background: #333;
+    }
+    .spinner {
+      width: 18px; height: 18px;
+      border: 2.5px solid rgba(255,255,255,0.2);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Footer */
+    .card-footer {
+      margin-top: 1.4rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .footer-badge {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.63rem;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+    }
+    .footer-badge svg { opacity: 0.6; }
+
+    /* Toast notification */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--ink);
+      color: #fff;
+      padding: 0.85rem 1.5rem;
+      border-radius: 100px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.88rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      z-index: 999;
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s;
+      opacity: 0;
+      white-space: nowrap;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+    }
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+    .toast.success::before { content: '✓'; color: #6fcf97; font-weight: 700; font-size: 1rem; }
+    .toast.error::before { content: '✕'; color: #eb5757; font-weight: 700; }
+
+    /* Success screen */
+    .success-overlay {
+      display: none;
+      position: absolute;
+      inset: 0;
+      background: var(--card-bg);
+      border-radius: 20px;
+      z-index: 10;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2.5rem;
+      text-align: center;
+      animation: fadeIn 0.4s ease;
+    }
+    .success-overlay.active { display: flex; }
+    .success-icon {
+      width: 72px; height: 72px;
+      background: rgba(45,106,79,0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.2rem;
+      animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both;
+    }
+    .success-icon svg {
+      stroke: var(--green);
+    }
+    @keyframes popIn {
+      from { transform: scale(0); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .success-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      color: var(--ink);
+      margin-bottom: 0.5rem;
+    }
+    .success-subtitle {
+      font-size: 0.88rem;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+    }
+    .success-amount {
+      font-family: 'DM Mono', monospace;
+      font-size: 2rem;
+      color: var(--green);
+      font-weight: 500;
+      margin: 0.8rem 0;
+    }
+    .txn-id {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--muted);
+      background: var(--cream);
+      padding: 0.4rem 0.9rem;
+      border-radius: 100px;
+      margin-bottom: 1.5rem;
+    }
+    .reset-btn {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.88rem;
+      padding: 0.65rem 1.5rem;
+      background: var(--cream);
+      border: 1.5px solid var(--border);
+      border-radius: 100px;
+      cursor: pointer;
+      color: var(--ink);
+      transition: all 0.18s;
+    }
+    .reset-btn:hover { background: var(--border); }
+
+    /* Transactions panel */
+    .txn-panel {
+      margin-top: 1.5rem;
+      animation: fadeUp 0.6s ease 0.2s both;
+    }
+    .txn-panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.8rem;
+    }
+    .txn-panel-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      color: var(--ink);
+    }
+    .txn-count {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--muted);
+    }
+    .txn-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .txn-item {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      animation: fadeUp 0.3s ease both;
+      box-shadow: 0 1px 4px rgba(13,13,13,0.04);
+    }
+    .txn-left {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+    .txn-name {
+      font-size: 0.88rem;
+      color: var(--ink);
+      font-weight: 500;
+    }
+    .txn-meta {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--muted);
+    }
+    .txn-amount {
+      font-family: 'DM Mono', monospace;
+      font-size: 1rem;
+      color: var(--green);
+      font-weight: 500;
+    }
+    .txn-empty {
+      text-align: center;
+      padding: 1.2rem;
+      font-size: 0.82rem;
+      color: var(--muted);
+      font-family: 'DM Mono', monospace;
+      background: var(--cream);
+      border-radius: 10px;
+      border: 1px dashed var(--border);
+    }
+
+    /* Animations */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; } to { opacity: 1; }
+    }
+
+    /* Error state */
+    .form-control.error, .amount-display.error { border-color: var(--red) !important; }
+    .error-msg {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--red);
+      margin-top: 0.3rem;
+      letter-spacing: 0.05em;
+    }
+  </style>
+</head>
+<body>
+
+<div class="bg-circle bg-circle-1"></div>
+<div class="bg-circle bg-circle-2"></div>
+
+<div class="wrapper">
+
+  <!-- Brand -->
+  <div class="brand">
+    <div class="brand-logo">
+      <div class="brand-icon"></div>
+      <div class="brand-name">Pay<span>Me</span></div>
+    </div>
+    <div class="brand-tagline">Secure · Instant · Reliable</div>
+  </div>
+
+  <!-- Payment Card -->
+  <div class="card">
+
+    <!-- Success overlay -->
+    <div class="success-overlay" id="success-overlay">
+      <div class="success-icon">
+        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 6L9 17l-5-5"/>
+        </svg>
+      </div>
+      <div class="success-title">Payment Sent!</div>
+      <div class="success-subtitle">Your transaction was processed successfully.</div>
+      <div class="success-amount" id="success-amount">₹0.00</div>
+      <div class="txn-id" id="txn-id-display">TXN-000000</div>
+      <button class="reset-btn" onclick="resetForm()">Make another payment</button>
+    </div>
+
+    <div class="secure-badge">256-bit SSL Encrypted</div>
+
+    <!-- Payer Name -->
+    <div class="form-group" style="margin-bottom:1.4rem;">
+      <div class="section-title">Payer name</div>
+      <input type="text" id="payer-name" class="form-control" placeholder="Enter your full name" autocomplete="name"/>
+      <div class="error-msg" id="payer-name-error" style="display:none">Please enter your name.</div>
+    </div>
+
+    <!-- Amount -->
+    <div class="amount-block">
+      <div class="section-title">Enter amount</div>
+      <div class="amount-display" id="amount-display-wrap">
+        <span class="currency-symbol">₹</span>
+        <input type="number" id="amount-input" placeholder="0.00" min="1" step="0.01"/>
+      </div>
+      <div class="error-msg" id="amount-error" style="display:none">Please enter a valid amount.</div>
+      <div class="quick-amounts">
+        <button class="quick-btn" onclick="setAmount(100)">₹100</button>
+        <button class="quick-btn" onclick="setAmount(500)">₹500</button>
+        <button class="quick-btn" onclick="setAmount(1000)">₹1,000</button>
+        <button class="quick-btn" onclick="setAmount(5000)">₹5,000</button>
+      </div>
+    </div>
+
+    <div class="divider"><span>Secure Checkout</span></div>
+
+    <button class="pay-btn" id="pay-btn" onclick="processPayment()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/>
+      </svg>
+      Pay <span class="btn-amount" id="btn-amount">₹0.00</span>
+    </button>
+
+    <div class="card-footer">
+      <div class="footer-badge">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+        Protected payment
+      </div>
+      <div class="footer-badge">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+        End-to-end encrypted
+      </div>
+      <div class="footer-badge">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        PCI-DSS compliant
+      </div>
+    </div>
+  </div>
+
+  <!-- Transactions -->
+  <div class="txn-panel">
+    <div class="txn-panel-header">
+      <div class="txn-panel-title">Recent Transactions</div>
+      <div class="txn-count" id="txn-count">0 payments</div>
+    </div>
+    <div class="txn-list" id="txn-list">
+      <div class="txn-empty">No transactions yet</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+  /* ── NoSQL "database" using IndexedDB ── */
+  const DB_NAME = 'PayMe';
+  const STORE   = 'transactions';
+  let db;
+
+  function openDB() {
+    return new Promise((res, rej) => {
+      const req = indexedDB.open(DB_NAME, 1);
+      req.onupgradeneeded = e => {
+        const d = e.target.result;
+        if (!d.objectStoreNames.contains(STORE)) {
+          const store = d.createObjectStore(STORE, { keyPath: 'id' });
+          store.createIndex('timestamp', 'timestamp', { unique: false });
+        }
+      };
+      req.onsuccess = e => { db = e.target.result; res(db); };
+      req.onerror   = () => rej(req.error);
+    });
+  }
+
+  function saveTransaction(txn) {
+    return new Promise((res, rej) => {
+      const tx    = db.transaction(STORE, 'readwrite');
+      const store = tx.objectStore(STORE);
+      store.add(txn).onsuccess = () => res();
+      tx.onerror = () => rej(tx.error);
+    });
+  }
+
+  function getAllTransactions() {
+    return new Promise((res, rej) => {
+      const tx    = db.transaction(STORE, 'readonly');
+      const store = tx.objectStore(STORE);
+      const req   = store.index('timestamp').getAll();
+      req.onsuccess = () => res(req.result.reverse());
+      req.onerror   = () => rej(req.error);
+    });
+  }
+
+  /* ── Helpers ── */
+  function generateTxnId() {
+    return 'TXN-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2,6).toUpperCase();
+  }
+
+  function formatINR(n) {
+    return '₹' + Number(n).toLocaleString('en-IN', { minimumFractionDigits: 2 });
+  }
+
+  function showToast(msg, type = 'success') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = `toast ${type} show`;
+    setTimeout(() => t.classList.remove('show'), 3500);
+  }
+
+  function setAmount(val) {
+    document.getElementById('amount-input').value = val;
+    updateBtnAmount();
+  }
+
+  document.getElementById('amount-input').addEventListener('input', updateBtnAmount);
+
+  function updateBtnAmount() {
+    const v = parseFloat(document.getElementById('amount-input').value) || 0;
+    document.getElementById('btn-amount').textContent = formatINR(v);
+  }
+
+  /* ── Validation ── */
+  function clearErrors() {
+    ['amount', 'payer-name'].forEach(f => {
+      const el = document.getElementById(f + '-error');
+      if (el) el.style.display = 'none';
+    });
+    document.querySelectorAll('.form-control,.amount-display').forEach(el => el.classList.remove('error'));
+  }
+
+  function showError(field, msg) {
+    const inputId = field === 'amount' ? 'amount-display-wrap' : field;
+    const input = document.getElementById(inputId);
+    if (input) input.classList.add('error');
+    const err = document.getElementById(field + '-error');
+    if (err) { err.textContent = msg; err.style.display = 'block'; }
+  }
+
+  function validate() {
+    clearErrors();
+    let ok = true;
+    const name = document.getElementById('payer-name').value.trim();
+    if (!name) { showError('payer-name', 'Please enter your name.'); ok = false; }
+    const amount = parseFloat(document.getElementById('amount-input').value);
+    if (!amount || amount <= 0) { showError('amount','Please enter a valid amount.'); ok = false; }
+    return ok;
+  }
+
+  /* ── Payment processing ── */
+  async function processPayment() {
+    if (!validate()) return;
+
+    const btn = document.getElementById('pay-btn');
+    btn.classList.add('loading');
+    btn.innerHTML = '<div class="spinner"></div> Processing…';
+
+    // Simulate network delay
+    await new Promise(r => setTimeout(r, 2000));
+
+    const amount = parseFloat(document.getElementById('amount-input').value);
+    const payerName = document.getElementById('payer-name').value.trim();
+
+    const txn = {
+      id        : generateTxnId(),
+      amount    : amount,
+      name      : payerName,
+      cardLast4 : '----',
+      expiry    : '',
+      timestamp : Date.now(),
+      status    : 'success'
+    };
+
+    try {
+      await saveTransaction(txn);          // IndexedDB (local history panel)
+      await savePaymentToServer(txn);      // → writes to server.json
+      showSuccess(txn);
+      renderTransactions();
+    } catch (e) {
+      console.error(e);
+      showToast('Could not reach server. Is server.js running?', 'error');
+      btn.classList.remove('loading');
+      btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg> Pay <span class="btn-amount">${formatINR(amount)}</span>`;
+    }
+  }
+
+  /* ── Save payment to server.json via local Express server ── */
+  async function savePaymentToServer(txn) {
+    const payload = {
+      id            : txn.id,
+      payer_name    : txn.name,
+      amount_inr    : txn.amount,
+      amount_display: formatINR(txn.amount),
+      status        : txn.status,
+      paid_at       : new Date(txn.timestamp).toISOString(),
+      paid_at_local : new Date(txn.timestamp).toLocaleString('en-IN'),
+    };
+
+    const serverURL = `http://${window.location.hostname}:3000`;
+    const res = await fetch(`${serverURL}/payment`, {
+      method : 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body   : JSON.stringify(payload),
+    });
+
+    if (!res.ok) throw new Error('Server responded with ' + res.status);
+    return res.json();
+  }
+
+  function showSuccess(txn) {
+    document.getElementById('success-amount').textContent = formatINR(txn.amount);
+    document.getElementById('txn-id-display').textContent = txn.id;
+    document.getElementById('success-overlay').classList.add('active');
+  }
+
+  function resetForm() {
+    document.getElementById('success-overlay').classList.remove('active');
+    document.getElementById('amount-input').value = '';
+    document.getElementById('payer-name').value = '';
+    document.getElementById('btn-amount').textContent = '₹0.00';
+    const btn = document.getElementById('pay-btn');
+    btn.classList.remove('loading');
+    btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg> Pay <span class="btn-amount" id="btn-amount">₹0.00</span>`;
+    clearErrors();
+    showToast('Ready for next payment ✓');
+  }
+
+  /* ── Render transactions ── */
+  async function renderTransactions() {
+    const list = document.getElementById('txn-list');
+    const txns = await getAllTransactions();
+    document.getElementById('txn-count').textContent = txns.length + (txns.length === 1 ? ' payment' : ' payments');
+
+    if (txns.length === 0) {
+      list.innerHTML = '<div class="txn-empty">No transactions yet</div>';
+      return;
+    }
+
+    list.innerHTML = txns.slice(0, 5).map((t, i) => `
+      <div class="txn-item" style="animation-delay:${i*0.05}s">
+        <div class="txn-left">
+          <div class="txn-name">${escHtml(t.name)}</div>
+          <div class="txn-meta">•••• ${t.cardLast4} · ${new Date(t.timestamp).toLocaleString('en-IN',{dateStyle:'short',timeStyle:'short'})}</div>
+        </div>
+        <div class="txn-amount">${formatINR(t.amount)}</div>
+      </div>
+    `).join('');
+  }
+
+  function escHtml(s) {
+    return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  /* ── Init ── */
+  (async () => {
+    await openDB();
+    await renderTransactions();
+  })();
+</script>
+</body>
+</html>
