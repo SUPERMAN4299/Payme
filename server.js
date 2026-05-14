@@ -38,11 +38,16 @@ function hashPassword(password) {
 }
 
 function getAccount(username) {
+  if (!username) return null;
   const p = accountPath(username);
   if (!fs.existsSync(p)) return null;
-  return JSON.parse(fs.readFileSync(p, 'utf8'));
+  try {
+    return JSON.parse(fs.readFileSync(p, 'utf8'));
+  } catch (err) {
+    console.error(`Error reading account for ${username}:`, err);
+    return null; 
+  }
 }
-
 function saveAccount(data) {
   fs.writeFileSync(accountPath(data.username), JSON.stringify(data, null, 2), 'utf8');
 }
@@ -89,7 +94,7 @@ function getLanIP() {
   for (const name of Object.keys(nets))
     for (const net of nets[name])
       if (net.family === 'IPv4' && !net.internal) return net.address;
-  return 'localhost';
+  return '192.168.1.6'; // change this to your network
 }
 
 /* ══════════════════════════════════════════
@@ -257,7 +262,7 @@ app.post('/qr/generate', (req, res) => {
 
   const payUrl = `http://${getLanIP()}:${PORT}/pay/${token}`;
 
-  QRCode.toDataURL(payUrl, { width: 300, margin: 2, color: { dark: '#0d0d0d', light: '#f5f1eb' } }, (err, dataUrl) => {
+  QRCode.toDataURL(payUrl, { width: 300, margin: 2, color: { dark: '#000000', light: '#ffffff' } }, (err, dataUrl) => {
     if (err) return res.status(500).json({ error: 'QR generation failed.' });
     console.log(`📱  QR: ${username} | ${fmtINR(amount)} | ${token.slice(0, 8)}…`);
     res.json({ success: true, token, qrDataUrl: dataUrl, payUrl, amount: parseFloat(amount), expiresAt, expiresIn: 300 });
