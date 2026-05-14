@@ -9,37 +9,22 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --ink: #0d0d0d;
-      --paper: #f5f1eb;
-      --cream: #ede8df;
-      --gold: #c9a84c;
-      --gold-light: #e8c96a;
-      --green: #2d6a4f;
-      --red: #9b2335;
-      --shadow: rgba(13,13,13,0.12);
-      --card-bg: #ffffff;
-      --muted: #7a7368;
-      --border: #d8d2c8;
+      --ink: #0d0d0d; --paper: #f5f1eb; --cream: #ede8df;
+      --gold: #c9a84c; --gold-light: #e8c96a; --green: #2d6a4f;
+      --red: #9b2335; --shadow: rgba(13,13,13,0.12);
+      --card-bg: #ffffff; --muted: #7a7368; --border: #d8d2c8;
     }
 
     body {
-      font-family: 'DM Sans', sans-serif;
-      background: var(--paper);
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 2rem 1rem;
-      overflow-x: hidden;
+      font-family: 'DM Sans', sans-serif; background: var(--paper);
+      min-height: 100vh; display: flex; align-items: center;
+      justify-content: center; padding: 2rem 1rem; overflow-x: hidden;
     }
-
     body::before {
-      content: '';
-      position: fixed; inset: 0;
+      content: ''; position: fixed; inset: 0;
       background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
       pointer-events: none; z-index: 0;
     }
-
     .bg-circle { position: fixed; border-radius: 50%; pointer-events: none; z-index: 0; }
     .bg-circle-1 { width:500px;height:500px; background:radial-gradient(circle,rgba(201,168,76,0.12) 0%,transparent 70%); top:-150px;right:-150px; }
     .bg-circle-2 { width:400px;height:400px; background:radial-gradient(circle,rgba(45,106,79,0.08) 0%,transparent 70%); bottom:-100px;left:-100px; }
@@ -49,10 +34,7 @@
     /* Brand */
     .brand { text-align:center; margin-bottom:2rem; animation:fadeDown 0.6s ease both; }
     .brand-logo { display:inline-flex; align-items:center; gap:0.6rem; }
-    .brand-icon {
-      width:40px; height:40px; background:var(--ink); border-radius:10px;
-      display:flex; align-items:center; justify-content:center;
-    }
+    .brand-icon { width:40px;height:40px; background:var(--ink); border-radius:10px; display:flex; align-items:center; justify-content:center; }
     .brand-icon::after { content:'◈'; color:var(--gold); font-size:1.3rem; line-height:1; }
     .brand-name { font-family:'Playfair Display',serif; font-size:1.6rem; color:var(--ink); letter-spacing:-0.03em; }
     .brand-name span { color:var(--gold); }
@@ -60,11 +42,9 @@
 
     /* Card */
     .card {
-      background:var(--card-bg); border-radius:20px;
-      padding:2.4rem 2.2rem 2.2rem;
+      background:var(--card-bg); border-radius:20px; padding:2.4rem 2.2rem 2.2rem;
       box-shadow:0 1px 3px var(--shadow),0 8px 32px rgba(13,13,13,0.09),0 0 0 1px rgba(13,13,13,0.04);
-      animation:fadeUp 0.6s ease 0.1s both;
-      position:relative; overflow:hidden;
+      animation:fadeUp 0.6s ease 0.1s both; position:relative; overflow:hidden;
     }
     .card::before {
       content:''; position:absolute; top:0;left:0;right:0; height:3px;
@@ -78,34 +58,19 @@
     .page.active { display:block; animation:fadeIn 0.3s ease; }
 
     /* Tab switcher */
-    .tab-switcher {
-      display:flex; background:var(--cream); border-radius:10px; padding:4px;
-      margin-bottom:1.8rem; gap:4px;
-    }
-    .tab-btn {
-      flex:1; padding:0.6rem; border:none; background:transparent;
-      font-family:'DM Mono',monospace; font-size:0.75rem; letter-spacing:0.1em;
-      text-transform:uppercase; color:var(--muted); cursor:pointer;
-      border-radius:7px; transition:all 0.2s;
-    }
-    .tab-btn.active {
-      background:var(--card-bg); color:var(--ink); font-weight:500;
-      box-shadow:0 1px 4px rgba(13,13,13,0.1);
-    }
+    .tab-switcher { display:flex; background:var(--cream); border-radius:10px; padding:4px; margin-bottom:1.8rem; gap:4px; }
+    .tab-btn { flex:1; padding:0.6rem; border:none; background:transparent; font-family:'DM Mono',monospace; font-size:0.75rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); cursor:pointer; border-radius:7px; transition:all 0.2s; }
+    .tab-btn.active { background:var(--card-bg); color:var(--ink); font-weight:500; box-shadow:0 1px 4px rgba(13,13,13,0.1); }
 
     /* Section title */
-    .section-title {
-      font-family:'DM Mono',monospace; font-size:0.65rem; letter-spacing:0.15em;
-      text-transform:uppercase; color:var(--muted); margin-bottom:0.45rem;
-    }
+    .section-title { font-family:'DM Mono',monospace; font-size:0.65rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--muted); margin-bottom:0.45rem; }
 
     /* Form */
     .form-group { margin-bottom:1.1rem; }
     .form-label { display:block; font-family:'DM Mono',monospace; font-size:0.65rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); margin-bottom:0.45rem; }
     .form-control {
-      width:100%; background:var(--cream); border:1.5px solid var(--border);
-      border-radius:10px; padding:0.7rem 0.9rem;
-      font-family:'DM Mono',monospace; font-size:0.9rem; color:var(--ink);
+      width:100%; background:var(--cream); border:1.5px solid var(--border); border-radius:10px;
+      padding:0.7rem 0.9rem; font-family:'DM Mono',monospace; font-size:0.9rem; color:var(--ink);
       outline:none; transition:border-color 0.2s,box-shadow 0.2s;
     }
     .form-control::placeholder { color:#c8c0b0; font-size:0.85rem; }
@@ -113,24 +78,49 @@
     .form-control.error { border-color:var(--red) !important; }
     .error-msg { font-family:'DM Mono',monospace; font-size:0.65rem; color:var(--red); margin-top:0.3rem; letter-spacing:0.05em; }
 
+    /* Input with inline badge */
+    .input-with-badge { position:relative; }
+    .input-with-badge .form-control { padding-right:5.5rem; }
+    .input-badge {
+      position:absolute; right:0.6rem; top:50%; transform:translateY(-50%);
+      font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.08em;
+      text-transform:uppercase; padding:0.2rem 0.5rem; border-radius:6px;
+      background:var(--cream); border:1px solid var(--border); color:var(--muted);
+      pointer-events:none; transition:all 0.2s;
+    }
+    .input-badge.valid { background:rgba(45,106,79,0.1); border-color:rgba(45,106,79,0.3); color:var(--green); }
+    .input-badge.invalid { background:rgba(155,35,53,0.08); border-color:rgba(155,35,53,0.3); color:var(--red); }
+
+    /* Recipient preview card */
+    .recipient-preview {
+      background:var(--cream); border:1.5px solid var(--border); border-radius:10px;
+      padding:0.65rem 0.9rem; display:flex; align-items:center; gap:0.7rem;
+      margin-top:0.5rem; animation:fadeIn 0.2s ease;
+    }
+    .recipient-avatar {
+      width:30px; height:30px; background:var(--ink); border-radius:8px;
+      display:flex; align-items:center; justify-content:center;
+      font-family:'DM Mono',monospace; font-size:0.7rem; color:var(--gold); flex-shrink:0;
+    }
+    .recipient-name { font-size:0.85rem; color:var(--ink); font-weight:500; }
+    .recipient-id { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--muted); }
+
     /* Buttons */
     .btn-primary {
       width:100%; padding:0.95rem 1.5rem; background:var(--ink); color:#fff;
       border:none; border-radius:12px; font-family:'DM Sans',sans-serif;
       font-size:1rem; font-weight:500; cursor:pointer;
       display:flex; align-items:center; justify-content:center; gap:0.6rem;
-      transition:all 0.2s; letter-spacing:0.01em; position:relative; overflow:hidden;
+      position:relative; overflow:hidden; transition:all 0.2s; letter-spacing:0.01em;
     }
     .btn-primary:hover { background:#1a1a1a; transform:translateY(-1px); box-shadow:0 6px 20px rgba(13,13,13,0.25); }
     .btn-primary:active { transform:translateY(0); }
     .btn-primary.loading { pointer-events:none; background:#333; }
     .btn-primary .btn-amount { font-family:'DM Mono',monospace; font-weight:600; color:var(--gold-light); }
-
     .btn-secondary {
       width:100%; padding:0.75rem; background:transparent; color:var(--muted);
-      border:1.5px solid var(--border); border-radius:10px;
-      font-family:'DM Mono',monospace; font-size:0.75rem; cursor:pointer;
-      transition:all 0.2s; letter-spacing:0.08em; text-transform:uppercase;
+      border:1.5px solid var(--border); border-radius:10px; font-family:'DM Mono',monospace;
+      font-size:0.75rem; cursor:pointer; transition:all 0.2s; letter-spacing:0.08em; text-transform:uppercase;
     }
     .btn-secondary:hover { border-color:var(--ink); color:var(--ink); }
 
@@ -144,7 +134,7 @@
     .divider span { font-family:'DM Mono',monospace; font-size:0.65rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); }
 
     /* Amount block */
-    .amount-block { margin-bottom:1.8rem; }
+    .amount-block { margin-bottom:1.5rem; }
     .amount-display {
       display:flex; align-items:baseline; gap:0.3rem;
       background:var(--cream); border:1.5px solid var(--border);
@@ -154,17 +144,15 @@
     .amount-display:focus-within { border-color:var(--gold); box-shadow:0 0 0 3px rgba(201,168,76,0.12); }
     .amount-display.error { border-color:var(--red) !important; }
     .currency-symbol { font-family:'Playfair Display',serif; font-size:1.5rem; color:var(--muted); user-select:none; }
-    #amount-input {
+    .amount-input {
       font-family:'DM Mono',monospace; font-size:2rem; font-weight:500;
-      color:var(--ink); background:transparent; border:none; outline:none;
-      width:100%; letter-spacing:-0.02em;
+      color:var(--ink); background:transparent; border:none; outline:none; width:100%; letter-spacing:-0.02em;
     }
-    #amount-input::placeholder { color:#ccc5b8; }
+    .amount-input::placeholder { color:#ccc5b8; }
     .quick-amounts { display:flex; gap:0.5rem; margin-top:0.7rem; flex-wrap:wrap; }
     .quick-btn {
-      font-family:'DM Mono',monospace; font-size:0.75rem;
-      padding:0.3rem 0.75rem; border-radius:100px;
-      border:1.5px solid var(--border); background:transparent;
+      font-family:'DM Mono',monospace; font-size:0.75rem; padding:0.3rem 0.75rem;
+      border-radius:100px; border:1.5px solid var(--border); background:transparent;
       color:var(--muted); cursor:pointer; transition:all 0.18s;
     }
     .quick-btn:hover { border-color:var(--gold); color:var(--ink); background:rgba(201,168,76,0.06); }
@@ -173,7 +161,7 @@
     .user-bar {
       display:flex; align-items:center; justify-content:space-between;
       background:var(--cream); border-radius:12px; padding:0.75rem 1rem;
-      margin-bottom:1.6rem; border:1px solid var(--border);
+      margin-bottom:1.4rem; border:1px solid var(--border);
     }
     .user-bar-left { display:flex; align-items:center; gap:0.6rem; }
     .user-avatar {
@@ -184,48 +172,100 @@
     .user-name { font-size:0.88rem; color:var(--ink); font-weight:500; }
     .user-balance { font-family:'DM Mono',monospace; font-size:0.75rem; color:var(--green); }
     .logout-btn {
-      background:none; border:none; cursor:pointer;
-      font-family:'DM Mono',monospace; font-size:0.65rem;
-      color:var(--muted); letter-spacing:0.08em; text-transform:uppercase;
+      background:none; border:none; cursor:pointer; font-family:'DM Mono',monospace;
+      font-size:0.65rem; color:var(--muted); letter-spacing:0.08em; text-transform:uppercase;
       padding:0.25rem 0.6rem; border-radius:6px; transition:all 0.15s;
     }
     .logout-btn:hover { color:var(--red); background:rgba(155,35,53,0.06); }
 
-    /* QR Panel */
-    .qr-panel {
-      text-align:center; padding:1rem 0;
+    /* User ID badge on dashboard */
+    .user-id-badge {
+      display:inline-flex; align-items:center; gap:0.5rem;
+      background:rgba(201,168,76,0.1); border:1.5px solid rgba(201,168,76,0.3);
+      border-radius:10px; padding:0.5rem 0.85rem; margin-bottom:1.2rem;
+      cursor:pointer; transition:all 0.2s; width:100%; justify-content:space-between;
     }
+    .user-id-badge:hover { background:rgba(201,168,76,0.16); border-color:var(--gold); }
+    .user-id-label { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); }
+    .user-id-value { font-family:'DM Mono',monospace; font-size:1rem; font-weight:500; color:var(--ink); letter-spacing:0.08em; }
+    .user-id-copy { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--gold); letter-spacing:0.06em; }
+
+    /* QR Panel */
+    .qr-panel { text-align:center; padding:1rem 0; }
     .qr-wrap {
       display:inline-block; padding:12px; background:var(--paper);
       border-radius:16px; border:2px solid var(--border);
-      box-shadow:0 4px 16px rgba(13,13,13,0.08);
-      position:relative;
+      box-shadow:0 4px 16px rgba(13,13,13,0.08); position:relative;
     }
     .qr-wrap img { display:block; border-radius:8px; width:220px; height:220px; }
     .qr-timer {
-      margin-top:0.8rem;
-      font-family:'DM Mono',monospace; font-size:0.75rem; color:var(--muted);
+      margin-top:0.8rem; font-family:'DM Mono',monospace; font-size:0.75rem; color:var(--muted);
       display:flex; align-items:center; justify-content:center; gap:0.4rem;
     }
-    .qr-timer .time {
-      font-size:0.9rem; font-weight:500;
-      padding:0.2rem 0.6rem; border-radius:6px;
-      background:var(--cream); border:1px solid var(--border);
-    }
+    .qr-timer .time { font-size:0.9rem; font-weight:500; padding:0.2rem 0.6rem; border-radius:6px; background:var(--cream); border:1px solid var(--border); }
     .qr-timer .time.urgent { color:var(--red); border-color:rgba(155,35,53,0.3); background:rgba(155,35,53,0.05); }
     .qr-expired-overlay {
-      display:none; position:absolute; inset:0;
-      background:rgba(255,255,255,0.9); border-radius:14px;
-      flex-direction:column; align-items:center; justify-content:center;
-      gap:0.5rem;
+      display:none; position:absolute; inset:0; background:rgba(255,255,255,0.92);
+      border-radius:14px; flex-direction:column; align-items:center; justify-content:center; gap:0.5rem;
     }
     .qr-expired-overlay.show { display:flex; }
     .qr-expired-text { font-family:'DM Mono',monospace; font-size:0.8rem; color:var(--red); letter-spacing:0.05em; }
-    .qr-amount-label {
-      font-family:'DM Mono',monospace; font-size:1.5rem; font-weight:500;
-      color:var(--green); margin:0.5rem 0 0.2rem;
-    }
+    .qr-amount-label { font-family:'DM Mono',monospace; font-size:1.5rem; font-weight:500; color:var(--green); margin:0.5rem 0 0.2rem; }
     .qr-info { font-size:0.8rem; color:var(--muted); margin-bottom:1.2rem; }
+
+    /* ── QR Scanner ── */
+    .scanner-wrap {
+      position:relative; width:100%; aspect-ratio:1/1; max-width:280px;
+      margin:0 auto 1rem; border-radius:16px; overflow:hidden;
+      background:#000; border:2px solid var(--border);
+      box-shadow:0 4px 20px rgba(13,13,13,0.15);
+    }
+    #scanner-video { width:100%; height:100%; object-fit:cover; display:block; }
+    .scanner-overlay {
+      position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+      pointer-events:none;
+    }
+    .scanner-frame {
+      width:60%; height:60%; border:2.5px solid var(--gold);
+      border-radius:12px; position:relative;
+      box-shadow:0 0 0 9999px rgba(0,0,0,0.45);
+    }
+    .scanner-frame::before,.scanner-frame::after,
+    .scanner-frame .corner-bl,.scanner-frame .corner-br {
+      content:''; position:absolute; width:18px; height:18px; border-color:var(--gold-light); border-style:solid;
+    }
+    .scanner-frame::before { top:-2px;left:-2px; border-width:3px 0 0 3px; border-radius:4px 0 0 0; }
+    .scanner-frame::after  { top:-2px;right:-2px; border-width:3px 3px 0 0; border-radius:0 4px 0 0; }
+    .scanner-frame .corner-bl { bottom:-2px;left:-2px; border-width:0 0 3px 3px; border-radius:0 0 0 4px; }
+    .scanner-frame .corner-br { bottom:-2px;right:-2px; border-width:0 3px 3px 0; border-radius:0 0 4px 0; }
+    .scanner-line {
+      position:absolute; left:5%; right:5%; height:2px;
+      background:linear-gradient(90deg,transparent,var(--gold-light),transparent);
+      animation:scanLine 2s ease-in-out infinite;
+    }
+    @keyframes scanLine {
+      0%{top:5%} 50%{top:90%} 100%{top:5%}
+    }
+    .scanner-hint { font-family:'DM Mono',monospace; font-size:0.72rem; color:var(--muted); text-align:center; margin-bottom:1rem; }
+    .scanner-status {
+      font-family:'DM Mono',monospace; font-size:0.72rem; text-align:center;
+      padding:0.4rem 0.8rem; border-radius:8px; margin-bottom:0.8rem;
+      background:var(--cream); border:1px solid var(--border); color:var(--muted);
+      min-height:2.2rem; display:flex; align-items:center; justify-content:center;
+    }
+    .scanner-status.scanning { color:var(--gold); border-color:rgba(201,168,76,0.4); background:rgba(201,168,76,0.06); }
+    .scanner-status.found { color:var(--green); border-color:rgba(45,106,79,0.3); background:rgba(45,106,79,0.07); }
+    .scanner-status.error { color:var(--red); border-color:rgba(155,35,53,0.3); background:rgba(155,35,53,0.06); }
+
+    /* QR Confirm Pay */
+    .qr-confirm-panel {
+      background:var(--cream); border:1.5px solid var(--border); border-radius:14px;
+      padding:1.2rem; margin-bottom:1.2rem; text-align:center;
+    }
+    .qr-confirm-label { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); margin-bottom:0.3rem; }
+    .qr-confirm-name { font-family:'Playfair Display',serif; font-size:1.1rem; color:var(--ink); margin-bottom:0.2rem; }
+    .qr-confirm-amount { font-family:'DM Mono',monospace; font-size:2rem; font-weight:500; color:var(--green); }
+    .qr-confirm-expiry { font-family:'DM Mono',monospace; font-size:0.65rem; color:var(--muted); margin-top:0.4rem; }
 
     /* Secure badge */
     .secure-badge {
@@ -233,7 +273,7 @@
       background:rgba(45,106,79,0.08); border:1px solid rgba(45,106,79,0.2);
       color:var(--green); font-family:'DM Mono',monospace; font-size:0.68rem;
       letter-spacing:0.1em; text-transform:uppercase;
-      padding:0.3rem 0.7rem; border-radius:100px; margin-bottom:1.6rem;
+      padding:0.3rem 0.7rem; border-radius:100px; margin-bottom:1.4rem;
     }
     .secure-badge::before { content:'🔒'; font-size:0.7rem; }
 
@@ -245,8 +285,7 @@
     .toast {
       position:fixed; bottom:2rem; left:50%;
       transform:translateX(-50%) translateY(100px);
-      background:var(--ink); color:#fff;
-      padding:0.85rem 1.5rem; border-radius:100px;
+      background:var(--ink); color:#fff; padding:0.85rem 1.5rem; border-radius:100px;
       font-family:'DM Sans',sans-serif; font-size:0.88rem;
       display:flex; align-items:center; gap:0.6rem;
       z-index:999; transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1),opacity 0.3s;
@@ -285,39 +324,43 @@
     .txn-count { font-family:'DM Mono',monospace; font-size:0.65rem; color:var(--muted); }
     .txn-list { display:flex; flex-direction:column; gap:0.5rem; }
     .txn-item {
-      background:var(--card-bg); border:1px solid var(--border);
-      border-radius:10px; padding:0.75rem 1rem;
-      display:flex; align-items:center; justify-content:space-between;
+      background:var(--card-bg); border:1px solid var(--border); border-radius:10px;
+      padding:0.75rem 1rem; display:flex; align-items:center; justify-content:space-between;
       animation:fadeUp 0.3s ease both; box-shadow:0 1px 4px rgba(13,13,13,0.04);
     }
     .txn-left { display:flex; flex-direction:column; gap:0.2rem; }
     .txn-name { font-size:0.88rem; color:var(--ink); font-weight:500; }
     .txn-meta { font-family:'DM Mono',monospace; font-size:0.65rem; color:var(--muted); }
-    .txn-amount { font-family:'DM Mono',monospace; font-size:1rem; color:var(--green); font-weight:500; }
+    .txn-right { display:flex; flex-direction:column; align-items:flex-end; gap:0.15rem; }
+    .txn-amount { font-family:'DM Mono',monospace; font-size:1rem; font-weight:500; }
+    .txn-amount.credit { color:var(--green); }
+    .txn-amount.debit { color:var(--red); }
+    .txn-type-badge { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.06em; text-transform:uppercase; padding:0.1rem 0.4rem; border-radius:4px; }
+    .txn-type-badge.credit { background:rgba(45,106,79,0.1); color:var(--green); }
+    .txn-type-badge.debit { background:rgba(155,35,53,0.08); color:var(--red); }
     .txn-empty {
       text-align:center; padding:1.2rem; font-size:0.82rem; color:var(--muted);
       font-family:'DM Mono',monospace; background:var(--cream);
       border-radius:10px; border:1px dashed var(--border);
     }
 
+    /* Payment mode tabs */
+    .mode-tabs { display:flex; gap:0.5rem; margin-bottom:1.5rem; }
+    .mode-tab {
+      flex:1; padding:0.6rem 0.4rem; border:1.5px solid var(--border); border-radius:10px;
+      background:transparent; cursor:pointer; font-family:'DM Mono',monospace;
+      font-size:0.65rem; letter-spacing:0.06em; text-transform:uppercase; color:var(--muted);
+      transition:all 0.2s; display:flex; flex-direction:column; align-items:center; gap:0.3rem;
+    }
+    .mode-tab .tab-icon { font-size:1.1rem; }
+    .mode-tab.active { border-color:var(--gold); background:rgba(201,168,76,0.06); color:var(--ink); }
+    .mode-content { display:none; }
+    .mode-content.active { display:block; animation:fadeIn 0.3s ease; }
+
     /* Animations */
     @keyframes fadeUp { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
     @keyframes fadeDown { from{opacity:0;transform:translateY(-12px)} to{opacity:1;transform:translateY(0)} }
     @keyframes fadeIn { from{opacity:0} to{opacity:1} }
-
-    /* Payment mode tabs */
-    .mode-tabs { display:flex; gap:0.5rem; margin-bottom:1.5rem; }
-    .mode-tab {
-      flex:1; padding:0.65rem; border:1.5px solid var(--border);
-      border-radius:10px; background:transparent; cursor:pointer;
-      font-family:'DM Mono',monospace; font-size:0.7rem; letter-spacing:0.08em;
-      text-transform:uppercase; color:var(--muted); transition:all 0.2s;
-      display:flex; flex-direction:column; align-items:center; gap:0.3rem;
-    }
-    .mode-tab .tab-icon { font-size:1.2rem; }
-    .mode-tab.active { border-color:var(--gold); background:rgba(201,168,76,0.06); color:var(--ink); }
-    .mode-content { display:none; }
-    .mode-content.active { display:block; animation:fadeIn 0.3s ease; }
   </style>
 </head>
 <body>
@@ -336,14 +379,14 @@
 
   <div class="card">
 
-    <!-- ══════════════ AUTH PAGE ══════════════ -->
+    <!-- ══ AUTH PAGE ══ -->
     <div class="page active" id="page-auth">
       <div class="tab-switcher">
         <button class="tab-btn active" onclick="switchAuthTab('login')">Log In</button>
         <button class="tab-btn" onclick="switchAuthTab('signup')">Sign Up</button>
       </div>
 
-      <!-- Login Form -->
+      <!-- Login -->
       <div id="auth-login" class="mode-content active">
         <div class="form-group">
           <label class="form-label">Username</label>
@@ -362,7 +405,7 @@
         </button>
       </div>
 
-      <!-- Sign Up Form -->
+      <!-- Sign Up -->
       <div id="auth-signup" class="mode-content">
         <div class="form-group">
           <label class="form-label">Full Name</label>
@@ -392,7 +435,7 @@
       </div>
     </div>
 
-    <!-- ══════════════ DASHBOARD PAGE ══════════════ -->
+    <!-- ══ DASHBOARD PAGE ══ -->
     <div class="page" id="page-dashboard">
 
       <!-- Success Overlay -->
@@ -402,10 +445,11 @@
             <path d="M20 6L9 17l-5-5"/>
           </svg>
         </div>
-        <div class="success-title">Payment Sent!</div>
-        <div class="success-subtitle">Your transaction was processed successfully.</div>
+        <div class="success-title" id="success-title">Payment Sent!</div>
+        <div class="success-subtitle" id="success-subtitle">Transaction processed successfully.</div>
         <div class="success-amount" id="success-amount">₹0.00</div>
         <div class="txn-id" id="txn-id-display">TXN-000000</div>
+        <div style="font-family:'DM Mono',monospace;font-size:0.72rem;color:var(--green);margin-bottom:1.2rem;" id="success-balance-note"></div>
         <button class="reset-btn" onclick="resetForm()">Make another payment</button>
       </div>
 
@@ -421,32 +465,47 @@
         <button class="logout-btn" onclick="doLogout()">Log Out</button>
       </div>
 
+      <!-- User ID badge -->
+      <div class="user-id-badge" onclick="copyUserId()" title="Click to copy your User ID">
+        <div>
+          <div class="user-id-label">Your PayMe ID — share to receive money</div>
+          <div class="user-id-value" id="user-id-display">PAYME-????</div>
+        </div>
+        <div class="user-id-copy" id="copy-label">TAP TO COPY</div>
+      </div>
+
       <div class="secure-badge">256-bit SSL Encrypted</div>
 
       <!-- Payment Mode Tabs -->
       <div class="mode-tabs">
         <button class="mode-tab active" onclick="switchMode('manual')" id="mode-manual">
-          <span class="tab-icon">💳</span>
-          <span>Pay Now</span>
+          <span class="tab-icon">💳</span><span>Pay by ID</span>
         </button>
         <button class="mode-tab" onclick="switchMode('qr')" id="mode-qr">
-          <span class="tab-icon">📱</span>
-          <span>QR Code</span>
+          <span class="tab-icon">📱</span><span>My QR</span>
+        </button>
+        <button class="mode-tab" onclick="switchMode('scan')" id="mode-scan">
+          <span class="tab-icon">🔍</span><span>Scan QR</span>
         </button>
       </div>
 
-      <!-- ── Manual Payment Mode ── -->
+      <!-- ── Pay by User ID ── -->
       <div class="mode-content active" id="content-manual">
-        <div class="form-group" style="margin-bottom:1.4rem;">
-          <div class="section-title">Payer name</div>
-          <input type="text" id="payer-name" class="form-control" placeholder="Enter your full name" autocomplete="name"/>
-          <div class="error-msg" id="payer-name-error" style="display:none">Please enter your name.</div>
+        <div class="form-group">
+          <label class="form-label">Recipient User ID</label>
+          <div class="input-with-badge">
+            <input type="text" id="recipient-user-id" class="form-control" placeholder="PAYME-XXXX"
+              oninput="onRecipientIdInput(this.value)" autocomplete="off" style="text-transform:uppercase"/>
+            <span class="input-badge" id="recipient-id-badge">—</span>
+          </div>
+          <div class="error-msg" id="recipient-id-error" style="display:none"></div>
+          <div id="recipient-preview" style="display:none"></div>
         </div>
         <div class="amount-block">
           <div class="section-title">Enter amount</div>
           <div class="amount-display" id="amount-display-wrap">
             <span class="currency-symbol">₹</span>
-            <input type="number" id="amount-input" placeholder="0.00" min="1" step="0.01"/>
+            <input type="number" id="amount-input" class="amount-input" placeholder="0.00" min="1" step="0.01" oninput="updateBtnAmount()"/>
           </div>
           <div class="error-msg" id="amount-error" style="display:none">Please enter a valid amount.</div>
           <div class="quick-amounts">
@@ -456,21 +515,21 @@
             <button class="quick-btn" onclick="setAmount(5000)">₹5,000</button>
           </div>
         </div>
-        <div class="divider"><span>Secure Checkout</span></div>
+        <div class="divider"><span>Secure Transfer</span></div>
         <button class="btn-primary" id="pay-btn" onclick="processPayment()">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-          Pay <span class="btn-amount" id="btn-amount">₹0.00</span>
+          Send <span class="btn-amount" id="btn-amount">₹0.00</span>
         </button>
       </div>
 
-      <!-- ── QR Code Mode ── -->
+      <!-- ── My QR (receive money) ── -->
       <div class="mode-content" id="content-qr">
         <div id="qr-generate-section">
           <div class="amount-block">
             <div class="section-title">Amount to receive</div>
             <div class="amount-display" id="qr-amount-display-wrap">
               <span class="currency-symbol">₹</span>
-              <input type="number" id="qr-amount-input" placeholder="0.00" min="1" step="0.01"/>
+              <input type="number" id="qr-amount-input" class="amount-input" placeholder="0.00" min="1" step="0.01"/>
             </div>
             <div class="error-msg" id="qr-amount-error" style="display:none">Please enter a valid amount.</div>
             <div class="quick-amounts">
@@ -485,7 +544,6 @@
             Generate QR Code
           </button>
         </div>
-
         <div id="qr-display-section" style="display:none">
           <div class="qr-panel">
             <div class="qr-amount-label" id="qr-display-amount">₹0.00</div>
@@ -509,6 +567,51 @@
         </div>
       </div>
 
+      <!-- ── Scan QR (send money) ── -->
+      <div class="mode-content" id="content-scan">
+        <!-- Scanner view -->
+        <div id="scan-camera-section">
+          <div class="scanner-status" id="scanner-status">Camera not started</div>
+          <div class="scanner-wrap">
+            <video id="scanner-video" autoplay playsinline muted></video>
+            <div class="scanner-overlay">
+              <div class="scanner-frame">
+                <div class="corner-bl"></div>
+                <div class="corner-br"></div>
+                <div class="scanner-line"></div>
+              </div>
+            </div>
+          </div>
+          <div class="scanner-hint">Point camera at a PayMe QR code</div>
+          <button class="btn-primary" id="start-scan-btn" onclick="startScanner()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9V6a3 3 0 0 1 3-3h3M3 15v3a3 3 0 0 0 3 3h3M15 3h3a3 3 0 0 1 3 3v3M15 21h3a3 3 0 0 0 3-3v-3"/></svg>
+            Start Camera
+          </button>
+        </div>
+
+        <!-- Confirm pay from scan -->
+        <div id="scan-confirm-section" style="display:none">
+          <div class="qr-confirm-panel">
+            <div class="qr-confirm-label">Paying to</div>
+            <div class="qr-confirm-name" id="scan-recipient-name">—</div>
+            <div class="qr-confirm-amount" id="scan-amount">₹0.00</div>
+            <div class="qr-confirm-expiry" id="scan-expiry">—</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Confirm with password</label>
+            <input type="password" id="scan-password" class="form-control" placeholder="Enter your password"/>
+            <div class="error-msg" id="scan-password-error" style="display:none"></div>
+          </div>
+          <div style="display:flex;gap:0.6rem;">
+            <button class="btn-secondary" onclick="cancelScan()" style="flex:1">Cancel</button>
+            <button class="btn-primary" id="scan-pay-btn" onclick="confirmScanPayment()" style="flex:2">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+              Confirm & Pay
+            </button>
+          </div>
+        </div>
+      </div>
+
       <div class="card-footer">
         <div class="footer-badge">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
@@ -523,7 +626,7 @@
 
   </div><!-- /card -->
 
-  <!-- Transactions Panel (shown when logged in) -->
+  <!-- Transactions Panel -->
   <div class="txn-panel" id="txn-panel" style="display:none">
     <div class="txn-panel-header">
       <div class="txn-panel-title">Recent Transactions</div>
@@ -533,10 +636,12 @@
       <div class="txn-empty">No transactions yet</div>
     </div>
   </div>
-
 </div>
 
 <div class="toast" id="toast"></div>
+
+<!-- jsQR for QR code decoding -->
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
 
 <script>
 /* ── State ── */
@@ -544,6 +649,11 @@ let currentUser = null;
 let qrToken     = null;
 let qrTimer     = null;
 let qrPollTimer = null;
+let scanStream  = null;
+let scanAnimId  = null;
+let scannedToken = null;
+let recipientLookupTimer = null;
+let validatedRecipient  = null;
 
 const SERVER = `http://${location.hostname}:3000`;
 
@@ -555,9 +665,18 @@ function showToast(msg, type = 'success') {
   setTimeout(() => t.classList.remove('show'), 3500);
 }
 
+/* ── Helpers ── */
+function formatINR(n) {
+  return '₹' + Number(n).toLocaleString('en-IN', { minimumFractionDigits: 2 });
+}
+
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
 /* ── Auth tab switch ── */
 function switchAuthTab(tab) {
-  document.querySelectorAll('.tab-btn').forEach((b, i) => b.classList.toggle('active', (i === 0 && tab === 'login') || (i === 1 && tab === 'signup')));
+  document.querySelectorAll('.tab-btn').forEach((b, i) => b.classList.toggle('active', (i===0&&tab==='login')||(i===1&&tab==='signup')));
   document.getElementById('auth-login').classList.toggle('active', tab === 'login');
   document.getElementById('auth-signup').classList.toggle('active', tab === 'signup');
 }
@@ -569,12 +688,11 @@ async function doSignup() {
   const email    = document.getElementById('signup-email').value.trim();
   const username = document.getElementById('signup-username').value.trim();
   const password = document.getElementById('signup-password').value;
-
   let ok = true;
-  if (!fullName) { showAuthError('signup-name', 'Full name is required.'); ok = false; }
-  if (!email || !email.includes('@')) { showAuthError('signup-email', 'Valid email required.'); ok = false; }
-  if (!username || username.length < 3) { showAuthError('signup-username', 'At least 3 characters.'); ok = false; }
-  if (!password || password.length < 6) { showAuthError('signup-password', 'At least 6 characters.'); ok = false; }
+  if (!fullName) { showAuthError('signup-name', 'Full name is required.'); ok=false; }
+  if (!email || !email.includes('@')) { showAuthError('signup-email', 'Valid email required.'); ok=false; }
+  if (!username || username.length < 3) { showAuthError('signup-username', 'At least 3 characters.'); ok=false; }
+  if (!password || password.length < 6) { showAuthError('signup-password', 'At least 6 characters.'); ok=false; }
   if (!ok) return;
 
   const btn = document.getElementById('signup-btn');
@@ -583,12 +701,12 @@ async function doSignup() {
 
   try {
     const res  = await fetch(`${SERVER}/auth/signup`, {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({ username, password, fullName, email })
     });
     const data = await res.json();
     if (!res.ok) { showAuthError('signup-general', data.error || 'Signup failed.'); return; }
-    showToast(`Welcome, ${data.fullName}! Account created ✓`);
+    showToast(`Welcome, ${data.fullName}! Your ID: ${data.userId}`);
     enterDashboard(data);
   } catch (e) {
     showAuthError('signup-general', 'Cannot reach server. Is server.js running?');
@@ -603,7 +721,6 @@ async function doLogin() {
   clearAuthErrors('login');
   const username = document.getElementById('login-username').value.trim();
   const password = document.getElementById('login-password').value;
-
   if (!username) { showAuthError('login-username', 'Username required.'); return; }
   if (!password) { showAuthError('login-password', 'Password required.'); return; }
 
@@ -613,7 +730,7 @@ async function doLogin() {
 
   try {
     const res  = await fetch(`${SERVER}/auth/login`, {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({ username, password })
     });
     const data = await res.json();
@@ -631,13 +748,12 @@ async function doLogin() {
 function clearAuthErrors(form) {
   ['username','password','email','name','general'].forEach(f => {
     const el = document.getElementById(`${form}-${f}-error`);
-    if (el) { el.style.display = 'none'; el.textContent = ''; }
+    if (el) { el.style.display='none'; el.textContent=''; }
   });
   document.querySelectorAll('.form-control').forEach(el => el.classList.remove('error'));
 }
-
 function showAuthError(id, msg) {
-  const el = document.getElementById(id + (id.includes('-error') ? '' : '-error'));
+  const el = document.getElementById(id.includes('-error') ? id : id+'-error');
   if (!el) return;
   el.textContent = msg; el.style.display = 'block';
 }
@@ -648,21 +764,32 @@ function enterDashboard(user) {
   document.getElementById('page-auth').classList.remove('active');
   document.getElementById('page-dashboard').classList.add('active');
   document.getElementById('txn-panel').style.display = 'block';
-
-  const initials = user.fullName.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
+  const initials = user.fullName.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
   document.getElementById('user-avatar-initials').textContent = initials;
   document.getElementById('user-display-name').textContent = user.fullName;
+  document.getElementById('user-id-display').textContent = user.userId || 'PAYME-????';
   updateBalanceDisplay(user.balance);
   renderTransactions();
 }
 
 function updateBalanceDisplay(balance) {
   document.getElementById('user-balance-display').textContent =
-    'Balance: ₹' + Number(balance).toLocaleString('en-IN', { minimumFractionDigits: 2 });
+    'Balance: ₹' + Number(balance).toLocaleString('en-IN', { minimumFractionDigits:2 });
+}
+
+function copyUserId() {
+  const id = currentUser?.userId;
+  if (!id) return;
+  navigator.clipboard.writeText(id).then(() => {
+    document.getElementById('copy-label').textContent = 'COPIED ✓';
+    setTimeout(() => { document.getElementById('copy-label').textContent = 'TAP TO COPY'; }, 2000);
+    showToast('User ID copied to clipboard ✓');
+  }).catch(() => showToast(id, 'success'));
 }
 
 function doLogout() {
   currentUser = null;
+  stopScanner();
   clearQrState();
   document.getElementById('page-dashboard').classList.remove('active');
   document.getElementById('page-auth').classList.add('active');
@@ -671,95 +798,157 @@ function doLogout() {
   showToast('Logged out successfully');
 }
 
-/* ── Payment Mode Switch ── */
+/* ── Mode Switch ── */
 function switchMode(mode) {
-  ['manual','qr'].forEach(m => {
-    document.getElementById('mode-' + m).classList.toggle('active', m === mode);
-    document.getElementById('content-' + m).classList.toggle('active', m === mode);
+  ['manual','qr','scan'].forEach(m => {
+    document.getElementById('mode-'+m).classList.toggle('active', m===mode);
+    document.getElementById('content-'+m).classList.toggle('active', m===mode);
   });
   if (mode !== 'qr') clearQrState();
+  if (mode !== 'scan') stopScanner();
 }
 
-/* ── Manual Payment ── */
-function setAmount(val) {
-  document.getElementById('amount-input').value = val;
-  updateBtnAmount();
-}
-document.getElementById('amount-input').addEventListener('input', updateBtnAmount);
+/* ── Pay by User ID ── */
+function setAmount(val) { document.getElementById('amount-input').value = val; updateBtnAmount(); }
 function updateBtnAmount() {
   const v = parseFloat(document.getElementById('amount-input').value) || 0;
-  document.getElementById('btn-amount').textContent = '₹' + Number(v).toLocaleString('en-IN',{minimumFractionDigits:2});
+  document.getElementById('btn-amount').textContent = formatINR(v);
 }
 
-function clearErrors() {
-  ['amount','payer-name'].forEach(f => {
-    const el = document.getElementById(f + '-error');
-    if (el) el.style.display = 'none';
-  });
-  document.querySelectorAll('.form-control,.amount-display').forEach(el => el.classList.remove('error'));
+// Live lookup of recipient ID
+function onRecipientIdInput(raw) {
+  const val = raw.toUpperCase().replace(/[^A-Z0-9-]/g,'');
+  document.getElementById('recipient-user-id').value = val;
+  validatedRecipient = null;
+  document.getElementById('recipient-preview').style.display = 'none';
+  document.getElementById('recipient-id-error').style.display = 'none';
+
+  const badge = document.getElementById('recipient-id-badge');
+  badge.className = 'input-badge';
+  badge.textContent = '—';
+
+  clearTimeout(recipientLookupTimer);
+  if (val.length < 7) return; // PAYME-X minimum
+
+  badge.textContent = '…';
+  recipientLookupTimer = setTimeout(() => lookupRecipient(val), 500);
 }
 
-function validate() {
-  clearErrors(); let ok = true;
-  const name = document.getElementById('payer-name').value.trim();
-  if (!name) { document.getElementById('payer-name-error').style.display='block'; ok=false; }
-  const amount = parseFloat(document.getElementById('amount-input').value);
-  if (!amount || amount <= 0) {
-    document.getElementById('amount-error').style.display='block';
-    document.getElementById('amount-display-wrap').classList.add('error');
-    ok=false;
+async function lookupRecipient(userId) {
+  const badge = document.getElementById('recipient-id-badge');
+  try {
+    const res  = await fetch(`${SERVER}/user/lookup/${userId}`);
+    const data = await res.json();
+    if (!res.ok || !data.found) {
+      badge.className = 'input-badge invalid';
+      badge.textContent = 'NOT FOUND';
+      document.getElementById('recipient-preview').style.display = 'none';
+      validatedRecipient = null;
+    } else {
+      if (data.username === currentUser?.username) {
+        badge.className = 'input-badge invalid';
+        badge.textContent = 'YOURSELF';
+        document.getElementById('recipient-preview').style.display = 'none';
+        validatedRecipient = null;
+        return;
+      }
+      badge.className = 'input-badge valid';
+      badge.textContent = 'FOUND ✓';
+      validatedRecipient = data;
+      const initials = data.fullName.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+      const prev = document.getElementById('recipient-preview');
+      prev.style.display = 'block';
+      prev.innerHTML = `<div class="recipient-preview">
+        <div class="recipient-avatar">${esc(initials)}</div>
+        <div>
+          <div class="recipient-name">${esc(data.fullName)}</div>
+          <div class="recipient-id">${esc(data.userId)}</div>
+        </div>
+      </div>`;
+    }
+  } catch {
+    badge.className = 'input-badge invalid';
+    badge.textContent = 'ERROR';
+    validatedRecipient = null;
   }
-  return ok;
 }
-
-function formatINR(n) { return '₹' + Number(n).toLocaleString('en-IN',{minimumFractionDigits:2}); }
 
 async function processPayment() {
-  if (!validate()) return;
+  // Validate
+  let ok = true;
+  document.getElementById('recipient-id-error').style.display = 'none';
+  document.getElementById('amount-error').style.display = 'none';
+  document.getElementById('amount-display-wrap').classList.remove('error');
+
+  if (!validatedRecipient) {
+    document.getElementById('recipient-id-error').textContent = 'Please enter a valid recipient User ID.';
+    document.getElementById('recipient-id-error').style.display = 'block';
+    ok = false;
+  }
+  const amount = parseFloat(document.getElementById('amount-input').value);
+  if (!amount || amount <= 0) {
+    document.getElementById('amount-error').style.display = 'block';
+    document.getElementById('amount-display-wrap').classList.add('error');
+    ok = false;
+  }
+  if (!ok) return;
+
+  if (amount > currentUser.balance) {
+    document.getElementById('amount-error').textContent = `Insufficient balance (₹${Number(currentUser.balance).toLocaleString('en-IN',{minimumFractionDigits:2})} available)`;
+    document.getElementById('amount-error').style.display = 'block';
+    document.getElementById('amount-display-wrap').classList.add('error');
+    return;
+  }
+
   const btn = document.getElementById('pay-btn');
   btn.classList.add('loading');
   btn.innerHTML = '<div class="spinner"></div> Processing…';
 
-  await new Promise(r => setTimeout(r, 1500));
-
-  const amount    = parseFloat(document.getElementById('amount-input').value);
-  const payerName = document.getElementById('payer-name').value.trim();
-  const txnId     = 'TXN-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2,6).toUpperCase();
-
   try {
-    const res = await fetch(`${SERVER}/payment`, {
+    const res = await fetch(`${SERVER}/payment/send`, {
       method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({
-        id: txnId, payer_name: payerName, amount_inr: amount,
-        amount_display: formatINR(amount), status: 'success',
-        paid_at: new Date().toISOString(), paid_at_local: new Date().toLocaleString('en-IN')
+        senderUsername: currentUser.username,
+        recipientUserId: validatedRecipient.userId,
+        amount
       })
     });
-    if (!res.ok) throw new Error('Server error');
+    const data = await res.json();
+    if (!res.ok) { showToast(data.error || 'Payment failed.', 'error'); return; }
 
-    document.getElementById('success-amount').textContent = formatINR(amount);
-    document.getElementById('txn-id-display').textContent = txnId;
+    currentUser.balance = data.new_balance;
+    updateBalanceDisplay(data.new_balance);
+
+    document.getElementById('success-title').textContent = 'Money Sent!';
+    document.getElementById('success-subtitle').textContent = `Paid to ${data.recipient_name}`;
+    document.getElementById('success-amount').textContent = formatINR(data.amount);
+    document.getElementById('txn-id-display').textContent = data.transaction_id;
+    document.getElementById('success-balance-note').textContent = `New balance: ${formatINR(data.new_balance)}`;
     document.getElementById('success-overlay').classList.add('active');
     renderTransactions();
   } catch (e) {
-    showToast('Could not reach server. Is server.js running?', 'error');
+    showToast('Could not reach server.', 'error');
+  } finally {
     btn.classList.remove('loading');
-    btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg> Pay <span class="btn-amount" id="btn-amount">${formatINR(amount)}</span>`;
+    btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg> Send <span class="btn-amount" id="btn-amount">${formatINR(amount)}</span>`;
   }
 }
 
 function resetForm() {
   document.getElementById('success-overlay').classList.remove('active');
   document.getElementById('amount-input').value = '';
-  document.getElementById('payer-name').value = '';
+  document.getElementById('recipient-user-id').value = '';
+  document.getElementById('recipient-preview').style.display = 'none';
   document.getElementById('btn-amount').textContent = '₹0.00';
+  document.getElementById('recipient-id-badge').className = 'input-badge';
+  document.getElementById('recipient-id-badge').textContent = '—';
+  validatedRecipient = null;
   const btn = document.getElementById('pay-btn');
   btn.classList.remove('loading');
-  btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg> Pay <span class="btn-amount" id="btn-amount">₹0.00</span>`;
-  clearErrors();
+  btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg> Send <span class="btn-amount" id="btn-amount">₹0.00</span>`;
 }
 
-/* ── QR Code ── */
+/* ── QR Generate (receive) ── */
 function setQrAmount(val) { document.getElementById('qr-amount-input').value = val; }
 
 async function generateQR() {
@@ -786,7 +975,6 @@ async function generateQR() {
     document.getElementById('qr-image').src = data.qrDataUrl;
     document.getElementById('qr-display-amount').textContent = formatINR(data.amount);
     document.getElementById('qr-expired-overlay').classList.remove('show');
-
     startQrCountdown(data.expiresAt);
     startQrPolling();
     showToast('QR code generated — valid 5 minutes ✓');
@@ -799,7 +987,7 @@ function startQrCountdown(expiresAt) {
   clearInterval(qrTimer);
   function tick() {
     const remaining = Math.max(0, Math.round((expiresAt - Date.now()) / 1000));
-    const m = Math.floor(remaining / 60), s = remaining % 60;
+    const m = Math.floor(remaining/60), s = remaining%60;
     const el = document.getElementById('qr-countdown');
     el.textContent = `${m}:${s.toString().padStart(2,'0')}`;
     el.className = 'time' + (remaining < 60 ? ' urgent' : '');
@@ -822,14 +1010,12 @@ function startQrPolling() {
       const res  = await fetch(`${SERVER}/qr/status/${qrToken}`);
       const data = await res.json();
       if (data.valid === false && data.reason === 'already_used') {
-        clearInterval(qrPollTimer);
-        clearInterval(qrTimer);
-        // Refresh balance
-        const acc = await fetch(`${SERVER}/account/${currentUser.username}`).then(r => r.json());
+        clearInterval(qrPollTimer); clearInterval(qrTimer);
+        const acc = await fetch(`${SERVER}/account/${currentUser.username}`).then(r=>r.json());
         currentUser.balance = acc.balance;
         updateBalanceDisplay(acc.balance);
         renderTransactions();
-        showToast(`Payment received! ${formatINR(data.amount || '')} ✓`);
+        showToast('Payment received! ✓');
         resetQR();
       }
     } catch {}
@@ -841,11 +1027,12 @@ async function checkQRPayment() {
   try {
     const res  = await fetch(`${SERVER}/qr/status/${qrToken}`);
     const data = await res.json();
-    if (!data.valid) {
-      showToast(data.reason === 'already_used' ? 'Payment already received ✓' : 'QR expired', data.reason === 'already_used' ? 'success' : 'error');
-    } else {
-      showToast('Waiting for payment…');
-    }
+    showToast(
+      !data.valid
+        ? (data.reason==='already_used' ? 'Payment already received ✓' : 'QR expired')
+        : 'Waiting for payment…',
+      !data.valid && data.reason!=='already_used' ? 'error' : 'success'
+    );
   } catch { showToast('Cannot reach server.', 'error'); }
 }
 
@@ -854,38 +1041,229 @@ function resetQR() {
   document.getElementById('qr-generate-section').style.display = 'block';
   document.getElementById('qr-display-section').style.display  = 'none';
 }
-
 function clearQrState() {
-  clearInterval(qrTimer);
-  clearInterval(qrPollTimer);
-  qrToken = null;
+  clearInterval(qrTimer); clearInterval(qrPollTimer); qrToken = null;
+}
+
+/* ── QR Scanner ── */
+async function startScanner() {
+  const btn = document.getElementById('start-scan-btn');
+  btn.classList.add('loading');
+  btn.innerHTML = '<div class="spinner"></div> Starting camera…';
+  setStatus('Starting camera…', 'scanning');
+
+  try {
+    scanStream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: 'environment', width:{ideal:1280}, height:{ideal:720} }
+    });
+    const video = document.getElementById('scanner-video');
+    video.srcObject = scanStream;
+    await video.play();
+    btn.style.display = 'none';
+    setStatus('Scanning for QR code…', 'scanning');
+    scanFrames();
+  } catch (e) {
+    setStatus('Camera access denied or unavailable', 'error');
+    btn.classList.remove('loading');
+    btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9V6a3 3 0 0 1 3-3h3M3 15v3a3 3 0 0 0 3 3h3M15 3h3a3 3 0 0 1 3 3v3M15 21h3a3 3 0 0 0 3-3v-3"/></svg> Try Again`;
+  }
+}
+
+function scanFrames() {
+  const video  = document.getElementById('scanner-video');
+  const canvas = document.createElement('canvas');
+  const ctx    = canvas.getContext('2d');
+
+  function tick() {
+    if (!scanStream) return;
+    if (video.readyState === video.HAVE_ENOUGH_DATA) {
+      canvas.width  = video.videoWidth;
+      canvas.height = video.videoHeight;
+      ctx.drawImage(video, 0, 0);
+      const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const code    = jsQR(imgData.data, canvas.width, canvas.height, { inversionAttempts:'dontInvert' });
+      if (code) {
+        handleScannedCode(code.data);
+        return; // stop scanning until handled
+      }
+    }
+    scanAnimId = requestAnimationFrame(tick);
+  }
+  scanAnimId = requestAnimationFrame(tick);
+}
+
+async function handleScannedCode(url) {
+  // Extract token from URL like http://host:port/pay/TOKEN
+  const match = url.match(/\/pay\/([a-f0-9-]{36})/i);
+  if (!match) {
+    setStatus('Not a PayMe QR code', 'error');
+    setTimeout(() => { setStatus('Scanning for QR code…', 'scanning'); scanFrames(); }, 2000);
+    return;
+  }
+
+  const token = match[1];
+  setStatus('QR found! Verifying…', 'found');
+  stopScanner();
+
+  try {
+    const res  = await fetch(`${SERVER}/qr/status/${token}`);
+    const data = await res.json();
+
+    if (!data.valid) {
+      const msgs = { expired:'QR code has expired.', already_used:'QR code already paid.', expired_or_invalid:'Invalid QR code.' };
+      setStatus(msgs[data.reason] || 'Invalid QR.', 'error');
+      document.getElementById('start-scan-btn').style.display = 'flex';
+      document.getElementById('start-scan-btn').classList.remove('loading');
+      document.getElementById('start-scan-btn').innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9V6a3 3 0 0 1 3-3h3M3 15v3a3 3 0 0 0 3 3h3M15 3h3a3 3 0 0 1 3 3v3M15 21h3a3 3 0 0 0 3-3v-3"/></svg> Scan Again`;
+      return;
+    }
+
+    // Get recipient name
+    scannedToken = token;
+    let recipientName = data.username;
+    try {
+      const acc = await fetch(`${SERVER}/account/${data.username}`).then(r=>r.json());
+      recipientName = acc.fullName || data.username;
+    } catch {}
+
+    const expiresInSec = Math.round((data.expiresAt - Date.now()) / 1000);
+    const m = Math.floor(expiresInSec/60), s = expiresInSec%60;
+
+    document.getElementById('scan-recipient-name').textContent = recipientName;
+    document.getElementById('scan-amount').textContent = formatINR(data.amount);
+    document.getElementById('scan-expiry').textContent = `Expires in ${m}:${s.toString().padStart(2,'0')}`;
+    document.getElementById('scan-password').value = '';
+    document.getElementById('scan-password-error').style.display = 'none';
+
+    document.getElementById('scan-camera-section').style.display  = 'none';
+    document.getElementById('scan-confirm-section').style.display = 'block';
+  } catch (e) {
+    setStatus('Cannot reach server.', 'error');
+    document.getElementById('start-scan-btn').style.display = 'flex';
+  }
+}
+
+async function confirmScanPayment() {
+  const password = document.getElementById('scan-password').value;
+  const errEl    = document.getElementById('scan-password-error');
+  errEl.style.display = 'none';
+
+  if (!password) { errEl.textContent='Password required.'; errEl.style.display='block'; return; }
+
+  // Verify password first via login attempt
+  const btn = document.getElementById('scan-pay-btn');
+  btn.classList.add('loading');
+  btn.innerHTML = '<div class="spinner"></div> Verifying…';
+
+  try {
+    const loginRes  = await fetch(`${SERVER}/auth/login`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ username: currentUser.username, password })
+    });
+    if (!loginRes.ok) {
+      errEl.textContent = 'Incorrect password.';
+      errEl.style.display = 'block';
+      btn.classList.remove('loading');
+      btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Confirm & Pay`;
+      return;
+    }
+
+    btn.innerHTML = '<div class="spinner"></div> Paying…';
+
+    const res  = await fetch(`${SERVER}/qr/pay`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ token: scannedToken, payerName: currentUser.fullName, senderUsername: currentUser.username })
+    });
+    const data = await res.json();
+
+    if (!res.ok) {
+      errEl.textContent = data.error || 'Payment failed.';
+      errEl.style.display = 'block';
+      btn.classList.remove('loading');
+      btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Confirm & Pay`;
+      return;
+    }
+
+    // Success
+    if (data.new_balance !== null) {
+      currentUser.balance = data.new_balance;
+      updateBalanceDisplay(data.new_balance);
+    }
+
+    document.getElementById('success-title').textContent = 'Payment Complete!';
+    document.getElementById('success-subtitle').textContent = `Paid to ${data.recipient}`;
+    document.getElementById('success-amount').textContent = formatINR(data.amount);
+    document.getElementById('txn-id-display').textContent = data.transaction_id;
+    document.getElementById('success-balance-note').textContent = data.new_balance !== null ? `New balance: ${formatINR(data.new_balance)}` : '';
+    document.getElementById('success-overlay').classList.add('active');
+
+    cancelScan();
+    renderTransactions();
+  } catch (e) {
+    errEl.textContent = 'Cannot reach server.';
+    errEl.style.display = 'block';
+    btn.classList.remove('loading');
+    btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Confirm & Pay`;
+  }
+}
+
+function cancelScan() {
+  scannedToken = null;
+  document.getElementById('scan-camera-section').style.display  = 'block';
+  document.getElementById('scan-confirm-section').style.display = 'none';
+  document.getElementById('start-scan-btn').style.display = 'flex';
+  document.getElementById('start-scan-btn').classList.remove('loading');
+  document.getElementById('start-scan-btn').innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9V6a3 3 0 0 1 3-3h3M3 15v3a3 3 0 0 0 3 3h3M15 3h3a3 3 0 0 1 3 3v3M15 21h3a3 3 0 0 0 3-3v-3"/></svg> Start Camera`;
+  setStatus('Camera not started', '');
+}
+
+function stopScanner() {
+  if (scanAnimId) { cancelAnimationFrame(scanAnimId); scanAnimId = null; }
+  if (scanStream) { scanStream.getTracks().forEach(t => t.stop()); scanStream = null; }
+  const video = document.getElementById('scanner-video');
+  if (video) { video.srcObject = null; }
+}
+
+function setStatus(msg, type='') {
+  const el = document.getElementById('scanner-status');
+  el.textContent = msg;
+  el.className = 'scanner-status' + (type ? ' '+type : '');
 }
 
 /* ── Transactions ── */
 async function renderTransactions() {
   if (!currentUser) return;
   try {
-    const acc  = await fetch(`${SERVER}/account/${currentUser.username}`).then(r => r.json());
+    const acc  = await fetch(`${SERVER}/account/${currentUser.username}`).then(r=>r.json());
     const txns = acc.transactions || [];
     const list = document.getElementById('txn-list');
-    document.getElementById('txn-count').textContent = txns.length + (txns.length === 1 ? ' payment' : ' payments');
-    if (txns.length === 0) { list.innerHTML = '<div class="txn-empty">No transactions yet</div>'; return; }
-    list.innerHTML = txns.slice(0, 5).map((t, i) => `
+    document.getElementById('txn-count').textContent = txns.length + (txns.length===1?' payment':' payments');
+    if (txns.length===0) { list.innerHTML='<div class="txn-empty">No transactions yet</div>'; return; }
+    list.innerHTML = txns.slice(0,6).map((t,i) => {
+      const type    = t.type || 'credit';
+      const label   = type==='debit' ? 'Sent' : 'Received';
+      const sign    = type==='debit' ? '−' : '+';
+      const who     = type==='debit'
+        ? (t.recipient_name || t.payer_name)
+        : t.payer_name;
+      return `
       <div class="txn-item" style="animation-delay:${i*0.05}s">
         <div class="txn-left">
-          <div class="txn-name">${esc(t.payer_name)}</div>
-          <div class="txn-meta">${t.transaction_id} · ${t.paid_at_local}</div>
+          <div class="txn-name">${esc(who)}</div>
+          <div class="txn-meta">${esc(t.transaction_id)} · ${esc(t.paid_at_local)}</div>
         </div>
-        <div class="txn-amount">${t.amount_display}</div>
-      </div>`).join('');
+        <div class="txn-right">
+          <div class="txn-amount ${type}">${sign}${t.amount_display}</div>
+          <div class="txn-type-badge ${type}">${label}</div>
+        </div>
+      </div>`;
+    }).join('');
   } catch {}
 }
 
-function esc(s) { return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-
-// Enter on login
-document.getElementById('login-password').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
-document.getElementById('login-username').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+/* ── Keyboard shortcuts ── */
+document.getElementById('login-password').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+document.getElementById('login-username').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
 </script>
 
 </body>
