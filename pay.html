@@ -8,112 +8,97 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --ink:#0d0d0d; --paper:#f5f1eb; --cream:#ede8df; --gold:#c9a84c;
-      --gold-light:#e8c96a; --green:#2d6a4f; --red:#9b2335;
-      --card-bg:#ffffff; --muted:#7a7368; --border:#d8d2c8;
+      --ink: #0d0d0d; --paper: #f5f1eb; --cream: #ede8df; --gold: #c9a84c;
+      --gold-light: #e8c96a; --green: #2d6a4f; --red: #9b2335;
+      --card-bg: #ffffff; --muted: #7a7368; --border: #d8d2c8;
     }
+
     body {
-      font-family:'DM Sans',sans-serif; background:var(--paper);
-      min-height:100vh; display:flex; align-items:center; justify-content:center;
-      padding:2rem 1rem;
+      font-family: 'DM Sans', sans-serif; background: var(--paper);
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      padding: 2rem 1rem;
     }
     body::before {
-      content:''; position:fixed; inset:0;
-      background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
-      pointer-events:none; z-index:0;
+      content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
     }
-    .bg-circle { position:fixed; border-radius:50%; pointer-events:none; z-index:0; }
-    .bg-circle-1 { width:500px;height:500px; background:radial-gradient(circle,rgba(201,168,76,0.12) 0%,transparent 70%); top:-150px;right:-150px; }
-    .bg-circle-2 { width:400px;height:400px; background:radial-gradient(circle,rgba(45,106,79,0.08) 0%,transparent 70%); bottom:-100px;left:-100px; }
+    .bg-circle { position: fixed; border-radius: 50%; pointer-events: none; z-index: 0; }
+    .bg-circle-1 { width: 500px; height: 500px; background: radial-gradient(circle, rgba(201,168,76,0.12) 0%, transparent 70%); top: -150px; right: -150px; }
+    .bg-circle-2 { width: 400px; height: 400px; background: radial-gradient(circle, rgba(45,106,79,0.08) 0%, transparent 70%); bottom: -100px; left: -100px; }
 
-    .wrapper { position:relative; z-index:1; width:100%; max-width:440px; }
+    .wrapper { position: relative; z-index: 1; width: 100%; max-width: 420px; }
 
-    .brand { text-align:center; margin-bottom:2rem; animation:fadeDown 0.6s ease both; }
-    .brand-logo { display:inline-flex; align-items:center; gap:0.6rem; }
-    .brand-icon { width:40px;height:40px; background:var(--ink); border-radius:10px; display:flex;align-items:center;justify-content:center; }
-    .brand-icon::after { content:'◈'; color:var(--gold); font-size:1.3rem; }
-    .brand-name { font-family:'Playfair Display',serif; font-size:1.6rem; color:var(--ink); letter-spacing:-0.03em; }
-    .brand-name span { color:var(--gold); }
+    .brand { text-align: center; margin-bottom: 1.8rem; animation: fadeDown 0.5s ease both; }
+    .brand-logo { display: inline-flex; align-items: center; gap: 0.6rem; }
+    .brand-icon { width: 40px; height: 40px; background: var(--ink); border-radius: 11px; display: flex; align-items: center; justify-content: center; }
+    .brand-icon::after { content: '◈'; color: var(--gold); font-size: 1.3rem; }
+    .brand-name { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--ink); letter-spacing: -0.03em; }
+    .brand-name span { color: var(--gold); }
 
     .card {
-      background:var(--card-bg); border-radius:20px;
-      padding:2.4rem 2.2rem 2.2rem;
-      box-shadow:0 1px 3px rgba(13,13,13,0.12),0 8px 32px rgba(13,13,13,0.09),0 0 0 1px rgba(13,13,13,0.04);
-      animation:fadeUp 0.6s ease 0.1s both; position:relative; overflow:hidden;
+      background: var(--card-bg); border-radius: 22px; padding: 2.2rem 2rem;
+      box-shadow: 0 1px 3px rgba(13,13,13,0.12), 0 10px 36px rgba(13,13,13,0.1), 0 0 0 1px rgba(13,13,13,0.04);
+      animation: fadeUp 0.55s ease 0.08s both; position: relative; overflow: hidden;
     }
     .card::before {
-      content:''; position:absolute; top:0;left:0;right:0; height:3px;
-      background:linear-gradient(90deg,var(--gold),var(--gold-light),var(--gold));
-      background-size:200% 100%; animation:shimmer 3s linear infinite;
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--gold), var(--gold-light), var(--gold));
+      background-size: 200% 100%; animation: shimmer 3s linear infinite;
     }
-    @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
-    .pay-info {
-      text-align:center; margin-bottom:1.8rem;
-      padding-bottom:1.5rem; border-bottom:1px solid var(--border);
-    }
-    .pay-label { font-family:'DM Mono',monospace; font-size:0.65rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--muted); margin-bottom:0.3rem; }
-    .pay-recipient { font-family:'Playfair Display',serif; font-size:1.3rem; color:var(--ink); margin-bottom:0.5rem; }
-    .pay-amount { font-family:'DM Mono',monospace; font-size:2.5rem; font-weight:500; color:var(--green); }
-    .pay-timer {
-      display:inline-flex; align-items:center; gap:0.4rem; margin-top:0.8rem;
-      font-family:'DM Mono',monospace; font-size:0.7rem; color:var(--muted);
-      background:var(--cream); border:1px solid var(--border);
-      padding:0.3rem 0.8rem; border-radius:100px;
-    }
-    .pay-timer .urgent { color:var(--red); }
+    .state { display: none; }
+    .state.active { display: block; animation: fadeIn 0.3s ease; }
 
-    .form-group { margin-bottom:1.2rem; }
-    .form-label { display:block; font-family:'DM Mono',monospace; font-size:0.65rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); margin-bottom:0.45rem; }
-    .form-control {
-      width:100%; background:var(--cream); border:1.5px solid var(--border);
-      border-radius:10px; padding:0.75rem 0.9rem;
-      font-family:'DM Mono',monospace; font-size:0.9rem; color:var(--ink);
-      outline:none; transition:border-color 0.2s,box-shadow 0.2s;
-    }
-    .form-control:focus { border-color:var(--gold); box-shadow:0 0 0 3px rgba(201,168,76,0.12); }
-    .error-msg { font-family:'DM Mono',monospace; font-size:0.65rem; color:var(--red); margin-top:0.3rem; }
+    /* Loading */
+    .loading-wrap { text-align: center; padding: 2.5rem 0; }
+    .loading-spin { width: 42px; height: 42px; border: 3px solid var(--border); border-top-color: var(--gold); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 1rem; }
+    .loading-text { font-family: 'DM Mono', monospace; font-size: 0.78rem; color: var(--muted); }
 
-    .pay-btn {
-      width:100%; padding:1rem 1.5rem; background:var(--ink); color:#fff;
-      border:none; border-radius:12px; font-family:'DM Sans',sans-serif;
-      font-size:1rem; font-weight:500; cursor:pointer;
-      display:flex; align-items:center; justify-content:center; gap:0.6rem;
-      transition:all 0.2s;
-    }
-    .pay-btn:hover { background:#1a1a1a; transform:translateY(-1px); box-shadow:0 6px 20px rgba(13,13,13,0.25); }
-    .pay-btn.loading { pointer-events:none; background:#333; }
-    .pay-btn .btn-amount { font-family:'DM Mono',monospace; font-weight:600; color:var(--gold-light); }
-    .spinner { width:18px;height:18px; border:2.5px solid rgba(255,255,255,0.2); border-top-color:#fff; border-radius:50%; animation:spin 0.7s linear infinite; }
-    @keyframes spin { to{transform:rotate(360deg)} }
+    /* Error */
+    .error-wrap { text-align: center; padding: 2.5rem 0; }
+    .error-icon { font-size: 3rem; margin-bottom: 1rem; }
+    .error-title { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--ink); margin-bottom: 0.5rem; }
+    .error-detail { font-family: 'DM Mono', monospace; font-size: 0.73rem; color: var(--muted); line-height: 1.5; }
 
-    /* States */
-    .state { display:none; animation:fadeIn 0.3s ease; }
-    .state.active { display:block; }
+    /* Pay form */
+    .pay-info { text-align: center; margin-bottom: 1.8rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
+    .pay-label { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.3rem; }
+    .pay-to { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--ink); margin-bottom: 0.45rem; }
+    .pay-amount { font-family: 'DM Mono', monospace; font-size: 2.6rem; font-weight: 600; color: var(--green); }
+    .pay-timer { display: inline-flex; align-items: center; gap: 0.4rem; margin-top: 0.85rem; font-family: 'DM Mono', monospace; font-size: 0.68rem; color: var(--muted); background: var(--cream); border: 1px solid var(--border); padding: 0.28rem 0.75rem; border-radius: 100px; }
+    .pay-timer .time { font-weight: 600; }
+    .pay-timer .urgent { color: var(--red); }
 
-    /* Loading state */
-    .loading-state { text-align:center; padding:2rem 0; }
-    .loading-spinner { width:40px;height:40px; border:3px solid var(--border); border-top-color:var(--gold); border-radius:50%; animation:spin 0.8s linear infinite; margin:0 auto 1rem; }
-    .loading-text { font-family:'DM Mono',monospace; font-size:0.8rem; color:var(--muted); }
+    .form-group { margin-bottom: 1.2rem; }
+    .form-label { display: block; font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.42rem; }
+    .form-control { width: 100%; background: var(--cream); border: 1.5px solid var(--border); border-radius: 10px; padding: 0.75rem 0.9rem; font-family: 'DM Mono', monospace; font-size: 0.9rem; color: var(--ink); outline: none; transition: border-color 0.2s, box-shadow 0.2s; }
+    .form-control:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201,168,76,0.13); }
+    .error-msg { font-family: 'DM Mono', monospace; font-size: 0.63rem; color: var(--red); margin-top: 0.28rem; }
 
-    /* Error state */
-    .error-state { text-align:center; padding:2rem 0; }
-    .error-icon { font-size:3rem; margin-bottom:1rem; }
-    .error-title { font-family:'Playfair Display',serif; font-size:1.3rem; color:var(--ink); margin-bottom:0.5rem; }
-    .error-detail { font-family:'DM Mono',monospace; font-size:0.75rem; color:var(--muted); }
+    .pay-btn { width: 100%; padding: 1rem 1.5rem; background: var(--ink); color: #fff; border: none; border-radius: 12px; font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.6rem; transition: all 0.2s; }
+    .pay-btn:hover { background: #1c1c1c; transform: translateY(-1px); box-shadow: 0 6px 22px rgba(13,13,13,0.24); }
+    .pay-btn.loading { pointer-events: none; background: #444; }
+    .pay-btn .btn-amount { font-family: 'DM Mono', monospace; font-weight: 600; color: var(--gold-light); }
 
-    /* Success state */
-    .success-state { text-align:center; padding:2rem 0; }
-    .success-icon { width:72px;height:72px; background:rgba(45,106,79,0.1); border-radius:50%; display:flex;align-items:center;justify-content:center; margin:0 auto 1.2rem; animation:popIn 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.2s both; }
-    .success-icon svg { stroke:var(--green); }
-    @keyframes popIn { from{transform:scale(0);opacity:0} to{transform:scale(1);opacity:1} }
-    .success-title { font-family:'Playfair Display',serif; font-size:1.6rem; color:var(--ink); margin-bottom:0.5rem; }
-    .success-amount { font-family:'DM Mono',monospace; font-size:2rem; color:var(--green); font-weight:500; margin:0.8rem 0; }
-    .txn-id { font-family:'DM Mono',monospace; font-size:0.7rem; color:var(--muted); background:var(--cream); padding:0.4rem 0.9rem; border-radius:100px; display:inline-block; margin-top:0.5rem; }
+    .spinner { width: 18px; height: 18px; border: 2.5px solid rgba(255,255,255,0.25); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; }
 
-    @keyframes fadeUp { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
-    @keyframes fadeDown { from{opacity:0;transform:translateY(-12px)} to{opacity:1;transform:translateY(0)} }
-    @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+    /* Success */
+    .success-wrap { text-align: center; padding: 2rem 0; }
+    .success-icon { width: 74px; height: 74px; background: rgba(45,106,79,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.1rem; animation: popIn 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.15s both; }
+    .success-icon svg { stroke: var(--green); }
+    .success-title { font-family: 'Playfair Display', serif; font-size: 1.65rem; color: var(--ink); margin-bottom: 0.4rem; }
+    .success-sub { font-size: 0.85rem; color: var(--muted); margin-bottom: 0.4rem; }
+    .success-amount { font-family: 'DM Mono', monospace; font-size: 2rem; color: var(--green); font-weight: 600; margin: 0.7rem 0; }
+    .txn-pill { font-family: 'DM Mono', monospace; font-size: 0.68rem; color: var(--muted); background: var(--cream); padding: 0.35rem 0.85rem; border-radius: 100px; display: inline-block; margin-top: 0.5rem; }
+    .back-link { display: inline-block; margin-top: 1.2rem; font-family: 'DM Mono', monospace; font-size: 0.72rem; color: var(--muted); text-decoration: none; padding: 0.5rem 1rem; border: 1px solid var(--border); border-radius: 100px; transition: all 0.18s; }
+    .back-link:hover { color: var(--ink); border-color: var(--ink); }
+
+    @keyframes spin    { to { transform: rotate(360deg); } }
+    @keyframes fadeUp  { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeDown{ from { opacity: 0; transform: translateY(-12px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn  { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes popIn   { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
   </style>
 </head>
 <body>
@@ -132,16 +117,16 @@
 
     <!-- Loading -->
     <div class="state active" id="state-loading">
-      <div class="loading-state">
-        <div class="loading-spinner"></div>
+      <div class="loading-wrap">
+        <div class="loading-spin"></div>
         <div class="loading-text">Verifying QR code…</div>
       </div>
     </div>
 
     <!-- Error -->
     <div class="state" id="state-error">
-      <div class="error-state">
-        <div class="error-icon">⏱️</div>
+      <div class="error-wrap">
+        <div class="error-icon" id="error-icon">⏱️</div>
         <div class="error-title" id="error-title">QR Code Expired</div>
         <div class="error-detail" id="error-detail">This QR code is no longer valid. Please ask for a new one.</div>
       </div>
@@ -151,89 +136,57 @@
     <div class="state" id="state-pay">
       <div class="pay-info">
         <div class="pay-label">Paying to</div>
-        <div class="pay-recipient" id="pay-recipient">—</div>
+        <div class="pay-to" id="pay-to">—</div>
         <div class="pay-amount" id="pay-amount">₹0.00</div>
         <div class="pay-timer">
-          ⏱ Expires in <span id="countdown" class="">5:00</span>
+          ⏱ Expires in <span class="time" id="countdown">5:00</span>
         </div>
       </div>
+
       <div class="form-group">
-        <label class="form-label">Your Name</label>
-        <input type="text" id="payer-name" class="form-control" placeholder="Enter your full name" autocomplete="name"/>
+        <label class="form-label">Your Full Name</label>
+        <input type="text" id="payer-name" class="form-control" placeholder="Enter your name" autocomplete="name"/>
         <div class="error-msg" id="name-error" style="display:none">Please enter your name.</div>
       </div>
+
       <button class="pay-btn" id="pay-btn" onclick="submitPayment()">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
         Confirm Payment <span class="btn-amount" id="btn-pay-amount">₹0.00</span>
       </button>
     </div>
 
     <!-- Success -->
     <div class="state" id="state-success">
-      <div class="success-state">
+      <div class="success-wrap">
         <div class="success-icon">
           <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
         </div>
-        <div class="success-title">Payment Complete!</div>
-        <div style="font-size:0.88rem;color:var(--muted);margin-bottom:0.5rem;">Your payment was sent successfully.</div>
+        <div class="success-title">Payment Sent!</div>
+        <div class="success-sub">Your payment was processed successfully.</div>
         <div class="success-amount" id="success-amount">₹0.00</div>
-        <div class="txn-id" id="success-txn">TXN-000000</div>
+        <div class="txn-pill" id="success-txn">TXN-000000</div>
+        <br/>
+        <a class="back-link" href="/">← Back to PayMe</a>
       </div>
     </div>
 
-  </div>
+  </div><!-- /card -->
 </div>
 
 <script>
-const token = location.pathname.split('/pay/')[1];
+const token  = location.pathname.split('/pay/')[1];
 const SERVER = `http://${location.hostname}:3000`;
-let payData = null, countdownTimer = null;
+let payData  = null, countdownTimer = null;
 
-function formatINR(n) { return '₹' + Number(n).toLocaleString('en-IN',{minimumFractionDigits:2}); }
+function fmt(n) { return '₹' + Number(n).toLocaleString('en-IN', { minimumFractionDigits: 2 }); }
 
 function showState(id) {
   document.querySelectorAll('.state').forEach(el => el.classList.remove('active'));
   document.getElementById(id).classList.add('active');
 }
 
-async function init() {
-  if (!token) { showError('Invalid Link', 'No payment token found in URL.'); return; }
-  try {
-    const res  = await fetch(`${SERVER}/qr/status/${token}`);
-    const data = await res.json();
-    if (!data.valid) {
-      const msgs = {
-        expired: 'This QR code has expired (valid for 5 minutes only).',
-        already_used: 'This QR code has already been used for a payment.',
-        expired_or_invalid: 'This QR code is invalid or no longer active.'
-      };
-      showError(
-        data.reason === 'already_used' ? 'Already Paid' : 'QR Code Expired',
-        msgs[data.reason] || 'QR code is not valid.'
-      );
-      return;
-    }
-    payData = data;
-
-    // Fetch recipient full name
-    let recipientName = data.username;
-    try {
-      const acc = await fetch(`${SERVER}/account/${data.username}`).then(r => r.json());
-      recipientName = acc.fullName || data.username;
-    } catch {}
-
-    document.getElementById('pay-recipient').textContent = recipientName;
-    document.getElementById('pay-amount').textContent    = formatINR(data.amount);
-    document.getElementById('btn-pay-amount').textContent = formatINR(data.amount);
-
-    showState('state-pay');
-    startCountdown(data.expiresAt);
-  } catch (e) {
-    showError('Server Error', 'Could not connect to PayMe server. Make sure server.js is running.');
-  }
-}
-
-function showError(title, detail) {
+function showError(title, detail, icon = '⏱️') {
+  document.getElementById('error-icon').textContent  = icon;
   document.getElementById('error-title').textContent  = title;
   document.getElementById('error-detail').textContent = detail;
   showState('state-error');
@@ -241,21 +194,56 @@ function showError(title, detail) {
 
 function startCountdown(expiresAt) {
   function tick() {
-    const remaining = Math.max(0, Math.round((expiresAt - Date.now()) / 1000));
-    const m = Math.floor(remaining / 60), s = remaining % 60;
+    const rem = Math.max(0, Math.round((expiresAt - Date.now()) / 1000));
+    const m = Math.floor(rem / 60), s = rem % 60;
     const el = document.getElementById('countdown');
-    el.textContent = `${m}:${s.toString().padStart(2,'0')}`;
-    el.className = remaining < 60 ? 'urgent' : '';
-    if (remaining === 0) { clearInterval(countdownTimer); showError('QR Code Expired', 'The payment window has closed. Please ask for a new QR code.'); }
+    if (!el) return;
+    el.textContent = `${m}:${s.toString().padStart(2, '0')}`;
+    el.className = 'time' + (rem < 60 ? ' urgent' : '');
+    if (rem === 0) {
+      clearInterval(countdownTimer);
+      showError('QR Code Expired', 'The payment window has closed. Please ask the recipient for a new QR code.');
+    }
   }
   tick();
   countdownTimer = setInterval(tick, 1000);
 }
 
+async function init() {
+  if (!token) { showError('Invalid Link', 'No payment token found in URL.', '❌'); return; }
+  try {
+    const res  = await fetch(`${SERVER}/qr/status/${token}`);
+    const data = await res.json();
+
+    if (!data.valid) {
+      const cfg = {
+        expired: { title: 'QR Code Expired', detail: 'This QR code has expired (valid for 5 minutes only). Please ask for a new one.', icon: '⏱️' },
+        already_used: { title: 'Already Paid', detail: 'This QR code has already been used for a payment.', icon: '✅' },
+        expired_or_invalid: { title: 'Invalid QR', detail: 'This QR code is not valid or no longer active.', icon: '❌' },
+      };
+      const c = cfg[data.reason] || cfg.expired_or_invalid;
+      showError(c.title, c.detail, c.icon);
+      return;
+    }
+
+    payData = data;
+    const recipientName = data.fullName || data.username;
+
+    document.getElementById('pay-to').textContent          = recipientName;
+    document.getElementById('pay-amount').textContent      = fmt(data.amount);
+    document.getElementById('btn-pay-amount').textContent  = fmt(data.amount);
+    showState('state-pay');
+    startCountdown(data.expiresAt);
+  } catch {
+    showError('Server Error', 'Could not connect to the PayMe server. Make sure server.js is running on port 3000.', '🔌');
+  }
+}
+
 async function submitPayment() {
-  const name = document.getElementById('payer-name').value.trim();
-  if (!name) { document.getElementById('name-error').style.display = 'block'; return; }
-  document.getElementById('name-error').style.display = 'none';
+  const name  = document.getElementById('payer-name').value.trim();
+  const errEl = document.getElementById('name-error');
+  errEl.style.display = 'none';
+  if (!name) { errEl.style.display = 'block'; return; }
 
   const btn = document.getElementById('pay-btn');
   btn.classList.add('loading');
@@ -263,22 +251,25 @@ async function submitPayment() {
 
   try {
     const res  = await fetch(`${SERVER}/qr/pay`, {
-      method:'POST', headers:{'Content-Type':'application/json'},
+      method: 'POST', headers: {'Content-Type':'application/json'},
       body: JSON.stringify({ token, payerName: name })
     });
     const data = await res.json();
-    if (!res.ok) { showError('Payment Failed', data.error || 'Something went wrong.'); return; }
+
+    if (!res.ok) { showError('Payment Failed', data.error || 'Something went wrong. Please try again.', '❌'); return; }
 
     clearInterval(countdownTimer);
-    document.getElementById('success-amount').textContent = formatINR(data.amount);
+    document.getElementById('success-amount').textContent = fmt(data.amount);
     document.getElementById('success-txn').textContent    = data.transaction_id;
     showState('state-success');
-  } catch (e) {
+  } catch {
     btn.classList.remove('loading');
-    btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg> Confirm Payment <span class="btn-amount">${formatINR(payData?.amount || 0)}</span>`;
-    alert('Could not reach server.');
+    btn.innerHTML = `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg> Confirm Payment <span class="btn-amount">${fmt(payData?.amount || 0)}</span>`;
+    alert('Could not reach the PayMe server. Please check your connection.');
   }
 }
+
+document.getElementById('payer-name').addEventListener('keydown', e => { if (e.key === 'Enter') submitPayment(); });
 
 init();
 </script>
