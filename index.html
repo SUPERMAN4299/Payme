@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>PayMe — Secure Payment</title>
+  <title>PayMe — Secure Payments</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -11,356 +11,295 @@
     :root {
       --ink: #0d0d0d; --paper: #f5f1eb; --cream: #ede8df;
       --gold: #c9a84c; --gold-light: #e8c96a; --green: #2d6a4f;
-      --red: #9b2335; --shadow: rgba(13,13,13,0.12);
+      --red: #9b2335; --blue: #1a4a8a;
       --card-bg: #ffffff; --muted: #7a7368; --border: #d8d2c8;
+      --shadow: rgba(13,13,13,0.12);
     }
 
     body {
-      font-family: 'DM Sans', sans-serif; background: var(--paper);
-      min-height: 100vh; display: flex; align-items: center;
-      justify-content: center; padding: 2rem 1rem; overflow-x: hidden;
+      font-family: 'DM Sans', sans-serif;
+      background: var(--paper);
+      min-height: 100vh;
+      display: flex; align-items: flex-start; justify-content: center;
+      padding: 2rem 1rem 4rem;
+      overflow-x: hidden;
     }
+
     body::before {
-      content: ''; position: fixed; inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
-      pointer-events: none; z-index: 0;
+      content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
     }
+
     .bg-circle { position: fixed; border-radius: 50%; pointer-events: none; z-index: 0; }
-    .bg-circle-1 { width:500px;height:500px; background:radial-gradient(circle,rgba(201,168,76,0.12) 0%,transparent 70%); top:-150px;right:-150px; }
-    .bg-circle-2 { width:400px;height:400px; background:radial-gradient(circle,rgba(45,106,79,0.08) 0%,transparent 70%); bottom:-100px;left:-100px; }
+    .bg-circle-1 { width: 500px; height: 500px; background: radial-gradient(circle, rgba(201,168,76,0.14) 0%, transparent 70%); top: -150px; right: -150px; }
+    .bg-circle-2 { width: 400px; height: 400px; background: radial-gradient(circle, rgba(45,106,79,0.08) 0%, transparent 70%); bottom: -100px; left: -100px; }
 
-    .wrapper { position:relative; z-index:1; width:100%; max-width:480px; }
+    .wrapper { position: relative; z-index: 1; width: 100%; max-width: 480px; }
 
-    /* Brand */
-    .brand { text-align:center; margin-bottom:2rem; animation:fadeDown 0.6s ease both; }
-    .brand-logo { display:inline-flex; align-items:center; gap:0.6rem; }
-    .brand-icon { width:40px;height:40px; background:var(--ink); border-radius:10px; display:flex; align-items:center; justify-content:center; }
-    .brand-icon::after { content:'◈'; color:var(--gold); font-size:1.3rem; line-height:1; }
-    .brand-name { font-family:'Playfair Display',serif; font-size:1.6rem; color:var(--ink); letter-spacing:-0.03em; }
-    .brand-name span { color:var(--gold); }
-    .brand-tagline { margin-top:0.35rem; font-size:0.75rem; color:var(--muted); letter-spacing:0.12em; text-transform:uppercase; font-family:'DM Mono',monospace; }
+    /* ── Brand ── */
+    .brand { text-align: center; margin-bottom: 1.8rem; animation: fadeDown 0.5s ease both; }
+    .brand-logo { display: inline-flex; align-items: center; gap: 0.6rem; }
+    .brand-icon { width: 42px; height: 42px; background: var(--ink); border-radius: 11px; display: flex; align-items: center; justify-content: center; }
+    .brand-icon::after { content: '◈'; color: var(--gold); font-size: 1.4rem; line-height: 1; }
+    .brand-name { font-family: 'Playfair Display', serif; font-size: 1.7rem; color: var(--ink); letter-spacing: -0.03em; }
+    .brand-name span { color: var(--gold); }
+    .brand-tagline { margin-top: 0.3rem; font-size: 0.72rem; color: var(--muted); letter-spacing: 0.14em; text-transform: uppercase; font-family: 'DM Mono', monospace; }
 
-    /* Card */
+    /* ── Card ── */
     .card {
-      background:var(--card-bg); border-radius:20px; padding:2.4rem 2.2rem 2.2rem;
-      box-shadow:0 1px 3px var(--shadow),0 8px 32px rgba(13,13,13,0.09),0 0 0 1px rgba(13,13,13,0.04);
-      animation:fadeUp 0.6s ease 0.1s both; position:relative; overflow:hidden;
+      background: var(--card-bg); border-radius: 22px;
+      padding: 2.2rem 2rem;
+      box-shadow: 0 1px 3px var(--shadow), 0 10px 36px rgba(13,13,13,0.1), 0 0 0 1px rgba(13,13,13,0.04);
+      animation: fadeUp 0.55s ease 0.08s both;
+      position: relative; overflow: hidden;
     }
     .card::before {
-      content:''; position:absolute; top:0;left:0;right:0; height:3px;
-      background:linear-gradient(90deg,var(--gold),var(--gold-light),var(--gold));
-      background-size:200% 100%; animation:shimmer 3s linear infinite;
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--gold), var(--gold-light), var(--gold));
+      background-size: 200% 100%; animation: shimmer 3s linear infinite;
     }
-    @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
-    /* Pages */
-    .page { display:none; }
-    .page.active { display:block; animation:fadeIn 0.3s ease; }
+    /* ── Pages ── */
+    .page { display: none; }
+    .page.active { display: block; animation: fadeIn 0.3s ease; }
 
-    /* Tab switcher */
-    .tab-switcher { display:flex; background:var(--cream); border-radius:10px; padding:4px; margin-bottom:1.8rem; gap:4px; }
-    .tab-btn { flex:1; padding:0.6rem; border:none; background:transparent; font-family:'DM Mono',monospace; font-size:0.75rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); cursor:pointer; border-radius:7px; transition:all 0.2s; }
-    .tab-btn.active { background:var(--card-bg); color:var(--ink); font-weight:500; box-shadow:0 1px 4px rgba(13,13,13,0.1); }
+    /* ── Auth Tabs ── */
+    .tab-switcher { display: flex; background: var(--cream); border-radius: 10px; padding: 4px; margin-bottom: 1.8rem; }
+    .tab-btn { flex: 1; padding: 0.58rem; border: none; background: transparent; font-family: 'DM Mono', monospace; font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); cursor: pointer; border-radius: 7px; transition: all 0.2s; }
+    .tab-btn.active { background: var(--card-bg); color: var(--ink); font-weight: 600; box-shadow: 0 1px 5px rgba(13,13,13,0.1); }
 
-    /* Section title */
-    .section-title { font-family:'DM Mono',monospace; font-size:0.65rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--muted); margin-bottom:0.45rem; }
-
-    /* Form */
-    .form-group { margin-bottom:1.1rem; }
-    .form-label { display:block; font-family:'DM Mono',monospace; font-size:0.65rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); margin-bottom:0.45rem; }
+    /* ── Form Elements ── */
+    .form-group { margin-bottom: 1.1rem; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+    .form-label { display: block; font-family: 'DM Mono', monospace; font-size: 0.63rem; letter-spacing: 0.13em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.42rem; }
     .form-control {
-      width:100%; background:var(--cream); border:1.5px solid var(--border); border-radius:10px;
-      padding:0.7rem 0.9rem; font-family:'DM Mono',monospace; font-size:0.9rem; color:var(--ink);
-      outline:none; transition:border-color 0.2s,box-shadow 0.2s;
+      width: 100%; background: var(--cream); border: 1.5px solid var(--border);
+      border-radius: 10px; padding: 0.72rem 0.9rem;
+      font-family: 'DM Mono', monospace; font-size: 0.9rem; color: var(--ink);
+      outline: none; transition: border-color 0.2s, box-shadow 0.2s;
     }
-    .form-control::placeholder { color:#c8c0b0; font-size:0.85rem; }
-    .form-control:focus { border-color:var(--gold); box-shadow:0 0 0 3px rgba(201,168,76,0.12); }
-    .form-control.error { border-color:var(--red) !important; }
-    .error-msg { font-family:'DM Mono',monospace; font-size:0.65rem; color:var(--red); margin-top:0.3rem; letter-spacing:0.05em; }
+    .form-control::placeholder { color: #c5bcaf; font-size: 0.84rem; }
+    .form-control:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201,168,76,0.13); }
+    .form-control.error { border-color: var(--red) !important; }
+    .error-msg { font-family: 'DM Mono', monospace; font-size: 0.63rem; color: var(--red); margin-top: 0.28rem; letter-spacing: 0.04em; }
 
-    /* Input with inline badge */
-    .input-with-badge { position:relative; }
-    .input-with-badge .form-control { padding-right:5.5rem; }
+    /* ── Input with inline badge ── */
+    .input-with-badge { position: relative; }
+    .input-with-badge .form-control { padding-right: 5.5rem; }
     .input-badge {
-      position:absolute; right:0.6rem; top:50%; transform:translateY(-50%);
-      font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.08em;
-      text-transform:uppercase; padding:0.2rem 0.5rem; border-radius:6px;
-      background:var(--cream); border:1px solid var(--border); color:var(--muted);
-      pointer-events:none; transition:all 0.2s;
+      position: absolute; right: 0.55rem; top: 50%; transform: translateY(-50%);
+      font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.07em;
+      text-transform: uppercase; padding: 0.18rem 0.45rem; border-radius: 5px;
+      background: var(--cream); border: 1px solid var(--border); color: var(--muted);
+      pointer-events: none; transition: all 0.2s; white-space: nowrap;
     }
-    .input-badge.valid { background:rgba(45,106,79,0.1); border-color:rgba(45,106,79,0.3); color:var(--green); }
-    .input-badge.invalid { background:rgba(155,35,53,0.08); border-color:rgba(155,35,53,0.3); color:var(--red); }
+    .input-badge.valid { background: rgba(45,106,79,0.1); border-color: rgba(45,106,79,0.3); color: var(--green); }
+    .input-badge.invalid { background: rgba(155,35,53,0.08); border-color: rgba(155,35,53,0.3); color: var(--red); }
 
-    /* Recipient preview card */
-    .recipient-preview {
-      background:var(--cream); border:1.5px solid var(--border); border-radius:10px;
-      padding:0.65rem 0.9rem; display:flex; align-items:center; gap:0.7rem;
-      margin-top:0.5rem; animation:fadeIn 0.2s ease;
+    /* ── Recipient Preview ── */
+    .recipient-preview-card {
+      background: linear-gradient(135deg, rgba(45,106,79,0.06), rgba(45,106,79,0.02));
+      border: 1.5px solid rgba(45,106,79,0.2); border-radius: 10px;
+      padding: 0.65rem 0.9rem; display: flex; align-items: center; gap: 0.7rem;
+      margin-top: 0.5rem; animation: fadeIn 0.2s ease;
     }
     .recipient-avatar {
-      width:30px; height:30px; background:var(--ink); border-radius:8px;
-      display:flex; align-items:center; justify-content:center;
-      font-family:'DM Mono',monospace; font-size:0.7rem; color:var(--gold); flex-shrink:0;
+      width: 32px; height: 32px; background: var(--green); border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'DM Mono', monospace; font-size: 0.7rem; color: #fff; font-weight: 600; flex-shrink: 0;
     }
-    .recipient-name { font-size:0.85rem; color:var(--ink); font-weight:500; }
-    .recipient-id { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--muted); }
+    .recipient-name { font-size: 0.88rem; color: var(--ink); font-weight: 600; }
+    .recipient-uid  { font-family: 'DM Mono', monospace; font-size: 0.62rem; color: var(--muted); }
 
-    /* Buttons */
+    /* ── Buttons ── */
     .btn-primary {
-      width:100%; padding:0.95rem 1.5rem; background:var(--ink); color:#fff;
-      border:none; border-radius:12px; font-family:'DM Sans',sans-serif;
-      font-size:1rem; font-weight:500; cursor:pointer;
-      display:flex; align-items:center; justify-content:center; gap:0.6rem;
-      position:relative; overflow:hidden; transition:all 0.2s; letter-spacing:0.01em;
+      width: 100%; padding: 0.95rem 1.5rem; background: var(--ink); color: #fff;
+      border: none; border-radius: 12px; font-family: 'DM Sans', sans-serif;
+      font-size: 1rem; font-weight: 500; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 0.6rem;
+      position: relative; overflow: hidden; transition: all 0.2s;
     }
-    .btn-primary:hover { background:#1a1a1a; transform:translateY(-1px); box-shadow:0 6px 20px rgba(13,13,13,0.25); }
-    .btn-primary:active { transform:translateY(0); }
-    .btn-primary.loading { pointer-events:none; background:#333; }
-    .btn-primary .btn-amount { font-family:'DM Mono',monospace; font-weight:600; color:var(--gold-light); }
+    .btn-primary:hover:not(:disabled) { background: #1c1c1c; transform: translateY(-1px); box-shadow: 0 6px 22px rgba(13,13,13,0.25); }
+    .btn-primary:active { transform: translateY(0); }
+    .btn-primary:disabled, .btn-primary.loading { pointer-events: none; background: #444; }
+    .btn-primary .btn-amount { font-family: 'DM Mono', monospace; font-weight: 600; color: var(--gold-light); }
+
     .btn-secondary {
-      width:100%; padding:0.75rem; background:transparent; color:var(--muted);
-      border:1.5px solid var(--border); border-radius:10px; font-family:'DM Mono',monospace;
-      font-size:0.75rem; cursor:pointer; transition:all 0.2s; letter-spacing:0.08em; text-transform:uppercase;
+      width: 100%; padding: 0.72rem; background: transparent; color: var(--muted);
+      border: 1.5px solid var(--border); border-radius: 10px; font-family: 'DM Mono', monospace;
+      font-size: 0.75rem; cursor: pointer; transition: all 0.2s; letter-spacing: 0.07em; text-transform: uppercase;
     }
-    .btn-secondary:hover { border-color:var(--ink); color:var(--ink); }
+    .btn-secondary:hover { border-color: var(--ink); color: var(--ink); }
 
-    /* Spinner */
-    .spinner { width:18px;height:18px; border:2.5px solid rgba(255,255,255,0.2); border-top-color:#fff; border-radius:50%; animation:spin 0.7s linear infinite; }
-    @keyframes spin { to{transform:rotate(360deg)} }
+    .spinner { width: 18px; height: 18px; border: 2.5px solid rgba(255,255,255,0.25); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* Divider */
-    .divider { display:flex; align-items:center; gap:0.8rem; margin:1.4rem 0; }
-    .divider::before,.divider::after { content:''; flex:1; height:1px; background:var(--border); }
-    .divider span { font-family:'DM Mono',monospace; font-size:0.65rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); }
-
-    /* Amount block */
-    .amount-block { margin-bottom:1.5rem; }
+    /* ── Amount Block ── */
+    .amount-block { margin-bottom: 1.4rem; }
+    .section-title { font-family: 'DM Mono', monospace; font-size: 0.63rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.45rem; }
     .amount-display {
-      display:flex; align-items:baseline; gap:0.3rem;
-      background:var(--cream); border:1.5px solid var(--border);
-      border-radius:12px; padding:0.9rem 1.1rem;
-      transition:border-color 0.2s,box-shadow 0.2s; cursor:text;
+      display: flex; align-items: baseline; gap: 0.3rem;
+      background: var(--cream); border: 1.5px solid var(--border);
+      border-radius: 12px; padding: 0.85rem 1.05rem;
+      transition: border-color 0.2s, box-shadow 0.2s; cursor: text;
     }
-    .amount-display:focus-within { border-color:var(--gold); box-shadow:0 0 0 3px rgba(201,168,76,0.12); }
-    .amount-display.error { border-color:var(--red) !important; }
-    .currency-symbol { font-family:'Playfair Display',serif; font-size:1.5rem; color:var(--muted); user-select:none; }
-    .amount-input {
-      font-family:'DM Mono',monospace; font-size:2rem; font-weight:500;
-      color:var(--ink); background:transparent; border:none; outline:none; width:100%; letter-spacing:-0.02em;
-    }
-    .amount-input::placeholder { color:#ccc5b8; }
-    .quick-amounts { display:flex; gap:0.5rem; margin-top:0.7rem; flex-wrap:wrap; }
-    .quick-btn {
-      font-family:'DM Mono',monospace; font-size:0.75rem; padding:0.3rem 0.75rem;
-      border-radius:100px; border:1.5px solid var(--border); background:transparent;
-      color:var(--muted); cursor:pointer; transition:all 0.18s;
-    }
-    .quick-btn:hover { border-color:var(--gold); color:var(--ink); background:rgba(201,168,76,0.06); }
+    .amount-display:focus-within { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201,168,76,0.13); }
+    .amount-display.error { border-color: var(--red) !important; }
+    .currency-symbol { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--muted); user-select: none; }
+    .amount-input { font-family: 'DM Mono', monospace; font-size: 2rem; font-weight: 500; color: var(--ink); background: transparent; border: none; outline: none; width: 100%; letter-spacing: -0.02em; }
+    .amount-input::placeholder { color: #ccc5b5; }
+    .quick-amounts { display: flex; gap: 0.45rem; margin-top: 0.65rem; flex-wrap: wrap; }
+    .quick-btn { font-family: 'DM Mono', monospace; font-size: 0.72rem; padding: 0.28rem 0.7rem; border-radius: 100px; border: 1.5px solid var(--border); background: transparent; color: var(--muted); cursor: pointer; transition: all 0.18s; }
+    .quick-btn:hover { border-color: var(--gold); color: var(--ink); background: rgba(201,168,76,0.07); }
 
-    /* User info bar */
+    /* ── User Bar ── */
     .user-bar {
-      display:flex; align-items:center; justify-content:space-between;
-      background:var(--cream); border-radius:12px; padding:0.75rem 1rem;
-      margin-bottom:1.4rem; border:1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      background: var(--cream); border-radius: 12px; padding: 0.75rem 1rem;
+      margin-bottom: 1.2rem; border: 1px solid var(--border);
     }
-    .user-bar-left { display:flex; align-items:center; gap:0.6rem; }
-    .user-avatar {
-      width:32px; height:32px; background:var(--ink); border-radius:8px;
-      display:flex; align-items:center; justify-content:center;
-      font-family:'DM Mono',monospace; font-size:0.75rem; color:var(--gold); font-weight:500;
-    }
-    .user-name { font-size:0.88rem; color:var(--ink); font-weight:500; }
-    .user-balance { font-family:'DM Mono',monospace; font-size:0.75rem; color:var(--green); }
-    .logout-btn {
-      background:none; border:none; cursor:pointer; font-family:'DM Mono',monospace;
-      font-size:0.65rem; color:var(--muted); letter-spacing:0.08em; text-transform:uppercase;
-      padding:0.25rem 0.6rem; border-radius:6px; transition:all 0.15s;
-    }
-    .logout-btn:hover { color:var(--red); background:rgba(155,35,53,0.06); }
+    .user-bar-left { display: flex; align-items: center; gap: 0.65rem; }
+    .user-avatar { width: 34px; height: 34px; background: var(--ink); border-radius: 9px; display: flex; align-items: center; justify-content: center; font-family: 'DM Mono', monospace; font-size: 0.78rem; color: var(--gold); font-weight: 600; }
+    .user-name { font-size: 0.9rem; color: var(--ink); font-weight: 600; line-height: 1.2; }
+    .user-balance { font-family: 'DM Mono', monospace; font-size: 0.75rem; color: var(--green); font-weight: 500; }
+    .logout-btn { background: none; border: none; cursor: pointer; font-family: 'DM Mono', monospace; font-size: 0.62rem; color: var(--muted); letter-spacing: 0.07em; text-transform: uppercase; padding: 0.25rem 0.55rem; border-radius: 6px; transition: all 0.15s; }
+    .logout-btn:hover { color: var(--red); background: rgba(155,35,53,0.07); }
 
-    /* User ID badge on dashboard */
-    .user-id-badge {
-      display:inline-flex; align-items:center; gap:0.5rem;
-      background:rgba(201,168,76,0.1); border:1.5px solid rgba(201,168,76,0.3);
-      border-radius:10px; padding:0.5rem 0.85rem; margin-bottom:1.2rem;
-      cursor:pointer; transition:all 0.2s; width:100%; justify-content:space-between;
+    /* ── User ID Badge ── */
+    .uid-badge {
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(201,168,76,0.09); border: 1.5px solid rgba(201,168,76,0.3);
+      border-radius: 11px; padding: 0.55rem 0.85rem; margin-bottom: 1.2rem;
+      cursor: pointer; transition: all 0.2s;
     }
-    .user-id-badge:hover { background:rgba(201,168,76,0.16); border-color:var(--gold); }
-    .user-id-label { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); }
-    .user-id-value { font-family:'DM Mono',monospace; font-size:1rem; font-weight:500; color:var(--ink); letter-spacing:0.08em; }
-    .user-id-copy { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--gold); letter-spacing:0.06em; }
+    .uid-badge:hover { background: rgba(201,168,76,0.15); border-color: var(--gold); }
+    .uid-badge-left { display: flex; flex-direction: column; gap: 0.1rem; }
+    .uid-label { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+    .uid-value { font-family: 'DM Mono', monospace; font-size: 1.05rem; font-weight: 600; color: var(--ink); letter-spacing: 0.06em; }
+    .uid-copy { font-family: 'DM Mono', monospace; font-size: 0.6rem; color: var(--gold); letter-spacing: 0.06em; text-transform: uppercase; }
 
-    /* QR Panel */
-    .qr-panel { text-align:center; padding:1rem 0; }
-    .qr-wrap {
-      display:inline-block; padding:12px; background:var(--paper);
-      border-radius:16px; border:2px solid var(--border);
-      box-shadow:0 4px 16px rgba(13,13,13,0.08); position:relative;
-    }
-    .qr-wrap img { display:block; border-radius:8px; width:220px; height:220px; }
-    .qr-timer {
-      margin-top:0.8rem; font-family:'DM Mono',monospace; font-size:0.75rem; color:var(--muted);
-      display:flex; align-items:center; justify-content:center; gap:0.4rem;
-    }
-    .qr-timer .time { font-size:0.9rem; font-weight:500; padding:0.2rem 0.6rem; border-radius:6px; background:var(--cream); border:1px solid var(--border); }
-    .qr-timer .time.urgent { color:var(--red); border-color:rgba(155,35,53,0.3); background:rgba(155,35,53,0.05); }
-    .qr-expired-overlay {
-      display:none; position:absolute; inset:0; background:rgba(255,255,255,0.92);
-      border-radius:14px; flex-direction:column; align-items:center; justify-content:center; gap:0.5rem;
-    }
-    .qr-expired-overlay.show { display:flex; }
-    .qr-expired-text { font-family:'DM Mono',monospace; font-size:0.8rem; color:var(--red); letter-spacing:0.05em; }
-    .qr-amount-label { font-family:'DM Mono',monospace; font-size:1.5rem; font-weight:500; color:var(--green); margin:0.5rem 0 0.2rem; }
-    .qr-info { font-size:0.8rem; color:var(--muted); margin-bottom:1.2rem; }
+    /* ── Secure Badge ── */
+    .secure-badge { display: inline-flex; align-items: center; gap: 0.4rem; background: rgba(45,106,79,0.08); border: 1px solid rgba(45,106,79,0.2); color: var(--green); font-family: 'DM Mono', monospace; font-size: 0.67rem; letter-spacing: 0.09em; text-transform: uppercase; padding: 0.28rem 0.7rem; border-radius: 100px; margin-bottom: 1.4rem; }
+    .secure-badge::before { content: '🔒'; font-size: 0.68rem; }
 
-    /* ── QR Scanner ── */
-    .scanner-wrap {
-      position:relative; width:100%; aspect-ratio:1/1; max-width:280px;
-      margin:0 auto 1rem; border-radius:16px; overflow:hidden;
-      background:#000; border:2px solid var(--border);
-      box-shadow:0 4px 20px rgba(13,13,13,0.15);
-    }
-    #scanner-video { width:100%; height:100%; object-fit:cover; display:block; }
-    .scanner-overlay {
-      position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
-      pointer-events:none;
-    }
-    .scanner-frame {
-      width:60%; height:60%; border:2.5px solid var(--gold);
-      border-radius:12px; position:relative;
-      box-shadow:0 0 0 9999px rgba(0,0,0,0.45);
-    }
-    .scanner-frame::before,.scanner-frame::after,
-    .scanner-frame .corner-bl,.scanner-frame .corner-br {
-      content:''; position:absolute; width:18px; height:18px; border-color:var(--gold-light); border-style:solid;
-    }
-    .scanner-frame::before { top:-2px;left:-2px; border-width:3px 0 0 3px; border-radius:4px 0 0 0; }
-    .scanner-frame::after  { top:-2px;right:-2px; border-width:3px 3px 0 0; border-radius:0 4px 0 0; }
-    .scanner-frame .corner-bl { bottom:-2px;left:-2px; border-width:0 0 3px 3px; border-radius:0 0 0 4px; }
-    .scanner-frame .corner-br { bottom:-2px;right:-2px; border-width:0 3px 3px 0; border-radius:0 0 4px 0; }
-    .scanner-line {
-      position:absolute; left:5%; right:5%; height:2px;
-      background:linear-gradient(90deg,transparent,var(--gold-light),transparent);
-      animation:scanLine 2s ease-in-out infinite;
-    }
-    @keyframes scanLine {
-      0%{top:5%} 50%{top:90%} 100%{top:5%}
-    }
-    .scanner-hint { font-family:'DM Mono',monospace; font-size:0.72rem; color:var(--muted); text-align:center; margin-bottom:1rem; }
-    .scanner-status {
-      font-family:'DM Mono',monospace; font-size:0.72rem; text-align:center;
-      padding:0.4rem 0.8rem; border-radius:8px; margin-bottom:0.8rem;
-      background:var(--cream); border:1px solid var(--border); color:var(--muted);
-      min-height:2.2rem; display:flex; align-items:center; justify-content:center;
-    }
-    .scanner-status.scanning { color:var(--gold); border-color:rgba(201,168,76,0.4); background:rgba(201,168,76,0.06); }
-    .scanner-status.found { color:var(--green); border-color:rgba(45,106,79,0.3); background:rgba(45,106,79,0.07); }
-    .scanner-status.error { color:var(--red); border-color:rgba(155,35,53,0.3); background:rgba(155,35,53,0.06); }
-
-    /* QR Confirm Pay */
-    .qr-confirm-panel {
-      background:var(--cream); border:1.5px solid var(--border); border-radius:14px;
-      padding:1.2rem; margin-bottom:1.2rem; text-align:center;
-    }
-    .qr-confirm-label { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); margin-bottom:0.3rem; }
-    .qr-confirm-name { font-family:'Playfair Display',serif; font-size:1.1rem; color:var(--ink); margin-bottom:0.2rem; }
-    .qr-confirm-amount { font-family:'DM Mono',monospace; font-size:2rem; font-weight:500; color:var(--green); }
-    .qr-confirm-expiry { font-family:'DM Mono',monospace; font-size:0.65rem; color:var(--muted); margin-top:0.4rem; }
-
-    /* Secure badge */
-    .secure-badge {
-      display:inline-flex; align-items:center; gap:0.4rem;
-      background:rgba(45,106,79,0.08); border:1px solid rgba(45,106,79,0.2);
-      color:var(--green); font-family:'DM Mono',monospace; font-size:0.68rem;
-      letter-spacing:0.1em; text-transform:uppercase;
-      padding:0.3rem 0.7rem; border-radius:100px; margin-bottom:1.4rem;
-    }
-    .secure-badge::before { content:'🔒'; font-size:0.7rem; }
-
-    /* Card footer */
-    .card-footer { margin-top:1.4rem; display:flex; align-items:center; justify-content:center; gap:1rem; flex-wrap:wrap; }
-    .footer-badge { display:flex; align-items:center; gap:0.3rem; font-family:'DM Mono',monospace; font-size:0.63rem; color:var(--muted); letter-spacing:0.06em; }
-
-    /* Toast */
-    .toast {
-      position:fixed; bottom:2rem; left:50%;
-      transform:translateX(-50%) translateY(100px);
-      background:var(--ink); color:#fff; padding:0.85rem 1.5rem; border-radius:100px;
-      font-family:'DM Sans',sans-serif; font-size:0.88rem;
-      display:flex; align-items:center; gap:0.6rem;
-      z-index:999; transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1),opacity 0.3s;
-      opacity:0; white-space:nowrap; box-shadow:0 8px 30px rgba(0,0,0,0.25);
-    }
-    .toast.show { transform:translateX(-50%) translateY(0); opacity:1; }
-    .toast.success::before { content:'✓'; color:#6fcf97; font-weight:700; font-size:1rem; }
-    .toast.error::before { content:'✕'; color:#eb5757; font-weight:700; }
-
-    /* Success overlay */
-    .success-overlay {
-      display:none; position:absolute; inset:0; background:var(--card-bg);
-      border-radius:20px; z-index:10;
-      flex-direction:column; align-items:center; justify-content:center;
-      padding:2.5rem; text-align:center; animation:fadeIn 0.4s ease;
-    }
-    .success-overlay.active { display:flex; }
-    .success-icon {
-      width:72px; height:72px; background:rgba(45,106,79,0.1); border-radius:50%;
-      display:flex; align-items:center; justify-content:center; margin-bottom:1.2rem;
-      animation:popIn 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.2s both;
-    }
-    .success-icon svg { stroke:var(--green); }
-    @keyframes popIn { from{transform:scale(0);opacity:0} to{transform:scale(1);opacity:1} }
-    .success-title { font-family:'Playfair Display',serif; font-size:1.6rem; color:var(--ink); margin-bottom:0.5rem; }
-    .success-subtitle { font-size:0.88rem; color:var(--muted); margin-bottom:0.5rem; }
-    .success-amount { font-family:'DM Mono',monospace; font-size:2rem; color:var(--green); font-weight:500; margin:0.8rem 0; }
-    .txn-id { font-family:'DM Mono',monospace; font-size:0.7rem; color:var(--muted); background:var(--cream); padding:0.4rem 0.9rem; border-radius:100px; margin-bottom:1.5rem; }
-    .reset-btn { font-family:'DM Sans',sans-serif; font-size:0.88rem; padding:0.65rem 1.5rem; background:var(--cream); border:1.5px solid var(--border); border-radius:100px; cursor:pointer; color:var(--ink); transition:all 0.18s; }
-    .reset-btn:hover { background:var(--border); }
-
-    /* Transactions panel */
-    .txn-panel { margin-top:1.5rem; animation:fadeUp 0.6s ease 0.2s both; }
-    .txn-panel-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:0.8rem; }
-    .txn-panel-title { font-family:'Playfair Display',serif; font-size:1rem; color:var(--ink); }
-    .txn-count { font-family:'DM Mono',monospace; font-size:0.65rem; color:var(--muted); }
-    .txn-list { display:flex; flex-direction:column; gap:0.5rem; }
-    .txn-item {
-      background:var(--card-bg); border:1px solid var(--border); border-radius:10px;
-      padding:0.75rem 1rem; display:flex; align-items:center; justify-content:space-between;
-      animation:fadeUp 0.3s ease both; box-shadow:0 1px 4px rgba(13,13,13,0.04);
-    }
-    .txn-left { display:flex; flex-direction:column; gap:0.2rem; }
-    .txn-name { font-size:0.88rem; color:var(--ink); font-weight:500; }
-    .txn-meta { font-family:'DM Mono',monospace; font-size:0.65rem; color:var(--muted); }
-    .txn-right { display:flex; flex-direction:column; align-items:flex-end; gap:0.15rem; }
-    .txn-amount { font-family:'DM Mono',monospace; font-size:1rem; font-weight:500; }
-    .txn-amount.credit { color:var(--green); }
-    .txn-amount.debit { color:var(--red); }
-    .txn-type-badge { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.06em; text-transform:uppercase; padding:0.1rem 0.4rem; border-radius:4px; }
-    .txn-type-badge.credit { background:rgba(45,106,79,0.1); color:var(--green); }
-    .txn-type-badge.debit { background:rgba(155,35,53,0.08); color:var(--red); }
-    .txn-empty {
-      text-align:center; padding:1.2rem; font-size:0.82rem; color:var(--muted);
-      font-family:'DM Mono',monospace; background:var(--cream);
-      border-radius:10px; border:1px dashed var(--border);
-    }
-
-    /* Payment mode tabs */
-    .mode-tabs { display:flex; gap:0.5rem; margin-bottom:1.5rem; }
+    /* ── Mode Tabs ── */
+    .mode-tabs { display: flex; gap: 0.4rem; margin-bottom: 1.5rem; }
     .mode-tab {
-      flex:1; padding:0.6rem 0.4rem; border:1.5px solid var(--border); border-radius:10px;
-      background:transparent; cursor:pointer; font-family:'DM Mono',monospace;
-      font-size:0.65rem; letter-spacing:0.06em; text-transform:uppercase; color:var(--muted);
-      transition:all 0.2s; display:flex; flex-direction:column; align-items:center; gap:0.3rem;
+      flex: 1; padding: 0.65rem 0.3rem; border: 1.5px solid var(--border); border-radius: 10px;
+      background: transparent; cursor: pointer; font-family: 'DM Mono', monospace;
+      font-size: 0.63rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted);
+      transition: all 0.2s; display: flex; flex-direction: column; align-items: center; gap: 0.28rem;
     }
-    .mode-tab .tab-icon { font-size:1.1rem; }
-    .mode-tab.active { border-color:var(--gold); background:rgba(201,168,76,0.06); color:var(--ink); }
-    .mode-content { display:none; }
-    .mode-content.active { display:block; animation:fadeIn 0.3s ease; }
+    .mode-tab .tab-icon { font-size: 1.15rem; }
+    .mode-tab.active { border-color: var(--gold); background: rgba(201,168,76,0.07); color: var(--ink); font-weight: 600; }
 
-    /* Animations */
-    @keyframes fadeUp { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
-    @keyframes fadeDown { from{opacity:0;transform:translateY(-12px)} to{opacity:1;transform:translateY(0)} }
-    @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+    .mode-content { display: none; }
+    .mode-content.active { display: block; animation: fadeIn 0.3s ease; }
+
+    /* ── Divider ── */
+    .divider { display: flex; align-items: center; gap: 0.8rem; margin: 1.3rem 0; }
+    .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+    .divider span { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+
+    /* ── Note Field ── */
+    .note-field { font-size: 0.82rem !important; }
+
+    /* ── QR Panel ── */
+    .qr-panel { text-align: center; padding: 0.5rem 0; }
+    .qr-wrap { display: inline-block; padding: 12px; background: var(--paper); border-radius: 16px; border: 2px solid var(--border); box-shadow: 0 4px 18px rgba(13,13,13,0.09); position: relative; }
+    .qr-wrap img { display: block; border-radius: 8px; width: 220px; height: 220px; }
+    .qr-amount-label { font-family: 'DM Mono', monospace; font-size: 1.6rem; font-weight: 500; color: var(--green); margin: 0.4rem 0 0.2rem; }
+    .qr-info { font-size: 0.78rem; color: var(--muted); margin-bottom: 1rem; }
+    .qr-timer { margin-top: 0.75rem; font-family: 'DM Mono', monospace; font-size: 0.72rem; color: var(--muted); display: flex; align-items: center; justify-content: center; gap: 0.4rem; }
+    .qr-time { font-size: 0.9rem; font-weight: 600; padding: 0.18rem 0.55rem; border-radius: 6px; background: var(--cream); border: 1px solid var(--border); }
+    .qr-time.urgent { color: var(--red); border-color: rgba(155,35,53,0.3); background: rgba(155,35,53,0.05); }
+    .qr-expired-overlay { display: none; position: absolute; inset: 0; background: rgba(255,255,255,0.93); border-radius: 14px; flex-direction: column; align-items: center; justify-content: center; gap: 0.4rem; }
+    .qr-expired-overlay.show { display: flex; }
+    .qr-expired-text { font-family: 'DM Mono', monospace; font-size: 0.8rem; color: var(--red); letter-spacing: 0.06em; font-weight: 600; }
+
+    /* ── QR Confirm ── */
+    .qr-confirm-panel { background: var(--cream); border: 1.5px solid var(--border); border-radius: 14px; padding: 1.2rem; margin-bottom: 1.2rem; text-align: center; }
+    .qr-confirm-label { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.25rem; }
+    .qr-confirm-name { font-family: 'Playfair Display', serif; font-size: 1.15rem; color: var(--ink); margin-bottom: 0.2rem; }
+    .qr-confirm-amount { font-family: 'DM Mono', monospace; font-size: 2rem; font-weight: 500; color: var(--green); }
+    .qr-confirm-expiry { font-family: 'DM Mono', monospace; font-size: 0.63rem; color: var(--muted); margin-top: 0.35rem; }
+
+    /* ── Scanner ── */
+    .scanner-wrap { position: relative; width: 100%; aspect-ratio: 1/1; max-width: 270px; margin: 0 auto 0.9rem; border-radius: 16px; overflow: hidden; background: #000; border: 2px solid var(--border); box-shadow: 0 4px 20px rgba(13,13,13,0.16); }
+    #scanner-video { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .scanner-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; }
+    .scanner-frame { width: 62%; height: 62%; border: 2.5px solid var(--gold); border-radius: 12px; position: relative; box-shadow: 0 0 0 9999px rgba(0,0,0,0.42); }
+    .scanner-frame::before, .scanner-frame::after, .scanner-frame .corner-bl, .scanner-frame .corner-br { content: ''; position: absolute; width: 18px; height: 18px; border-color: var(--gold-light); border-style: solid; }
+    .scanner-frame::before { top: -2px; left: -2px; border-width: 3px 0 0 3px; border-radius: 4px 0 0 0; }
+    .scanner-frame::after  { top: -2px; right: -2px; border-width: 3px 3px 0 0; border-radius: 0 4px 0 0; }
+    .scanner-frame .corner-bl { bottom: -2px; left: -2px; border-width: 0 0 3px 3px; border-radius: 0 0 0 4px; }
+    .scanner-frame .corner-br { bottom: -2px; right: -2px; border-width: 0 3px 3px 0; border-radius: 0 0 4px 0; }
+    .scanner-line { position: absolute; left: 5%; right: 5%; height: 2px; background: linear-gradient(90deg, transparent, var(--gold-light), transparent); animation: scanLine 2s ease-in-out infinite; }
+    @keyframes scanLine { 0% { top: 5%; } 50% { top: 90%; } 100% { top: 5%; } }
+    .scanner-hint { font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--muted); text-align: center; margin-bottom: 0.9rem; }
+    .scanner-status { font-family: 'DM Mono', monospace; font-size: 0.7rem; text-align: center; padding: 0.38rem 0.7rem; border-radius: 8px; margin-bottom: 0.8rem; background: var(--cream); border: 1px solid var(--border); color: var(--muted); min-height: 2.1rem; display: flex; align-items: center; justify-content: center; }
+    .scanner-status.scanning { color: var(--gold); border-color: rgba(201,168,76,0.4); background: rgba(201,168,76,0.06); }
+    .scanner-status.found { color: var(--green); border-color: rgba(45,106,79,0.3); background: rgba(45,106,79,0.07); }
+    .scanner-status.error { color: var(--red); border-color: rgba(155,35,53,0.3); background: rgba(155,35,53,0.06); }
+
+    /* ── Success Overlay ── */
+    .success-overlay { display: none; position: absolute; inset: 0; background: var(--card-bg); border-radius: 22px; z-index: 20; flex-direction: column; align-items: center; justify-content: center; padding: 2.5rem; text-align: center; }
+    .success-overlay.active { display: flex; animation: fadeIn 0.4s ease; }
+    .success-icon { width: 74px; height: 74px; background: rgba(45,106,79,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 1.1rem; animation: popIn 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.15s both; }
+    .success-icon svg { stroke: var(--green); }
+    @keyframes popIn { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .success-title { font-family: 'Playfair Display', serif; font-size: 1.65rem; color: var(--ink); margin-bottom: 0.4rem; }
+    .success-subtitle { font-size: 0.87rem; color: var(--muted); margin-bottom: 0.4rem; }
+    .success-amount { font-family: 'DM Mono', monospace; font-size: 2rem; color: var(--green); font-weight: 600; margin: 0.7rem 0; }
+    .txn-id { font-family: 'DM Mono', monospace; font-size: 0.68rem; color: var(--muted); background: var(--cream); padding: 0.35rem 0.85rem; border-radius: 100px; margin-bottom: 0.5rem; display: inline-block; }
+    .balance-note { font-family: 'DM Mono', monospace; font-size: 0.72rem; color: var(--green); margin-bottom: 1.2rem; }
+    .reset-btn { font-family: 'DM Sans', sans-serif; font-size: 0.87rem; padding: 0.6rem 1.4rem; background: var(--cream); border: 1.5px solid var(--border); border-radius: 100px; cursor: pointer; color: var(--ink); transition: all 0.18s; }
+    .reset-btn:hover { background: var(--border); }
+
+    /* ── Transactions Panel ── */
+    .txn-panel { margin-top: 1.4rem; animation: fadeUp 0.55s ease 0.15s both; }
+    .txn-panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; }
+    .txn-panel-title { font-family: 'Playfair Display', serif; font-size: 1.05rem; color: var(--ink); }
+    .txn-count { font-family: 'DM Mono', monospace; font-size: 0.63rem; color: var(--muted); }
+    .txn-list { display: flex; flex-direction: column; gap: 0.45rem; }
+    .txn-item { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 0.72rem 0.95rem; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 1px 4px rgba(13,13,13,0.04); animation: fadeUp 0.3s ease both; }
+    .txn-left { display: flex; flex-direction: column; gap: 0.18rem; min-width: 0; }
+    .txn-name { font-size: 0.87rem; color: var(--ink); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 190px; }
+    .txn-meta { font-family: 'DM Mono', monospace; font-size: 0.6rem; color: var(--muted); }
+    .txn-note { font-family: 'DM Mono', monospace; font-size: 0.6rem; color: var(--muted); font-style: italic; }
+    .txn-right { display: flex; flex-direction: column; align-items: flex-end; gap: 0.15rem; flex-shrink: 0; margin-left: 0.5rem; }
+    .txn-amount { font-family: 'DM Mono', monospace; font-size: 1rem; font-weight: 600; }
+    .txn-amount.credit { color: var(--green); }
+    .txn-amount.debit  { color: var(--red); }
+    .txn-badge { font-family: 'DM Mono', monospace; font-size: 0.57rem; letter-spacing: 0.05em; text-transform: uppercase; padding: 0.1rem 0.38rem; border-radius: 4px; }
+    .txn-badge.credit { background: rgba(45,106,79,0.1); color: var(--green); }
+    .txn-badge.debit  { background: rgba(155,35,53,0.08); color: var(--red); }
+    .txn-method { font-family: 'DM Mono', monospace; font-size: 0.55rem; color: var(--border); letter-spacing: 0.04em; text-transform: uppercase; }
+    .txn-empty { text-align: center; padding: 1.3rem; font-size: 0.8rem; color: var(--muted); font-family: 'DM Mono', monospace; background: var(--cream); border-radius: 10px; border: 1px dashed var(--border); }
+
+    /* ── Card Footer ── */
+    .card-footer { margin-top: 1.3rem; display: flex; align-items: center; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+    .footer-badge { display: flex; align-items: center; gap: 0.3rem; font-family: 'DM Mono', monospace; font-size: 0.6rem; color: var(--muted); letter-spacing: 0.06em; }
+    .footer-badge svg { opacity: 0.55; }
+
+    /* ── Toast ── */
+    .toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--ink); color: #fff; padding: 0.82rem 1.5rem; border-radius: 100px; font-family: 'DM Sans', sans-serif; font-size: 0.87rem; display: flex; align-items: center; gap: 0.6rem; z-index: 9999; transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s; opacity: 0; white-space: nowrap; box-shadow: 0 8px 32px rgba(0,0,0,0.28); }
+    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+    .toast.success::before { content: '✓'; color: #6fcf97; font-weight: 700; font-size: 1rem; }
+    .toast.error::before { content: '✕'; color: #eb5757; font-weight: 700; }
+
+    /* ── Animations ── */
+    @keyframes fadeUp   { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeDown { from { opacity: 0; transform: translateY(-12px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn   { from { opacity: 0; } to { opacity: 1; } }
+
+    /* ── Mobile ── */
+    @media (max-width: 480px) {
+      .card { padding: 1.6rem 1.3rem; border-radius: 18px; }
+      .amount-input { font-size: 1.7rem; }
+      .mode-tab { font-size: 0.58rem; }
+    }
   </style>
 </head>
 <body>
@@ -369,6 +308,7 @@
 <div class="bg-circle bg-circle-2"></div>
 
 <div class="wrapper">
+  <!-- Brand -->
   <div class="brand">
     <div class="brand-logo">
       <div class="brand-icon"></div>
@@ -379,7 +319,9 @@
 
   <div class="card">
 
-    <!-- ══ AUTH PAGE ══ -->
+    <!-- ════════════════════════════════
+         AUTH PAGE
+    ════════════════════════════════ -->
     <div class="page active" id="page-auth">
       <div class="tab-switcher">
         <button class="tab-btn active" onclick="switchAuthTab('login')">Log In</button>
@@ -387,7 +329,7 @@
       </div>
 
       <!-- Login -->
-      <div id="auth-login" class="mode-content active">
+      <div id="auth-login" style="display:block">
         <div class="form-group">
           <label class="form-label">Username</label>
           <input type="text" id="login-username" class="form-control" placeholder="your_username" autocomplete="username"/>
@@ -406,7 +348,7 @@
       </div>
 
       <!-- Sign Up -->
-      <div id="auth-signup" class="mode-content">
+      <div id="auth-signup" style="display:none">
         <div class="form-group">
           <label class="form-label">Full Name</label>
           <input type="text" id="signup-name" class="form-control" placeholder="Arjun Sharma" autocomplete="name"/>
@@ -417,46 +359,48 @@
           <input type="email" id="signup-email" class="form-control" placeholder="arjun@email.com" autocomplete="email"/>
           <div class="error-msg" id="signup-email-error" style="display:none"></div>
         </div>
-        <div class="form-group">
-          <label class="form-label">Username</label>
-          <input type="text" id="signup-username" class="form-control" placeholder="arjun_sharma" autocomplete="username"/>
-          <div class="error-msg" id="signup-username-error" style="display:none"></div>
+        <div class="form-row">
+          <div class="form-group" style="margin-bottom:0">
+            <label class="form-label">Username</label>
+            <input type="text" id="signup-username" class="form-control" placeholder="arjun_s" autocomplete="username"/>
+            <div class="error-msg" id="signup-username-error" style="display:none"></div>
+          </div>
+          <div class="form-group" style="margin-bottom:0">
+            <label class="form-label">Password</label>
+            <input type="password" id="signup-password" class="form-control" placeholder="Min 6 chars" autocomplete="new-password"/>
+            <div class="error-msg" id="signup-password-error" style="display:none"></div>
+          </div>
         </div>
-        <div class="form-group">
-          <label class="form-label">Password</label>
-          <input type="password" id="signup-password" class="form-control" placeholder="Min 6 characters" autocomplete="new-password"/>
-          <div class="error-msg" id="signup-password-error" style="display:none"></div>
-        </div>
-        <div class="error-msg" id="signup-general-error" style="display:none;margin-bottom:0.8rem;font-size:0.75rem;"></div>
-        <button class="btn-primary" id="signup-btn" onclick="doSignup()">
+        <div class="error-msg" id="signup-general-error" style="display:none;margin:0.6rem 0 0.8rem;font-size:0.75rem;"></div>
+        <button class="btn-primary" id="signup-btn" onclick="doSignup()" style="margin-top:1rem">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
           Create Account
         </button>
       </div>
     </div>
 
-    <!-- ══ DASHBOARD PAGE ══ -->
+    <!-- ════════════════════════════════
+         DASHBOARD PAGE
+    ════════════════════════════════ -->
     <div class="page" id="page-dashboard">
 
       <!-- Success Overlay -->
       <div class="success-overlay" id="success-overlay">
         <div class="success-icon">
-          <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M20 6L9 17l-5-5"/>
-          </svg>
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
         </div>
         <div class="success-title" id="success-title">Payment Sent!</div>
         <div class="success-subtitle" id="success-subtitle">Transaction processed successfully.</div>
         <div class="success-amount" id="success-amount">₹0.00</div>
         <div class="txn-id" id="txn-id-display">TXN-000000</div>
-        <div style="font-family:'DM Mono',monospace;font-size:0.72rem;color:var(--green);margin-bottom:1.2rem;" id="success-balance-note"></div>
-        <button class="reset-btn" onclick="resetForm()">Make another payment</button>
+        <div class="balance-note" id="success-balance-note"></div>
+        <button class="reset-btn" onclick="resetPaymentForm()">Make another payment</button>
       </div>
 
-      <!-- User bar -->
+      <!-- User Bar -->
       <div class="user-bar">
         <div class="user-bar-left">
-          <div class="user-avatar" id="user-avatar-initials">?</div>
+          <div class="user-avatar" id="user-avatar">?</div>
           <div>
             <div class="user-name" id="user-display-name">Welcome</div>
             <div class="user-balance" id="user-balance-display">Balance: ₹0.00</div>
@@ -465,24 +409,24 @@
         <button class="logout-btn" onclick="doLogout()">Log Out</button>
       </div>
 
-      <!-- User ID badge -->
-      <div class="user-id-badge" onclick="copyUserId()" title="Click to copy your User ID">
-        <div>
-          <div class="user-id-label">Your PayMe ID — share to receive money</div>
-          <div class="user-id-value" id="user-id-display">PAYME-????</div>
+      <!-- User ID Badge -->
+      <div class="uid-badge" onclick="copyUserId()" title="Click to copy your PayMe ID">
+        <div class="uid-badge-left">
+          <div class="uid-label">Your PayMe ID — share to receive money</div>
+          <div class="uid-value" id="user-id-display">PAYME-????</div>
         </div>
-        <div class="user-id-copy" id="copy-label">TAP TO COPY</div>
+        <div class="uid-copy" id="copy-label">Tap to copy</div>
       </div>
 
       <div class="secure-badge">256-bit SSL Encrypted</div>
 
-      <!-- Payment Mode Tabs -->
+      <!-- Mode Tabs -->
       <div class="mode-tabs">
         <button class="mode-tab active" onclick="switchMode('manual')" id="mode-manual">
           <span class="tab-icon">💳</span><span>Pay by ID</span>
         </button>
         <button class="mode-tab" onclick="switchMode('qr')" id="mode-qr">
-          <span class="tab-icon">📱</span><span>My QR</span>
+          <span class="tab-icon">📲</span><span>My QR</span>
         </button>
         <button class="mode-tab" onclick="switchMode('scan')" id="mode-scan">
           <span class="tab-icon">🔍</span><span>Scan QR</span>
@@ -492,22 +436,23 @@
       <!-- ── Pay by User ID ── -->
       <div class="mode-content active" id="content-manual">
         <div class="form-group">
-          <label class="form-label">Recipient User ID</label>
+          <label class="form-label">Recipient PayMe ID</label>
           <div class="input-with-badge">
             <input type="text" id="recipient-user-id" class="form-control" placeholder="PAYME-XXXX"
-              oninput="onRecipientIdInput(this.value)" autocomplete="off" style="text-transform:uppercase"/>
+              oninput="onRecipientIdInput(this.value)" autocomplete="off" style="text-transform:uppercase; letter-spacing:0.04em"/>
             <span class="input-badge" id="recipient-id-badge">—</span>
           </div>
           <div class="error-msg" id="recipient-id-error" style="display:none"></div>
           <div id="recipient-preview" style="display:none"></div>
         </div>
+
         <div class="amount-block">
-          <div class="section-title">Enter amount</div>
+          <div class="section-title">Amount to send</div>
           <div class="amount-display" id="amount-display-wrap">
             <span class="currency-symbol">₹</span>
             <input type="number" id="amount-input" class="amount-input" placeholder="0.00" min="1" step="0.01" oninput="updateBtnAmount()"/>
           </div>
-          <div class="error-msg" id="amount-error" style="display:none">Please enter a valid amount.</div>
+          <div class="error-msg" id="amount-error" style="display:none"></div>
           <div class="quick-amounts">
             <button class="quick-btn" onclick="setAmount(100)">₹100</button>
             <button class="quick-btn" onclick="setAmount(500)">₹500</button>
@@ -515,14 +460,21 @@
             <button class="quick-btn" onclick="setAmount(5000)">₹5,000</button>
           </div>
         </div>
+
+        <div class="form-group">
+          <label class="form-label">Note (optional)</label>
+          <input type="text" id="payment-note" class="form-control note-field" placeholder="Lunch split, rent, etc." maxlength="80"/>
+        </div>
+
         <div class="divider"><span>Secure Transfer</span></div>
+
         <button class="btn-primary" id="pay-btn" onclick="processPayment()">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
           Send <span class="btn-amount" id="btn-amount">₹0.00</span>
         </button>
       </div>
 
-      <!-- ── My QR (receive money) ── -->
+      <!-- ── Generate QR (receive) ── -->
       <div class="mode-content" id="content-qr">
         <div id="qr-generate-section">
           <div class="amount-block">
@@ -540,36 +492,33 @@
             </div>
           </div>
           <button class="btn-primary" onclick="generateQR()">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h3v3h-3zM17 17h3v3h-3zM14 20h3"/></svg>
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h3v3h-3zM17 17h3v3h-3zM14 20h3"/></svg>
             Generate QR Code
           </button>
         </div>
+
         <div id="qr-display-section" style="display:none">
           <div class="qr-panel">
             <div class="qr-amount-label" id="qr-display-amount">₹0.00</div>
-            <div class="qr-info">Scan to pay · Valid for 5 minutes</div>
+            <div class="qr-info">Scan to pay · Expires in 5 minutes</div>
             <div class="qr-wrap">
               <img id="qr-image" src="" alt="QR Code"/>
               <div class="qr-expired-overlay" id="qr-expired-overlay">
-                <div style="font-size:2rem">⏱️</div>
+                <div style="font-size:2.2rem">⏱️</div>
                 <div class="qr-expired-text">QR EXPIRED</div>
               </div>
             </div>
-            <div class="qr-timer">
-              <span>Expires in</span>
-              <span class="time" id="qr-countdown">5:00</span>
-            </div>
+            <div class="qr-timer">Expires in <span class="qr-time" id="qr-countdown">5:00</span></div>
           </div>
-          <div style="margin-top:1rem;display:flex;gap:0.6rem;">
+          <div style="margin-top:1rem;display:flex;gap:0.55rem">
             <button class="btn-secondary" onclick="resetQR()" style="flex:1">New QR</button>
-            <button class="btn-secondary" onclick="checkQRPayment()" style="flex:1">Check Status</button>
+            <button class="btn-secondary" onclick="checkQRPayment()" style="flex:1">Refresh Status</button>
           </div>
         </div>
       </div>
 
-      <!-- ── Scan QR (send money) ── -->
+      <!-- ── Scan QR (send) ── -->
       <div class="mode-content" id="content-scan">
-        <!-- Scanner view -->
         <div id="scan-camera-section">
           <div class="scanner-status" id="scanner-status">Camera not started</div>
           <div class="scanner-wrap">
@@ -584,12 +533,11 @@
           </div>
           <div class="scanner-hint">Point camera at a PayMe QR code</div>
           <button class="btn-primary" id="start-scan-btn" onclick="startScanner()">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9V6a3 3 0 0 1 3-3h3M3 15v3a3 3 0 0 0 3 3h3M15 3h3a3 3 0 0 1 3 3v3M15 21h3a3 3 0 0 0 3-3v-3"/></svg>
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9V6a3 3 0 0 1 3-3h3M3 15v3a3 3 0 0 0 3 3h3M15 3h3a3 3 0 0 1 3 3v3M15 21h3a3 3 0 0 0 3-3v-3"/></svg>
             Start Camera
           </button>
         </div>
 
-        <!-- Confirm pay from scan -->
         <div id="scan-confirm-section" style="display:none">
           <div class="qr-confirm-panel">
             <div class="qr-confirm-label">Paying to</div>
@@ -598,20 +546,21 @@
             <div class="qr-confirm-expiry" id="scan-expiry">—</div>
           </div>
           <div class="form-group">
-            <label class="form-label">Confirm with password</label>
+            <label class="form-label">Confirm with your password</label>
             <input type="password" id="scan-password" class="form-control" placeholder="Enter your password"/>
             <div class="error-msg" id="scan-password-error" style="display:none"></div>
           </div>
-          <div style="display:flex;gap:0.6rem;">
+          <div style="display:flex;gap:0.55rem">
             <button class="btn-secondary" onclick="cancelScan()" style="flex:1">Cancel</button>
             <button class="btn-primary" id="scan-pay-btn" onclick="confirmScanPayment()" style="flex:2">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
               Confirm & Pay
             </button>
           </div>
         </div>
       </div>
 
+      <!-- Footer -->
       <div class="card-footer">
         <div class="footer-badge">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
@@ -622,8 +571,7 @@
           End-to-end encrypted
         </div>
       </div>
-    </div>
-
+    </div><!-- /page-dashboard -->
   </div><!-- /card -->
 
   <!-- Transactions Panel -->
@@ -636,37 +584,33 @@
       <div class="txn-empty">No transactions yet</div>
     </div>
   </div>
-</div>
+</div><!-- /wrapper -->
 
 <div class="toast" id="toast"></div>
 
-<!-- jsQR for QR code decoding -->
+<!-- jsQR for QR decoding fallback -->
 <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
 
 <script>
-/* ── State ── */
-let currentUser = null;
-let qrToken     = null;
-let qrTimer     = null;
-let qrPollTimer = null;
-let scanStream  = null;
-let scanAnimId  = null;
-let scannedToken = null;
+/* ════════════════════════════════════════════════
+   STATE
+════════════════════════════════════════════════ */
+let currentUser          = null;
+let qrToken              = null;
+let qrTimerInterval      = null;
+let qrPollInterval       = null;
+let scanStream           = null;
+let scanAnimId           = null;
+let scannedToken         = null;
 let recipientLookupTimer = null;
-let validatedRecipient  = null;
+let validatedRecipient   = null;
 
 const SERVER = `http://${location.hostname}:3000`;
 
-/* ── Toast ── */
-function showToast(msg, type = 'success') {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = `toast ${type} show`;
-  setTimeout(() => t.classList.remove('show'), 3500);
-}
-
-/* ── Helpers ── */
-function formatINR(n) {
+/* ════════════════════════════════════════════════
+   HELPERS
+════════════════════════════════════════════════ */
+function fmt(n) {
   return '₹' + Number(n).toLocaleString('en-IN', { minimumFractionDigits: 2 });
 }
 
@@ -674,14 +618,43 @@ function esc(s) {
   return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
-/* ── Auth tab switch ── */
-function switchAuthTab(tab) {
-  document.querySelectorAll('.tab-btn').forEach((b, i) => b.classList.toggle('active', (i===0&&tab==='login')||(i===1&&tab==='signup')));
-  document.getElementById('auth-login').classList.toggle('active', tab === 'login');
-  document.getElementById('auth-signup').classList.toggle('active', tab === 'signup');
+function initials(name) {
+  return name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
 }
 
-/* ── Sign Up ── */
+function showToast(msg, type = 'success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = `toast ${type} show`;
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+/* ════════════════════════════════════════════════
+   AUTH — TAB SWITCH
+════════════════════════════════════════════════ */
+function switchAuthTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach((b, i) => {
+    b.classList.toggle('active', (i === 0 && tab === 'login') || (i === 1 && tab === 'signup'));
+  });
+  document.getElementById('auth-login').style.display  = tab === 'login'  ? 'block' : 'none';
+  document.getElementById('auth-signup').style.display = tab === 'signup' ? 'block' : 'none';
+  clearAuthErrors('login'); clearAuthErrors('signup');
+}
+
+function clearAuthErrors(prefix) {
+  ['username','password','email','name','general'].forEach(f => {
+    const el = document.getElementById(`${prefix}-${f}-error`);
+    if (el) { el.style.display = 'none'; el.textContent = ''; }
+  });
+}
+function showAuthErr(id, msg) {
+  const el = document.getElementById(id);
+  if (el) { el.textContent = msg; el.style.display = 'block'; }
+}
+
+/* ════════════════════════════════════════════════
+   SIGN UP
+════════════════════════════════════════════════ */
 async function doSignup() {
   clearAuthErrors('signup');
   const fullName = document.getElementById('signup-name').value.trim();
@@ -689,10 +662,10 @@ async function doSignup() {
   const username = document.getElementById('signup-username').value.trim();
   const password = document.getElementById('signup-password').value;
   let ok = true;
-  if (!fullName) { showAuthError('signup-name', 'Full name is required.'); ok=false; }
-  if (!email || !email.includes('@')) { showAuthError('signup-email', 'Valid email required.'); ok=false; }
-  if (!username || username.length < 3) { showAuthError('signup-username', 'At least 3 characters.'); ok=false; }
-  if (!password || password.length < 6) { showAuthError('signup-password', 'At least 6 characters.'); ok=false; }
+  if (!fullName) { showAuthErr('signup-name-error', 'Full name required.'); ok = false; }
+  if (!email || !email.includes('@')) { showAuthErr('signup-email-error', 'Valid email required.'); ok = false; }
+  if (!username || username.length < 3) { showAuthErr('signup-username-error', 'Min 3 characters.'); ok = false; }
+  if (!password || password.length < 6) { showAuthErr('signup-password-error', 'Min 6 characters.'); ok = false; }
   if (!ok) return;
 
   const btn = document.getElementById('signup-btn');
@@ -700,135 +673,124 @@ async function doSignup() {
   btn.innerHTML = '<div class="spinner"></div> Creating account…';
 
   try {
-    const res  = await fetch(`${SERVER}/auth/signup`, {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ username, password, fullName, email })
-    });
+    const res  = await fetch(`${SERVER}/auth/signup`, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ username, password, fullName, email }) });
     const data = await res.json();
-    if (!res.ok) { showAuthError('signup-general', data.error || 'Signup failed.'); return; }
-    showToast(`Welcome, ${data.fullName}! Your ID: ${data.userId}`);
+    if (!res.ok) { showAuthErr('signup-general-error', data.error || 'Signup failed.'); return; }
+    showToast(`Welcome, ${data.fullName}! Your ID: ${data.userId} 🎉`);
     enterDashboard(data);
-  } catch (e) {
-    showAuthError('signup-general', 'Cannot reach server. Is server.js running?');
+  } catch {
+    showAuthErr('signup-general-error', 'Cannot reach server. Is server.js running?');
   } finally {
     btn.classList.remove('loading');
     btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg> Create Account';
   }
 }
 
-/* ── Log In ── */
+/* ════════════════════════════════════════════════
+   LOG IN
+════════════════════════════════════════════════ */
 async function doLogin() {
   clearAuthErrors('login');
   const username = document.getElementById('login-username').value.trim();
   const password = document.getElementById('login-password').value;
-  if (!username) { showAuthError('login-username', 'Username required.'); return; }
-  if (!password) { showAuthError('login-password', 'Password required.'); return; }
+  if (!username) { showAuthErr('login-username-error', 'Username required.'); return; }
+  if (!password) { showAuthErr('login-password-error', 'Password required.'); return; }
 
   const btn = document.getElementById('login-btn');
   btn.classList.add('loading');
   btn.innerHTML = '<div class="spinner"></div> Logging in…';
 
   try {
-    const res  = await fetch(`${SERVER}/auth/login`, {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ username, password })
-    });
+    const res  = await fetch(`${SERVER}/auth/login`, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ username, password }) });
     const data = await res.json();
-    if (!res.ok) { showAuthError('login-general', data.error || 'Login failed.'); return; }
+    if (!res.ok) { showAuthErr('login-general-error', data.error || 'Login failed.'); return; }
     showToast(`Welcome back, ${data.fullName}! ✓`);
     enterDashboard(data);
-  } catch (e) {
-    showAuthError('login-general', 'Cannot reach server. Is server.js running?');
+  } catch {
+    showAuthErr('login-general-error', 'Cannot reach server. Is server.js running?');
   } finally {
     btn.classList.remove('loading');
     btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg> Log In';
   }
 }
 
-function clearAuthErrors(form) {
-  ['username','password','email','name','general'].forEach(f => {
-    const el = document.getElementById(`${form}-${f}-error`);
-    if (el) { el.style.display='none'; el.textContent=''; }
-  });
-  document.querySelectorAll('.form-control').forEach(el => el.classList.remove('error'));
-}
-function showAuthError(id, msg) {
-  const el = document.getElementById(id.includes('-error') ? id : id+'-error');
-  if (!el) return;
-  el.textContent = msg; el.style.display = 'block';
-}
-
-/* ── Dashboard ── */
+/* ════════════════════════════════════════════════
+   DASHBOARD
+════════════════════════════════════════════════ */
 function enterDashboard(user) {
   currentUser = user;
   document.getElementById('page-auth').classList.remove('active');
   document.getElementById('page-dashboard').classList.add('active');
   document.getElementById('txn-panel').style.display = 'block';
-  const initials = user.fullName.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
-  document.getElementById('user-avatar-initials').textContent = initials;
+  document.getElementById('user-avatar').textContent = initials(user.fullName);
   document.getElementById('user-display-name').textContent = user.fullName;
   document.getElementById('user-id-display').textContent = user.userId || 'PAYME-????';
-  updateBalanceDisplay(user.balance);
+  updateBalance(user.balance);
   renderTransactions();
 }
 
-function updateBalanceDisplay(balance) {
-  document.getElementById('user-balance-display').textContent =
-    'Balance: ₹' + Number(balance).toLocaleString('en-IN', { minimumFractionDigits:2 });
+function updateBalance(balance) {
+  currentUser.balance = balance;
+  document.getElementById('user-balance-display').textContent = 'Balance: ' + fmt(balance);
 }
 
 function copyUserId() {
   const id = currentUser?.userId;
   if (!id) return;
   navigator.clipboard.writeText(id).then(() => {
-    document.getElementById('copy-label').textContent = 'COPIED ✓';
-    setTimeout(() => { document.getElementById('copy-label').textContent = 'TAP TO COPY'; }, 2000);
-    showToast('User ID copied to clipboard ✓');
-  }).catch(() => showToast(id, 'success'));
+    document.getElementById('copy-label').textContent = 'Copied ✓';
+    setTimeout(() => { document.getElementById('copy-label').textContent = 'Tap to copy'; }, 2200);
+    showToast('PayMe ID copied!');
+  }).catch(() => showToast(id));
 }
 
 function doLogout() {
   currentUser = null;
-  stopScanner();
-  clearQrState();
+  stopScanner(); clearQrState();
   document.getElementById('page-dashboard').classList.remove('active');
   document.getElementById('page-auth').classList.add('active');
   document.getElementById('txn-panel').style.display = 'none';
   document.getElementById('success-overlay').classList.remove('active');
+  switchAuthTab('login');
   showToast('Logged out successfully');
 }
 
-/* ── Mode Switch ── */
+/* ════════════════════════════════════════════════
+   MODE SWITCH
+════════════════════════════════════════════════ */
 function switchMode(mode) {
-  ['manual','qr','scan'].forEach(m => {
-    document.getElementById('mode-'+m).classList.toggle('active', m===mode);
-    document.getElementById('content-'+m).classList.toggle('active', m===mode);
+  ['manual', 'qr', 'scan'].forEach(m => {
+    document.getElementById('mode-' + m).classList.toggle('active', m === mode);
+    document.getElementById('content-' + m).classList.toggle('active', m === mode);
   });
-  if (mode !== 'qr') clearQrState();
+  if (mode !== 'qr')   clearQrState();
   if (mode !== 'scan') stopScanner();
 }
 
-/* ── Pay by User ID ── */
+/* ════════════════════════════════════════════════
+   PAY BY USER ID
+════════════════════════════════════════════════ */
 function setAmount(val) { document.getElementById('amount-input').value = val; updateBtnAmount(); }
+
 function updateBtnAmount() {
   const v = parseFloat(document.getElementById('amount-input').value) || 0;
-  document.getElementById('btn-amount').textContent = formatINR(v);
+  document.getElementById('btn-amount').textContent = fmt(v);
 }
 
-// Live lookup of recipient ID
+/* Live recipient lookup with debounce */
 function onRecipientIdInput(raw) {
-  const val = raw.toUpperCase().replace(/[^A-Z0-9-]/g,'');
+  const val = raw.toUpperCase().replace(/[^A-Z0-9-]/g, '');
   document.getElementById('recipient-user-id').value = val;
   validatedRecipient = null;
-  document.getElementById('recipient-preview').style.display = 'none';
-  document.getElementById('recipient-id-error').style.display = 'none';
 
   const badge = document.getElementById('recipient-id-badge');
-  badge.className = 'input-badge';
-  badge.textContent = '—';
+  const prev  = document.getElementById('recipient-preview');
+  badge.className = 'input-badge'; badge.textContent = '—';
+  prev.style.display = 'none';
+  document.getElementById('recipient-id-error').style.display = 'none';
 
   clearTimeout(recipientLookupTimer);
-  if (val.length < 7) return; // PAYME-X minimum
+  if (val.length < 7) return;
 
   badge.textContent = '…';
   recipientLookupTimer = setTimeout(() => lookupRecipient(val), 500);
@@ -836,57 +798,51 @@ function onRecipientIdInput(raw) {
 
 async function lookupRecipient(userId) {
   const badge = document.getElementById('recipient-id-badge');
+  const prev  = document.getElementById('recipient-preview');
   try {
     const res  = await fetch(`${SERVER}/user/lookup/${userId}`);
     const data = await res.json();
+
     if (!res.ok || !data.found) {
-      badge.className = 'input-badge invalid';
-      badge.textContent = 'NOT FOUND';
-      document.getElementById('recipient-preview').style.display = 'none';
-      validatedRecipient = null;
-    } else {
-      if (data.username === currentUser?.username) {
-        badge.className = 'input-badge invalid';
-        badge.textContent = 'YOURSELF';
-        document.getElementById('recipient-preview').style.display = 'none';
-        validatedRecipient = null;
-        return;
-      }
-      badge.className = 'input-badge valid';
-      badge.textContent = 'FOUND ✓';
-      validatedRecipient = data;
-      const initials = data.fullName.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
-      const prev = document.getElementById('recipient-preview');
-      prev.style.display = 'block';
-      prev.innerHTML = `<div class="recipient-preview">
-        <div class="recipient-avatar">${esc(initials)}</div>
-        <div>
-          <div class="recipient-name">${esc(data.fullName)}</div>
-          <div class="recipient-id">${esc(data.userId)}</div>
-        </div>
-      </div>`;
+      badge.className = 'input-badge invalid'; badge.textContent = 'NOT FOUND';
+      prev.style.display = 'none'; validatedRecipient = null;
+      return;
     }
+    if (data.username === currentUser?.username) {
+      badge.className = 'input-badge invalid'; badge.textContent = 'YOURSELF';
+      prev.style.display = 'none'; validatedRecipient = null;
+      return;
+    }
+
+    badge.className = 'input-badge valid'; badge.textContent = 'FOUND ✓';
+    validatedRecipient = data;
+    prev.style.display = 'block';
+    prev.innerHTML = `<div class="recipient-preview-card">
+      <div class="recipient-avatar">${esc(initials(data.fullName))}</div>
+      <div>
+        <div class="recipient-name">${esc(data.fullName)}</div>
+        <div class="recipient-uid">${esc(data.userId)}</div>
+      </div>
+    </div>`;
   } catch {
-    badge.className = 'input-badge invalid';
-    badge.textContent = 'ERROR';
+    badge.className = 'input-badge invalid'; badge.textContent = 'ERROR';
     validatedRecipient = null;
   }
 }
 
 async function processPayment() {
-  // Validate
-  let ok = true;
-  document.getElementById('recipient-id-error').style.display = 'none';
-  document.getElementById('amount-error').style.display = 'none';
+  ['recipient-id-error', 'amount-error'].forEach(id => { document.getElementById(id).style.display = 'none'; });
   document.getElementById('amount-display-wrap').classList.remove('error');
 
+  let ok = true;
   if (!validatedRecipient) {
-    document.getElementById('recipient-id-error').textContent = 'Please enter a valid recipient User ID.';
+    document.getElementById('recipient-id-error').textContent = 'Please enter a valid PayMe ID.';
     document.getElementById('recipient-id-error').style.display = 'block';
     ok = false;
   }
   const amount = parseFloat(document.getElementById('amount-input').value);
   if (!amount || amount <= 0) {
+    document.getElementById('amount-error').textContent = 'Please enter a valid amount.';
     document.getElementById('amount-error').style.display = 'block';
     document.getElementById('amount-display-wrap').classList.add('error');
     ok = false;
@@ -894,50 +850,47 @@ async function processPayment() {
   if (!ok) return;
 
   if (amount > currentUser.balance) {
-    document.getElementById('amount-error').textContent = `Insufficient balance (₹${Number(currentUser.balance).toLocaleString('en-IN',{minimumFractionDigits:2})} available)`;
+    document.getElementById('amount-error').textContent = `Insufficient balance (${fmt(currentUser.balance)} available).`;
     document.getElementById('amount-error').style.display = 'block';
     document.getElementById('amount-display-wrap').classList.add('error');
     return;
   }
 
-  const btn = document.getElementById('pay-btn');
+  const note = document.getElementById('payment-note').value.trim();
+  const btn  = document.getElementById('pay-btn');
   btn.classList.add('loading');
   btn.innerHTML = '<div class="spinner"></div> Processing…';
 
   try {
     const res = await fetch(`${SERVER}/payment/send`, {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({
-        senderUsername: currentUser.username,
-        recipientUserId: validatedRecipient.userId,
-        amount
-      })
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ senderUsername: currentUser.username, recipientUserId: validatedRecipient.userId, amount, note })
     });
     const data = await res.json();
+
     if (!res.ok) { showToast(data.error || 'Payment failed.', 'error'); return; }
 
-    currentUser.balance = data.new_balance;
-    updateBalanceDisplay(data.new_balance);
-
-    document.getElementById('success-title').textContent = 'Money Sent!';
-    document.getElementById('success-subtitle').textContent = `Paid to ${data.recipient_name}`;
-    document.getElementById('success-amount').textContent = formatINR(data.amount);
-    document.getElementById('txn-id-display').textContent = data.transaction_id;
-    document.getElementById('success-balance-note').textContent = `New balance: ${formatINR(data.new_balance)}`;
+    updateBalance(data.new_balance);
+    document.getElementById('success-title').textContent    = 'Money Sent!';
+    document.getElementById('success-subtitle').textContent = `Paid to ${esc(data.recipient_name)}`;
+    document.getElementById('success-amount').textContent   = fmt(data.amount);
+    document.getElementById('txn-id-display').textContent   = data.transaction_id;
+    document.getElementById('success-balance-note').textContent = `New balance: ${fmt(data.new_balance)}`;
     document.getElementById('success-overlay').classList.add('active');
     renderTransactions();
-  } catch (e) {
+  } catch {
     showToast('Could not reach server.', 'error');
   } finally {
     btn.classList.remove('loading');
-    btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg> Send <span class="btn-amount" id="btn-amount">${formatINR(amount)}</span>`;
+    btn.innerHTML = `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg> Send <span class="btn-amount" id="btn-amount">${fmt(amount)}</span>`;
   }
 }
 
-function resetForm() {
+function resetPaymentForm() {
   document.getElementById('success-overlay').classList.remove('active');
   document.getElementById('amount-input').value = '';
   document.getElementById('recipient-user-id').value = '';
+  document.getElementById('payment-note').value = '';
   document.getElementById('recipient-preview').style.display = 'none';
   document.getElementById('btn-amount').textContent = '₹0.00';
   document.getElementById('recipient-id-badge').className = 'input-badge';
@@ -945,10 +898,12 @@ function resetForm() {
   validatedRecipient = null;
   const btn = document.getElementById('pay-btn');
   btn.classList.remove('loading');
-  btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg> Send <span class="btn-amount" id="btn-amount">₹0.00</span>`;
+  btn.innerHTML = `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg> Send <span class="btn-amount" id="btn-amount">₹0.00</span>`;
 }
 
-/* ── QR Generate (receive) ── */
+/* ════════════════════════════════════════════════
+   GENERATE QR (receive money)
+════════════════════════════════════════════════ */
 function setQrAmount(val) { document.getElementById('qr-amount-input').value = val; }
 
 async function generateQR() {
@@ -962,61 +917,57 @@ async function generateQR() {
   document.getElementById('qr-amount-display-wrap').classList.remove('error');
 
   try {
-    const res  = await fetch(`${SERVER}/qr/generate`, {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ username: currentUser.username, amount })
-    });
+    const res  = await fetch(`${SERVER}/qr/generate`, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ username: currentUser.username, amount }) });
     const data = await res.json();
-    if (!res.ok) { showToast(data.error || 'QR generation failed', 'error'); return; }
+    if (!res.ok) { showToast(data.error || 'QR generation failed.', 'error'); return; }
 
     qrToken = data.token;
     document.getElementById('qr-generate-section').style.display = 'none';
     document.getElementById('qr-display-section').style.display  = 'block';
-    document.getElementById('qr-image').src = data.qrDataUrl;
-    document.getElementById('qr-display-amount').textContent = formatINR(data.amount);
+    document.getElementById('qr-image').src                       = data.qrDataUrl;
+    document.getElementById('qr-display-amount').textContent      = fmt(data.amount);
     document.getElementById('qr-expired-overlay').classList.remove('show');
     startQrCountdown(data.expiresAt);
     startQrPolling();
-    showToast('QR code generated — valid 5 minutes ✓');
-  } catch (e) {
+    showToast('QR code ready — share or display for payment ✓');
+  } catch {
     showToast('Cannot reach server.', 'error');
   }
 }
 
 function startQrCountdown(expiresAt) {
-  clearInterval(qrTimer);
+  clearInterval(qrTimerInterval);
   function tick() {
-    const remaining = Math.max(0, Math.round((expiresAt - Date.now()) / 1000));
-    const m = Math.floor(remaining/60), s = remaining%60;
+    const rem = Math.max(0, Math.round((expiresAt - Date.now()) / 1000));
+    const m = Math.floor(rem / 60), s = rem % 60;
     const el = document.getElementById('qr-countdown');
-    el.textContent = `${m}:${s.toString().padStart(2,'0')}`;
-    el.className = 'time' + (remaining < 60 ? ' urgent' : '');
-    if (remaining === 0) {
-      clearInterval(qrTimer);
+    if (!el) return;
+    el.textContent = `${m}:${s.toString().padStart(2, '0')}`;
+    el.className = 'qr-time' + (rem < 60 ? ' urgent' : '');
+    if (rem === 0) {
+      clearInterval(qrTimerInterval); clearInterval(qrPollInterval);
       document.getElementById('qr-expired-overlay').classList.add('show');
-      clearInterval(qrPollTimer);
       showToast('QR code expired', 'error');
     }
   }
   tick();
-  qrTimer = setInterval(tick, 1000);
+  qrTimerInterval = setInterval(tick, 1000);
 }
 
 function startQrPolling() {
-  clearInterval(qrPollTimer);
-  qrPollTimer = setInterval(async () => {
+  clearInterval(qrPollInterval);
+  qrPollInterval = setInterval(async () => {
     if (!qrToken) return;
     try {
       const res  = await fetch(`${SERVER}/qr/status/${qrToken}`);
       const data = await res.json();
-      if (data.valid === false && data.reason === 'already_used') {
-        clearInterval(qrPollTimer); clearInterval(qrTimer);
-        const acc = await fetch(`${SERVER}/account/${currentUser.username}`).then(r=>r.json());
-        currentUser.balance = acc.balance;
-        updateBalanceDisplay(acc.balance);
+      if (!data.valid && data.reason === 'already_used') {
+        clearInterval(qrPollInterval); clearInterval(qrTimerInterval);
+        const acc = await fetch(`${SERVER}/account/${currentUser.username}`).then(r => r.json());
+        updateBalance(acc.balance);
         renderTransactions();
         showToast('Payment received! ✓');
-        resetQR();
+        setTimeout(resetQR, 1500);
       }
     } catch {}
   }, 3000);
@@ -1027,12 +978,15 @@ async function checkQRPayment() {
   try {
     const res  = await fetch(`${SERVER}/qr/status/${qrToken}`);
     const data = await res.json();
-    showToast(
-      !data.valid
-        ? (data.reason==='already_used' ? 'Payment already received ✓' : 'QR expired')
-        : 'Waiting for payment…',
-      !data.valid && data.reason!=='already_used' ? 'error' : 'success'
-    );
+    if (!data.valid && data.reason === 'already_used') {
+      showToast('Payment received! ✓');
+      const acc = await fetch(`${SERVER}/account/${currentUser.username}`).then(r => r.json());
+      updateBalance(acc.balance); renderTransactions();
+    } else if (!data.valid) {
+      showToast('QR expired or invalid.', 'error');
+    } else {
+      showToast('Waiting for payment…');
+    }
   } catch { showToast('Cannot reach server.', 'error'); }
 }
 
@@ -1040,12 +994,17 @@ function resetQR() {
   clearQrState();
   document.getElementById('qr-generate-section').style.display = 'block';
   document.getElementById('qr-display-section').style.display  = 'none';
-}
-function clearQrState() {
-  clearInterval(qrTimer); clearInterval(qrPollTimer); qrToken = null;
+  document.getElementById('qr-amount-input').value = '';
 }
 
-/* ── QR Scanner ── */
+function clearQrState() {
+  clearInterval(qrTimerInterval); clearInterval(qrPollInterval); qrToken = null;
+}
+
+/* ════════════════════════════════════════════════
+   SCAN QR (send money)
+   Uses BarcodeDetector API with jsQR fallback
+════════════════════════════════════════════════ */
 async function startScanner() {
   const btn = document.getElementById('start-scan-btn');
   btn.classList.add('loading');
@@ -1054,22 +1013,46 @@ async function startScanner() {
 
   try {
     scanStream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: 'environment', width:{ideal:1280}, height:{ideal:720} }
+      video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 720 } }
     });
     const video = document.getElementById('scanner-video');
     video.srcObject = scanStream;
     await video.play();
     btn.style.display = 'none';
     setStatus('Scanning for QR code…', 'scanning');
-    scanFrames();
+
+    // Try BarcodeDetector API first (native, faster)
+    if ('BarcodeDetector' in window) {
+      scanWithBarcodeDetector();
+    } else {
+      scanWithJsQR();
+    }
   } catch (e) {
-    setStatus('Camera access denied or unavailable', 'error');
+    setStatus('Camera access denied or unavailable.', 'error');
     btn.classList.remove('loading');
-    btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9V6a3 3 0 0 1 3-3h3M3 15v3a3 3 0 0 0 3 3h3M15 3h3a3 3 0 0 1 3 3v3M15 21h3a3 3 0 0 0 3-3v-3"/></svg> Try Again`;
+    btn.innerHTML = `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9V6a3 3 0 0 1 3-3h3M3 15v3a3 3 0 0 0 3 3h3M15 3h3a3 3 0 0 1 3 3v3M15 21h3a3 3 0 0 0 3-3v-3"/></svg> Try Again`;
   }
 }
 
-function scanFrames() {
+async function scanWithBarcodeDetector() {
+  const detector = new BarcodeDetector({ formats: ['qr_code'] });
+  const video = document.getElementById('scanner-video');
+
+  async function tick() {
+    if (!scanStream) return;
+    try {
+      const barcodes = await detector.detect(video);
+      if (barcodes.length > 0) {
+        handleScannedCode(barcodes[0].rawValue);
+        return;
+      }
+    } catch {}
+    scanAnimId = requestAnimationFrame(tick);
+  }
+  scanAnimId = requestAnimationFrame(tick);
+}
+
+function scanWithJsQR() {
   const video  = document.getElementById('scanner-video');
   const canvas = document.createElement('canvas');
   const ctx    = canvas.getContext('2d');
@@ -1077,15 +1060,11 @@ function scanFrames() {
   function tick() {
     if (!scanStream) return;
     if (video.readyState === video.HAVE_ENOUGH_DATA) {
-      canvas.width  = video.videoWidth;
-      canvas.height = video.videoHeight;
+      canvas.width = video.videoWidth; canvas.height = video.videoHeight;
       ctx.drawImage(video, 0, 0);
       const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      const code    = jsQR(imgData.data, canvas.width, canvas.height, { inversionAttempts:'dontInvert' });
-      if (code) {
-        handleScannedCode(code.data);
-        return; // stop scanning until handled
-      }
+      const code    = jsQR(imgData.data, canvas.width, canvas.height, { inversionAttempts: 'dontInvert' });
+      if (code) { handleScannedCode(code.data); return; }
     }
     scanAnimId = requestAnimationFrame(tick);
   }
@@ -1093,14 +1072,18 @@ function scanFrames() {
 }
 
 async function handleScannedCode(url) {
-  // Extract token from URL like http://host:port/pay/TOKEN
   const match = url.match(/\/pay\/([a-f0-9-]{36})/i);
   if (!match) {
-    setStatus('Not a PayMe QR code', 'error');
-    setTimeout(() => { setStatus('Scanning for QR code…', 'scanning'); scanFrames(); }, 2000);
+    setStatus('Not a valid PayMe QR code.', 'error');
+    setTimeout(() => {
+      if (scanStream) {
+        setStatus('Scanning for QR code…', 'scanning');
+        if ('BarcodeDetector' in window) { scanWithBarcodeDetector(); }
+        else { scanWithJsQR(); }
+      }
+    }, 2000);
     return;
   }
-
   const token = match[1];
   setStatus('QR found! Verifying…', 'found');
   stopScanner();
@@ -1110,34 +1093,28 @@ async function handleScannedCode(url) {
     const data = await res.json();
 
     if (!data.valid) {
-      const msgs = { expired:'QR code has expired.', already_used:'QR code already paid.', expired_or_invalid:'Invalid QR code.' };
+      const msgs = { expired: 'QR code has expired.', already_used: 'QR code already paid.', expired_or_invalid: 'Invalid QR code.' };
       setStatus(msgs[data.reason] || 'Invalid QR.', 'error');
-      document.getElementById('start-scan-btn').style.display = 'flex';
-      document.getElementById('start-scan-btn').classList.remove('loading');
-      document.getElementById('start-scan-btn').innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9V6a3 3 0 0 1 3-3h3M3 15v3a3 3 0 0 0 3 3h3M15 3h3a3 3 0 0 1 3 3v3M15 21h3a3 3 0 0 0 3-3v-3"/></svg> Scan Again`;
+      const btn = document.getElementById('start-scan-btn');
+      btn.style.display = 'flex'; btn.classList.remove('loading');
+      btn.innerHTML = `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9V6a3 3 0 0 1 3-3h3M3 15v3a3 3 0 0 0 3 3h3M15 3h3a3 3 0 0 1 3 3v3M15 21h3a3 3 0 0 0 3-3v-3"/></svg> Scan Again`;
       return;
     }
 
-    // Get recipient name
     scannedToken = token;
-    let recipientName = data.username;
-    try {
-      const acc = await fetch(`${SERVER}/account/${data.username}`).then(r=>r.json());
-      recipientName = acc.fullName || data.username;
-    } catch {}
-
-    const expiresInSec = Math.round((data.expiresAt - Date.now()) / 1000);
-    const m = Math.floor(expiresInSec/60), s = expiresInSec%60;
+    const recipientName = data.fullName || data.username;
+    const expiresInSec  = Math.max(0, Math.round((data.expiresAt - Date.now()) / 1000));
+    const m = Math.floor(expiresInSec / 60), s = expiresInSec % 60;
 
     document.getElementById('scan-recipient-name').textContent = recipientName;
-    document.getElementById('scan-amount').textContent = formatINR(data.amount);
-    document.getElementById('scan-expiry').textContent = `Expires in ${m}:${s.toString().padStart(2,'0')}`;
-    document.getElementById('scan-password').value = '';
+    document.getElementById('scan-amount').textContent          = fmt(data.amount);
+    document.getElementById('scan-expiry').textContent          = `Expires in ${m}:${s.toString().padStart(2, '0')}`;
+    document.getElementById('scan-password').value              = '';
     document.getElementById('scan-password-error').style.display = 'none';
 
     document.getElementById('scan-camera-section').style.display  = 'none';
     document.getElementById('scan-confirm-section').style.display = 'block';
-  } catch (e) {
+  } catch {
     setStatus('Cannot reach server.', 'error');
     document.getElementById('start-scan-btn').style.display = 'flex';
   }
@@ -1148,62 +1125,54 @@ async function confirmScanPayment() {
   const errEl    = document.getElementById('scan-password-error');
   errEl.style.display = 'none';
 
-  if (!password) { errEl.textContent='Password required.'; errEl.style.display='block'; return; }
+  if (!password) { errEl.textContent = 'Password required.'; errEl.style.display = 'block'; return; }
 
-  // Verify password first via login attempt
   const btn = document.getElementById('scan-pay-btn');
   btn.classList.add('loading');
   btn.innerHTML = '<div class="spinner"></div> Verifying…';
 
   try {
-    const loginRes  = await fetch(`${SERVER}/auth/login`, {
-      method:'POST', headers:{'Content-Type':'application/json'},
+    // Verify password by re-authenticating
+    const loginRes = await fetch(`${SERVER}/auth/login`, {
+      method: 'POST', headers: {'Content-Type':'application/json'},
       body: JSON.stringify({ username: currentUser.username, password })
     });
     if (!loginRes.ok) {
-      errEl.textContent = 'Incorrect password.';
-      errEl.style.display = 'block';
+      errEl.textContent = 'Incorrect password.'; errEl.style.display = 'block';
       btn.classList.remove('loading');
-      btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Confirm & Pay`;
+      btn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Confirm & Pay`;
       return;
     }
 
     btn.innerHTML = '<div class="spinner"></div> Paying…';
 
     const res  = await fetch(`${SERVER}/qr/pay`, {
-      method:'POST', headers:{'Content-Type':'application/json'},
+      method: 'POST', headers: {'Content-Type':'application/json'},
       body: JSON.stringify({ token: scannedToken, payerName: currentUser.fullName, senderUsername: currentUser.username })
     });
     const data = await res.json();
 
     if (!res.ok) {
-      errEl.textContent = data.error || 'Payment failed.';
-      errEl.style.display = 'block';
+      errEl.textContent = data.error || 'Payment failed.'; errEl.style.display = 'block';
       btn.classList.remove('loading');
-      btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Confirm & Pay`;
+      btn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Confirm & Pay`;
       return;
     }
 
-    // Success
-    if (data.new_balance !== null) {
-      currentUser.balance = data.new_balance;
-      updateBalanceDisplay(data.new_balance);
-    }
+    if (data.new_balance !== null) updateBalance(data.new_balance);
 
-    document.getElementById('success-title').textContent = 'Payment Complete!';
-    document.getElementById('success-subtitle').textContent = `Paid to ${data.recipient}`;
-    document.getElementById('success-amount').textContent = formatINR(data.amount);
-    document.getElementById('txn-id-display').textContent = data.transaction_id;
-    document.getElementById('success-balance-note').textContent = data.new_balance !== null ? `New balance: ${formatINR(data.new_balance)}` : '';
+    document.getElementById('success-title').textContent    = 'Payment Complete!';
+    document.getElementById('success-subtitle').textContent = `Paid to ${esc(data.recipient)}`;
+    document.getElementById('success-amount').textContent   = fmt(data.amount);
+    document.getElementById('txn-id-display').textContent   = data.transaction_id;
+    document.getElementById('success-balance-note').textContent = data.new_balance !== null ? `New balance: ${fmt(data.new_balance)}` : '';
     document.getElementById('success-overlay').classList.add('active');
 
-    cancelScan();
-    renderTransactions();
-  } catch (e) {
-    errEl.textContent = 'Cannot reach server.';
-    errEl.style.display = 'block';
+    cancelScan(); renderTransactions();
+  } catch {
+    errEl.textContent = 'Cannot reach server.'; errEl.style.display = 'block';
     btn.classList.remove('loading');
-    btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Confirm & Pay`;
+    btn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Confirm & Pay`;
   }
 }
 
@@ -1211,60 +1180,66 @@ function cancelScan() {
   scannedToken = null;
   document.getElementById('scan-camera-section').style.display  = 'block';
   document.getElementById('scan-confirm-section').style.display = 'none';
-  document.getElementById('start-scan-btn').style.display = 'flex';
-  document.getElementById('start-scan-btn').classList.remove('loading');
-  document.getElementById('start-scan-btn').innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9V6a3 3 0 0 1 3-3h3M3 15v3a3 3 0 0 0 3 3h3M15 3h3a3 3 0 0 1 3 3v3M15 21h3a3 3 0 0 0 3-3v-3"/></svg> Start Camera`;
+  const btn = document.getElementById('start-scan-btn');
+  btn.style.display = 'flex'; btn.classList.remove('loading');
+  btn.innerHTML = `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9V6a3 3 0 0 1 3-3h3M3 15v3a3 3 0 0 0 3 3h3M15 3h3a3 3 0 0 1 3 3v3M15 21h3a3 3 0 0 0 3-3v-3"/></svg> Start Camera`;
   setStatus('Camera not started', '');
 }
 
 function stopScanner() {
-  if (scanAnimId) { cancelAnimationFrame(scanAnimId); scanAnimId = null; }
-  if (scanStream) { scanStream.getTracks().forEach(t => t.stop()); scanStream = null; }
+  if (scanAnimId)  { cancelAnimationFrame(scanAnimId); scanAnimId = null; }
+  if (scanStream)  { scanStream.getTracks().forEach(t => t.stop()); scanStream = null; }
   const video = document.getElementById('scanner-video');
-  if (video) { video.srcObject = null; }
+  if (video) video.srcObject = null;
 }
 
-function setStatus(msg, type='') {
+function setStatus(msg, type = '') {
   const el = document.getElementById('scanner-status');
   el.textContent = msg;
-  el.className = 'scanner-status' + (type ? ' '+type : '');
+  el.className   = 'scanner-status' + (type ? ' ' + type : '');
 }
 
-/* ── Transactions ── */
+/* ════════════════════════════════════════════════
+   TRANSACTIONS
+════════════════════════════════════════════════ */
 async function renderTransactions() {
   if (!currentUser) return;
   try {
-    const acc  = await fetch(`${SERVER}/account/${currentUser.username}`).then(r=>r.json());
+    const acc  = await fetch(`${SERVER}/account/${currentUser.username}`).then(r => r.json());
     const txns = acc.transactions || [];
     const list = document.getElementById('txn-list');
-    document.getElementById('txn-count').textContent = txns.length + (txns.length===1?' payment':' payments');
-    if (txns.length===0) { list.innerHTML='<div class="txn-empty">No transactions yet</div>'; return; }
-    list.innerHTML = txns.slice(0,6).map((t,i) => {
-      const type    = t.type || 'credit';
-      const label   = type==='debit' ? 'Sent' : 'Received';
-      const sign    = type==='debit' ? '−' : '+';
-      const who     = type==='debit'
-        ? (t.recipient_name || t.payer_name)
-        : t.payer_name;
-      return `
-      <div class="txn-item" style="animation-delay:${i*0.05}s">
+
+    document.getElementById('txn-count').textContent = txns.length + (txns.length === 1 ? ' transaction' : ' transactions');
+
+    if (txns.length === 0) { list.innerHTML = '<div class="txn-empty">No transactions yet</div>'; return; }
+
+    list.innerHTML = txns.slice(0, 8).map((t, i) => {
+      const type   = t.type || 'credit';
+      const sign   = type === 'debit' ? '−' : '+';
+      const who    = t.counterparty || t.payer_name || '—';
+      const method = t.method === 'qr_scan' ? '📱 QR' : t.method === 'user_id' ? '🆔 ID' : '💳';
+      const note   = t.note ? `<div class="txn-note">"${esc(t.note)}"</div>` : '';
+      return `<div class="txn-item" style="animation-delay:${i * 0.04}s">
         <div class="txn-left">
           <div class="txn-name">${esc(who)}</div>
-          <div class="txn-meta">${esc(t.transaction_id)} · ${esc(t.paid_at_local)}</div>
+          <div class="txn-meta">${esc(t.paid_at_local || '')}</div>
+          ${note}
         </div>
         <div class="txn-right">
-          <div class="txn-amount ${type}">${sign}${t.amount_display}</div>
-          <div class="txn-type-badge ${type}">${label}</div>
+          <div class="txn-amount ${type}">${sign}${esc(t.amount_display)}</div>
+          <div class="txn-badge ${type}">${type === 'debit' ? 'Sent' : 'Received'}</div>
+          <div class="txn-method">${method}</div>
         </div>
       </div>`;
     }).join('');
   } catch {}
 }
 
-/* ── Keyboard shortcuts ── */
-document.getElementById('login-password').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
-document.getElementById('login-username').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+/* ════════════════════════════════════════════════
+   KEYBOARD SHORTCUTS
+════════════════════════════════════════════════ */
+document.getElementById('login-password').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+document.getElementById('login-username').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
 </script>
-
 </body>
 </html>

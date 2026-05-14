@@ -18,17 +18,17 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(__dirname));
 
-// In-memory QR store
+/* ── In-memory QR store (auto-purge expired) ── */
 const qrStore = {};
-
 setInterval(() => {
   const now = Date.now();
-  for (const [token, data] of Object.entries(qrStore)) {
+  for (const [token, data] of Object.entries(qrStore))
     if (data.expiresAt < now) delete qrStore[token];
-  }
 }, 60_000);
 
-/* ── Helpers ── */
+/* ══════════════════════════════════════════
+   HELPERS
+══════════════════════════════════════════ */
 function accountPath(username) {
   return path.join(DATA_DIR, `${username.toLowerCase()}.json`);
 }
@@ -47,7 +47,6 @@ function saveAccount(data) {
   fs.writeFileSync(accountPath(data.username), JSON.stringify(data, null, 2), 'utf8');
 }
 
-// Generate a unique User ID like PAYME-7X3K
 function generateUserId() {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   let id = 'PAYME-';
@@ -55,7 +54,10 @@ function generateUserId() {
   return id;
 }
 
-// Find account by userId
+function generateTxnId() {
+  return 'TXN-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase();
+}
+
 function getAccountByUserId(userId) {
   if (!fs.existsSync(DATA_DIR)) return null;
   const files = fs.readdirSync(DATA_DIR).filter(f => f.endsWith('.json'));
@@ -78,48 +80,50 @@ function appendGlobalPayment(txn) {
   fs.writeFileSync(PAYMENTS_FILE, JSON.stringify(globalData, null, 2), 'utf8');
 }
 
-/* ── Routes ── */
+function fmtINR(n) {
+  return '₹' + Number(n).toLocaleString('en-IN', { minimumFractionDigits: 2 });
+}
 
-// Sign Up
+function getLanIP() {
+  const nets = os.networkInterfaces();
+  for (const name of Object.keys(nets))
+    for (const net of nets[name])
+      if (net.family === 'IPv4' && !net.internal) return net.address;
+  return 'localhost';
+}
+
+/* ══════════════════════════════════════════
+   AUTH ROUTES
+══════════════════════════════════════════ */
+
 app.post('/auth/signup', (req, res) => {
   const { username, password, fullName, email } = req.body;
   if (!username || !password || !fullName || !email)
     return res.status(400).json({ error: 'All fields are required.' });
 
-  const usernameSafe = username.toLowerCase().replace(/[^a-z0-9_]/g, '');
-  if (usernameSafe.length < 3)
+  const safe = username.toLowerCase().replace(/[^a-z0-9_]/g, '');
+  if (safe.length < 3)
     return res.status(400).json({ error: 'Username must be at least 3 characters.' });
-
-  if (getAccount(usernameSafe))
+  if (getAccount(safe))
     return res.status(409).json({ error: 'Username already taken.' });
 
-  // Ensure unique userId
-  let userId;
-  let attempts = 0;
-  do {
-    userId = generateUserId();
-    attempts++;
-  } while (getAccountByUserId(userId) && attempts < 100);
+  let userId, attempts = 0;
+  do { userId = generateUserId(); attempts++; }
+  while (getAccountByUserId(userId) && attempts < 100);
 
   const account = {
-    username    : usernameSafe,
-    userId,
-    fullName,
-    email,
+    username: safe, userId, fullName, email,
     passwordHash: hashPassword(password),
-    balance     : 600.00,
-    currency    : 'INR',
-    createdAt   : new Date().toISOString(),
+    balance: 600.00, currency: 'INR',
+    createdAt: new Date().toISOString(),
     transactions: []
   };
 
   saveAccount(account);
-  console.log(`✅  New account: ${usernameSafe} | UserID: ${userId} | ${fullName}`);
-
-  res.json({ success: true, username: usernameSafe, userId, fullName, balance: account.balance });
+  console.log(`✅  Signup: ${safe} | ${userId} | ${fullName}`);
+  res.json({ success: true, username: safe, userId, fullName, balance: account.balance });
 });
 
-// Log In
 app.post('/auth/login', (req, res) => {
   const { username, password } = req.body;
   if (!username || !password)
@@ -131,16 +135,12 @@ app.post('/auth/login', (req, res) => {
 
   console.log(`🔑  Login: ${account.username} (${account.userId})`);
   res.json({
-    success : true,
-    username: account.username,
-    userId  : account.userId,
-    fullName: account.fullName,
-    balance : account.balance,
-    currency: account.currency,
+    success: true, username: account.username,
+    userId: account.userId, fullName: account.fullName,
+    balance: account.balance, currency: account.currency,
   });
 });
 
-// Get account info
 app.get('/account/:username', (req, res) => {
   const account = getAccount(req.params.username);
   if (!account) return res.status(404).json({ error: 'Account not found.' });
@@ -148,21 +148,24 @@ app.get('/account/:username', (req, res) => {
   res.json(safe);
 });
 
-// Lookup user by userId (to validate before paying)
 app.get('/user/lookup/:userId', (req, res) => {
   const account = getAccountByUserId(req.params.userId.toUpperCase());
   if (!account) return res.status(404).json({ error: 'User ID not found.' });
   res.json({ found: true, username: account.username, fullName: account.fullName, userId: account.userId });
 });
 
-// Send money by User ID
+/* ══════════════════════════════════════════
+   PAYMENT ROUTES
+══════════════════════════════════════════ */
+
 app.post('/payment/send', (req, res) => {
   const { senderUsername, recipientUserId, amount, note } = req.body;
-  if (!senderUsername || !recipientUserId || !amount || amount <= 0)
-    return res.status(400).json({ error: 'Missing required fields.' });
+
+  if (!senderUsername || !recipientUserId || !amount || Number(amount) <= 0)
+    return res.status(400).json({ error: 'Missing or invalid fields.' });
 
   const sender = getAccount(senderUsername);
-  if (!sender) return res.status(404).json({ error: 'Sender account not found.' });
+  if (!sender) return res.status(404).json({ error: 'Sender not found.' });
 
   const recipient = getAccountByUserId(recipientUserId.toUpperCase());
   if (!recipient) return res.status(404).json({ error: 'Recipient User ID not found.' });
@@ -170,188 +173,60 @@ app.post('/payment/send', (req, res) => {
   if (sender.username === recipient.username)
     return res.status(400).json({ error: 'Cannot send money to yourself.' });
 
-  if (sender.balance < amount)
-    return res.status(400).json({ error: 'Insufficient balance.' });
+  const amt = parseFloat(parseFloat(amount).toFixed(2));
+  if (sender.balance < amt)
+    return res.status(400).json({ error: `Insufficient balance. Available: ${fmtINR(sender.balance)}` });
 
-  const txnId = 'TXN-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2,6).toUpperCase();
+  const txnId = generateTxnId();
   const now   = new Date();
-
-  const senderTxn = {
+  const base  = {
     transaction_id: txnId,
-    type          : 'debit',
-    payer_name    : sender.fullName,
-    recipient_name: recipient.fullName,
-    recipient_id  : recipientUserId.toUpperCase(),
-    amount_inr    : parseFloat(amount),
-    amount_display: '₹' + Number(amount).toLocaleString('en-IN', { minimumFractionDigits: 2 }),
-    status        : 'success',
-    note          : note || '',
-    paid_at       : now.toISOString(),
-    paid_at_local : now.toLocaleString('en-IN'),
+    amount_inr: amt,
+    amount_display: fmtINR(amt),
+    status: 'success', method: 'user_id',
+    note: note || '',
+    paid_at: now.toISOString(),
+    paid_at_local: now.toLocaleString('en-IN'),
   };
 
-  const recipientTxn = {
-    ...senderTxn,
-    type: 'credit',
-  };
+  sender.balance    = parseFloat((sender.balance - amt).toFixed(2));
+  recipient.balance = parseFloat((recipient.balance + amt).toFixed(2));
 
-  // Deduct from sender
-  sender.balance = parseFloat((sender.balance - parseFloat(amount)).toFixed(2));
-  sender.transactions.unshift(senderTxn);
+  sender.transactions.unshift({
+    ...base, type: 'debit',
+    counterparty: recipient.fullName,
+    counterparty_id: recipient.userId,
+    payer_name: sender.fullName, payer_id: sender.userId,
+    recipient_name: recipient.fullName, recipient_id: recipient.userId,
+  });
+
+  recipient.transactions.unshift({
+    ...base, type: 'credit',
+    counterparty: sender.fullName,
+    counterparty_id: sender.userId,
+    payer_name: sender.fullName, payer_id: sender.userId,
+    recipient_name: recipient.fullName, recipient_id: recipient.userId,
+  });
+
   saveAccount(sender);
-
-  // Add to recipient
-  recipient.balance = parseFloat((recipient.balance + parseFloat(amount)).toFixed(2));
-  recipient.transactions.unshift(recipientTxn);
-  saveAccount(recipient);
-
-  appendGlobalPayment({ ...senderTxn, sender: sender.username, recipient: recipient.username });
-
-  console.log(`💸  Transfer: ${sender.username} → ${recipient.username} | ₹${amount} | ${txnId}`);
-  res.json({
-    success       : true,
-    transaction_id: txnId,
-    amount        : parseFloat(amount),
-    recipient_name: recipient.fullName,
-    new_balance   : sender.balance,
-  });
-});
-
-// Generate QR code for payment
-app.post('/qr/generate', (req, res) => {
-  const { username, amount } = req.body;
-  if (!username || !amount || amount <= 0)
-    return res.status(400).json({ error: 'Username and valid amount required.' });
-
-  const account = getAccount(username);
-  if (!account) return res.status(404).json({ error: 'Account not found.' });
-
-  const token     = uuidv4();
-  const expiresAt = Date.now() + 5 * 60 * 1000;
-
-  qrStore[token] = { username, amount: parseFloat(amount), expiresAt, used: false };
-
-  const payUrl = `http://${getLanIP()}:${PORT}/pay/${token}`;
-
-  QRCode.toDataURL(payUrl, {
-    width  : 300,
-    margin : 2,
-    color  : { dark: '#0d0d0d', light: '#f5f1eb' }
-  }, (err, dataUrl) => {
-    if (err) return res.status(500).json({ error: 'QR generation failed.' });
-
-    console.log(`📱  QR for ${username}: ₹${amount} | ${token.slice(0,8)}…`);
-    res.json({
-      success   : true,
-      token,
-      qrDataUrl : dataUrl,
-      payUrl,
-      amount    : parseFloat(amount),
-      expiresAt,
-      expiresIn : 300
-    });
-  });
-});
-
-// Get QR status
-app.get('/qr/status/:token', (req, res) => {
-  const data = qrStore[req.params.token];
-  if (!data) return res.json({ valid: false, reason: 'expired_or_invalid' });
-  if (data.used) return res.json({ valid: false, reason: 'already_used' });
-  if (data.expiresAt < Date.now()) return res.json({ valid: false, reason: 'expired' });
-  res.json({ valid: true, username: data.username, amount: data.amount, expiresAt: data.expiresAt });
-});
-
-// Serve payer page
-app.get('/pay/:token', (req, res) => {
-  res.sendFile(path.join(__dirname, 'pay.html'));
-});
-
-// Process QR payment (from scanned QR — deducts from sender's balance)
-app.post('/qr/pay', (req, res) => {
-  const { token, payerName, senderUsername } = req.body;
-  if (!token || !payerName)
-    return res.status(400).json({ error: 'Token and payer name required.' });
-
-  const data = qrStore[token];
-  if (!data) return res.status(400).json({ error: 'QR code expired or invalid.' });
-  if (data.used) return res.status(400).json({ error: 'QR code already used.' });
-  if (data.expiresAt < Date.now()) return res.status(400).json({ error: 'QR code expired.' });
-
-  qrStore[token].used = true;
-
-  const recipient = getAccount(data.username);
-  if (!recipient) return res.status(404).json({ error: 'Recipient account not found.' });
-
-  const txnId = 'TXN-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2,6).toUpperCase();
-  const now   = new Date();
-
-  // If sender is a logged-in user, deduct from their balance too
-  let sender = senderUsername ? getAccount(senderUsername) : null;
-  if (sender) {
-    if (sender.username === recipient.username)
-      return res.status(400).json({ error: 'Cannot pay yourself.' });
-    if (sender.balance < data.amount)
-      return res.status(400).json({ error: 'Insufficient balance.' });
-
-    const senderTxn = {
-      transaction_id: txnId,
-      type          : 'debit',
-      payer_name    : sender.fullName,
-      recipient_name: recipient.fullName,
-      amount_inr    : data.amount,
-      amount_display: '₹' + Number(data.amount).toLocaleString('en-IN', { minimumFractionDigits: 2 }),
-      status        : 'success',
-      paid_at       : now.toISOString(),
-      paid_at_local : now.toLocaleString('en-IN'),
-      qr_token      : token,
-    };
-    sender.balance = parseFloat((sender.balance - data.amount).toFixed(2));
-    sender.transactions.unshift(senderTxn);
-    saveAccount(sender);
-  }
-
-  const recipientTxn = {
-    transaction_id: txnId,
-    type          : 'credit',
-    payer_name    : sender ? sender.fullName : payerName,
-    amount_inr    : data.amount,
-    amount_display: '₹' + Number(data.amount).toLocaleString('en-IN', { minimumFractionDigits: 2 }),
-    status        : 'success',
-    paid_at       : now.toISOString(),
-    paid_at_local : now.toLocaleString('en-IN'),
-    qr_token      : token,
-  };
-
-  recipient.balance = parseFloat((recipient.balance + data.amount).toFixed(2));
-  recipient.transactions.unshift(recipientTxn);
   saveAccount(recipient);
 
   appendGlobalPayment({
-    ...recipientTxn,
-    recipient : data.username,
-    sender    : senderUsername || '(external)',
+    ...base, type: 'transfer',
+    sender_username: sender.username, sender_id: sender.userId,
+    recipient_username: recipient.username, recipient_id: recipient.userId,
   });
 
-  console.log(`💰  QR Pay: ${payerName} → ${data.username} | ₹${data.amount} | ${txnId}`);
+  console.log(`💸  ${sender.username} → ${recipient.username} | ${fmtINR(amt)} | ${txnId}`);
+
   res.json({
-    success       : true,
+    success: true,
     transaction_id: txnId,
-    amount        : data.amount,
-    recipient     : recipient.fullName,
-    new_balance   : sender ? sender.balance : null,
+    amount: amt, amount_display: fmtINR(amt),
+    recipient_name: recipient.fullName,
+    recipient_id: recipient.userId,
+    new_balance: sender.balance,
   });
-});
-
-// Standard payment (legacy manual flow)
-app.post('/payment', (req, res) => {
-  const { id, payer_name, amount_inr, amount_display, status, paid_at, paid_at_local } = req.body;
-  if (!id || !payer_name || !amount_inr)
-    return res.status(400).json({ error: 'Missing required payment fields.' });
-
-  appendGlobalPayment({ transaction_id: id, payer_name, amount_inr, amount_display, status: status || 'success', paid_at, paid_at_local });
-  console.log(`✅  Payment saved → ${id} | ${payer_name} | ${amount_display}`);
-  res.json({ success: true, transaction_id: id });
 });
 
 app.get('/payments', (req, res) => {
@@ -360,20 +235,129 @@ app.get('/payments', (req, res) => {
   catch { res.json({ payments: [] }); }
 });
 
-function getLanIP() {
-  const nets = os.networkInterfaces();
-  for (const name of Object.keys(nets))
-    for (const net of nets[name])
-      if (net.family === 'IPv4' && !net.internal) return net.address;
-  return 'localhost';
-}
+/* ══════════════════════════════════════════
+   QR ROUTES
+══════════════════════════════════════════ */
 
+app.post('/qr/generate', (req, res) => {
+  const { username, amount } = req.body;
+  if (!username || !amount || Number(amount) <= 0)
+    return res.status(400).json({ error: 'Username and valid amount required.' });
+
+  const account = getAccount(username);
+  if (!account) return res.status(404).json({ error: 'Account not found.' });
+
+  const token     = uuidv4();
+  const expiresAt = Date.now() + 5 * 60 * 1000;
+
+  qrStore[token] = {
+    username, userId: account.userId, fullName: account.fullName,
+    amount: parseFloat(amount), expiresAt, used: false,
+  };
+
+  const payUrl = `http://${getLanIP()}:${PORT}/pay/${token}`;
+
+  QRCode.toDataURL(payUrl, { width: 300, margin: 2, color: { dark: '#0d0d0d', light: '#f5f1eb' } }, (err, dataUrl) => {
+    if (err) return res.status(500).json({ error: 'QR generation failed.' });
+    console.log(`📱  QR: ${username} | ${fmtINR(amount)} | ${token.slice(0, 8)}…`);
+    res.json({ success: true, token, qrDataUrl: dataUrl, payUrl, amount: parseFloat(amount), expiresAt, expiresIn: 300 });
+  });
+});
+
+app.get('/qr/status/:token', (req, res) => {
+  const data = qrStore[req.params.token];
+  if (!data)               return res.json({ valid: false, reason: 'expired_or_invalid' });
+  if (data.used)           return res.json({ valid: false, reason: 'already_used' });
+  if (data.expiresAt < Date.now()) return res.json({ valid: false, reason: 'expired' });
+  res.json({ valid: true, username: data.username, userId: data.userId, fullName: data.fullName, amount: data.amount, expiresAt: data.expiresAt });
+});
+
+app.get('/pay/:token', (req, res) => {
+  res.sendFile(path.join(__dirname, 'pay.html'));
+});
+
+app.post('/qr/pay', (req, res) => {
+  const { token, payerName, senderUsername } = req.body;
+  if (!token || !payerName)
+    return res.status(400).json({ error: 'Token and payer name required.' });
+
+  const data = qrStore[token];
+  if (!data)                       return res.status(400).json({ error: 'QR code expired or invalid.' });
+  if (data.used)                   return res.status(400).json({ error: 'QR code already used.' });
+  if (data.expiresAt < Date.now()) return res.status(400).json({ error: 'QR code expired.' });
+
+  qrStore[token].used = true;
+
+  const recipient = getAccount(data.username);
+  if (!recipient) return res.status(404).json({ error: 'Recipient not found.' });
+
+  const sender = senderUsername ? getAccount(senderUsername) : null;
+
+  if (sender) {
+    if (sender.username === recipient.username)
+      return res.status(400).json({ error: 'Cannot pay yourself.' });
+    if (sender.balance < data.amount)
+      return res.status(400).json({ error: `Insufficient balance. Available: ${fmtINR(sender.balance)}` });
+  }
+
+  const txnId = generateTxnId();
+  const now   = new Date();
+  const base  = {
+    transaction_id: txnId,
+    amount_inr: data.amount, amount_display: fmtINR(data.amount),
+    status: 'success', method: 'qr_scan', note: '',
+    paid_at: now.toISOString(), paid_at_local: now.toLocaleString('en-IN'),
+    qr_token: token,
+  };
+
+  if (sender) {
+    sender.balance = parseFloat((sender.balance - data.amount).toFixed(2));
+    sender.transactions.unshift({
+      ...base, type: 'debit',
+      counterparty: recipient.fullName,
+      counterparty_id: recipient.userId,
+      payer_name: sender.fullName, payer_id: sender.userId,
+      recipient_name: recipient.fullName, recipient_id: recipient.userId,
+    });
+    saveAccount(sender);
+  }
+
+  recipient.balance = parseFloat((recipient.balance + data.amount).toFixed(2));
+  recipient.transactions.unshift({
+    ...base, type: 'credit',
+    counterparty: sender ? sender.fullName : payerName,
+    counterparty_id: sender ? sender.userId : null,
+    payer_name: sender ? sender.fullName : payerName,
+    payer_id: sender ? sender.userId : null,
+    recipient_name: recipient.fullName, recipient_id: recipient.userId,
+  });
+  saveAccount(recipient);
+
+  appendGlobalPayment({
+    ...base, type: 'qr_payment',
+    sender_username: senderUsername || '(external)',
+    recipient_username: data.username,
+  });
+
+  console.log(`💰  QR Pay: ${payerName} → ${data.username} | ${fmtINR(data.amount)} | ${txnId}`);
+
+  res.json({
+    success: true, transaction_id: txnId,
+    amount: data.amount, amount_display: fmtINR(data.amount),
+    recipient: recipient.fullName,
+    new_balance: sender ? sender.balance : null,
+  });
+});
+
+/* ══════════════════════════════════════════
+   START
+══════════════════════════════════════════ */
 app.listen(PORT, '0.0.0.0', () => {
   const lanIP = getLanIP();
   console.log('\n🚀  PayMe server started!\n');
   console.log(`   Local:    http://localhost:${PORT}`);
   console.log(`   Network:  http://${lanIP}:${PORT}\n`);
   console.log(`📁  Accounts: ${DATA_DIR}`);
-  console.log(`📄  Payments: server.json`);
-  console.log('--------------------------------------------------');
+  console.log(`📄  Payments: ${PAYMENTS_FILE}`);
+  console.log('──────────────────────────────────────────────────');
 });
