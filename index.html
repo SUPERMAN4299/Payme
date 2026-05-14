@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PayMe — Secure Payment</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink: #0d0d0d;
+      --paper: #f5f1eb;
+      --cream: #ede8df;
+      --gold: #c9a84c;
+      --gold-light: #e8c96a;
+      --green: #2d6a4f;
+      --red: #9b2335;
+      --shadow: rgba(13,13,13,0.12);
+      --card-bg: #ffffff;
+      --muted: #7a7368;
+      --border: #d8d2c8;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--paper);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 0;
+    }
+
+    .bg-circle { position: fixed; border-radius: 50%; pointer-events: none; z-index: 0; }
+    .bg-circle-1 { width:500px;height:500px; background:radial-gradient(circle,rgba(201,168,76,0.12) 0%,transparent 70%); top:-150px;right:-150px; }
+    .bg-circle-2 { width:400px;height:400px; background:radial-gradient(circle,rgba(45,106,79,0.08) 0%,transparent 70%); bottom:-100px;left:-100px; }
+
+    .wrapper { position:relative; z-index:1; width:100%; max-width:480px; }
+
+    /* Brand */
+    .brand { text-align:center; margin-bottom:2rem; animation:fadeDown 0.6s ease both; }
+    .brand-logo { display:inline-flex; align-items:center; gap:0.6rem; }
+    .brand-icon {
+      width:40px; height:40px; background:var(--ink); border-radius:10px;
+      display:flex; align-items:center; justify-content:center;
+    }
+    .brand-icon::after { content:'◈'; color:var(--gold); font-size:1.3rem; line-height:1; }
+    .brand-name { font-family:'Playfair Display',serif; font-size:1.6rem; color:var(--ink); letter-spacing:-0.03em; }
+    .brand-name span { color:var(--gold); }
+    .brand-tagline { margin-top:0.35rem; font-size:0.75rem; color:var(--muted); letter-spacing:0.12em; text-transform:uppercase; font-family:'DM Mono',monospace; }
+
+    /* Card */
+    .card {
+      background:var(--card-bg); border-radius:20px;
+      padding:2.4rem 2.2rem 2.2rem;
+      box-shadow:0 1px 3px var(--shadow),0 8px 32px rgba(13,13,13,0.09),0 0 0 1px rgba(13,13,13,0.04);
+      animation:fadeUp 0.6s ease 0.1s both;
+      position:relative; overflow:hidden;
+    }
+    .card::before {
+      content:''; position:absolute; top:0;left:0;right:0; height:3px;
+      background:linear-gradient(90deg,var(--gold),var(--gold-light),var(--gold));
+      background-size:200% 100%; animation:shimmer 3s linear infinite;
+    }
+    @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+    /* Pages */
+    .page { display:none; }
+    .page.active { display:block; animation:fadeIn 0.3s ease; }
+
+    /* Tab switcher */
+    .tab-switcher {
+      display:flex; background:var(--cream); border-radius:10px; padding:4px;
+      margin-bottom:1.8rem; gap:4px;
+    }
+    .tab-btn {
+      flex:1; padding:0.6rem; border:none; background:transparent;
+      font-family:'DM Mono',monospace; font-size:0.75rem; letter-spacing:0.1em;
+      text-transform:uppercase; color:var(--muted); cursor:pointer;
+      border-radius:7px; transition:all 0.2s;
+    }
+    .tab-btn.active {
+      background:var(--card-bg); color:var(--ink); font-weight:500;
+      box-shadow:0 1px 4px rgba(13,13,13,0.1);
+    }
+
+    /* Section title */
+    .section-title {
+      font-family:'DM Mono',monospace; font-size:0.65rem; letter-spacing:0.15em;
+      text-transform:uppercase; color:var(--muted); margin-bottom:0.45rem;
+    }
+
+    /* Form */
+    .form-group { margin-bottom:1.1rem; }
+    .form-label { display:block; font-family:'DM Mono',monospace; font-size:0.65rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); margin-bottom:0.45rem; }
+    .form-control {
+      width:100%; background:var(--cream); border:1.5px solid var(--border);
+      border-radius:10px; padding:0.7rem 0.9rem;
+      font-family:'DM Mono',monospace; font-size:0.9rem; color:var(--ink);
+      outline:none; transition:border-color 0.2s,box-shadow 0.2s;
+    }
+    .form-control::placeholder { color:#c8c0b0; font-size:0.85rem; }
+    .form-control:focus { border-color:var(--gold); box-shadow:0 0 0 3px rgba(201,168,76,0.12); }
+    .form-control.error { border-color:var(--red) !important; }
+    .error-msg { font-family:'DM Mono',monospace; font-size:0.65rem; color:var(--red); margin-top:0.3rem; letter-spacing:0.05em; }
+
+    /* Buttons */
+    .btn-primary {
+      width:100%; padding:0.95rem 1.5rem; background:var(--ink); color:#fff;
+      border:none; border-radius:12px; font-family:'DM Sans',sans-serif;
+      font-size:1rem; font-weight:500; cursor:pointer;
+      display:flex; align-items:center; justify-content:center; gap:0.6rem;
+      transition:all 0.2s; letter-spacing:0.01em; position:relative; overflow:hidden;
+    }
+    .btn-primary:hover { background:#1a1a1a; transform:translateY(-1px); box-shadow:0 6px 20px rgba(13,13,13,0.25); }
+    .btn-primary:active { transform:translateY(0); }
+    .btn-primary.loading { pointer-events:none; background:#333; }
+    .btn-primary .btn-amount { font-family:'DM Mono',monospace; font-weight:600; color:var(--gold-light); }
+
+    .btn-secondary {
+      width:100%; padding:0.75rem; background:transparent; color:var(--muted);
+      border:1.5px solid var(--border); border-radius:10px;
+      font-family:'DM Mono',monospace; font-size:0.75rem; cursor:pointer;
+      transition:all 0.2s; letter-spacing:0.08em; text-transform:uppercase;
+    }
+    .btn-secondary:hover { border-color:var(--ink); color:var(--ink); }
+
+    /* Spinner */
+    .spinner { width:18px;height:18px; border:2.5px solid rgba(255,255,255,0.2); border-top-color:#fff; border-radius:50%; animation:spin 0.7s linear infinite; }
+    @keyframes spin { to{transform:rotate(360deg)} }
+
+    /* Divider */
+    .divider { display:flex; align-items:center; gap:0.8rem; margin:1.4rem 0; }
+    .divider::before,.divider::after { content:''; flex:1; height:1px; background:var(--border); }
+    .divider span { font-family:'DM Mono',monospace; font-size:0.65rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); }
+
+    /* Amount block */
+    .amount-block { margin-bottom:1.8rem; }
+    .amount-display {
+      display:flex; align-items:baseline; gap:0.3rem;
+      background:var(--cream); border:1.5px solid var(--border);
+      border-radius:12px; padding:0.9rem 1.1rem;
+      transition:border-color 0.2s,box-shadow 0.2s; cursor:text;
+    }
+    .amount-display:focus-within { border-color:var(--gold); box-shadow:0 0 0 3px rgba(201,168,76,0.12); }
+    .amount-display.error { border-color:var(--red) !important; }
+    .currency-symbol { font-family:'Playfair Display',serif; font-size:1.5rem; color:var(--muted); user-select:none; }
+    #amount-input {
+      font-family:'DM Mono',monospace; font-size:2rem; font-weight:500;
+      color:var(--ink); background:transparent; border:none; outline:none;
+      width:100%; letter-spacing:-0.02em;
+    }
+    #amount-input::placeholder { color:#ccc5b8; }
+    .quick-amounts { display:flex; gap:0.5rem; margin-top:0.7rem; flex-wrap:wrap; }
+    .quick-btn {
+      font-family:'DM Mono',monospace; font-size:0.75rem;
+      padding:0.3rem 0.75rem; border-radius:100px;
+      border:1.5px solid var(--border); background:transparent;
+      color:var(--muted); cursor:pointer; transition:all 0.18s;
+    }
+    .quick-btn:hover { border-color:var(--gold); color:var(--ink); background:rgba(201,168,76,0.06); }
+
+    /* User info bar */
+    .user-bar {
+      display:flex; align-items:center; justify-content:space-between;
+      background:var(--cream); border-radius:12px; padding:0.75rem 1rem;
+      margin-bottom:1.6rem; border:1px solid var(--border);
+    }
+    .user-bar-left { display:flex; align-items:center; gap:0.6rem; }
+    .user-avatar {
+      width:32px; height:32px; background:var(--ink); border-radius:8px;
+      display:flex; align-items:center; justify-content:center;
+      font-family:'DM Mono',monospace; font-size:0.75rem; color:var(--gold); font-weight:500;
+    }
+    .user-name { font-size:0.88rem; color:var(--ink); font-weight:500; }
+    .user-balance { font-family:'DM Mono',monospace; font-size:0.75rem; color:var(--green); }
+    .logout-btn {
+      background:none; border:none; cursor:pointer;
+      font-family:'DM Mono',monospace; font-size:0.65rem;
+      color:var(--muted); letter-spacing:0.08em; text-transform:uppercase;
+      padding:0.25rem 0.6rem; border-radius:6px; transition:all 0.15s;
+    }
+    .logout-btn:hover { color:var(--red); background:rgba(155,35,53,0.06); }
+
+    /* QR Panel */
+    .qr-panel {
+      text-align:center; padding:1rem 0;
+    }
+    .qr-wrap {
+      display:inline-block; padding:12px; background:var(--paper);
+      border-radius:16px; border:2px solid var(--border);
+      box-shadow:0 4px 16px rgba(13,13,13,0.08);
+      position:relative;
+    }
+    .qr-wrap img { display:block; border-radius:8px; width:220px; height:220px; }
+    .qr-timer {
+      margin-top:0.8rem;
+      font-family:'DM Mono',monospace; font-size:0.75rem; color:var(--muted);
+      display:flex; align-items:center; justify-content:center; gap:0.4rem;
+    }
+    .qr-timer .time {
+      font-size:0.9rem; font-weight:500;
+      padding:0.2rem 0.6rem; border-radius:6px;
+      background:var(--cream); border:1px solid var(--border);
+    }
+    .qr-timer .time.urgent { color:var(--red); border-color:rgba(155,35,53,0.3); background:rgba(155,35,53,0.05); }
+    .qr-expired-overlay {
+      display:none; position:absolute; inset:0;
+      background:rgba(255,255,255,0.9); border-radius:14px;
+      flex-direction:column; align-items:center; justify-content:center;
+      gap:0.5rem;
+    }
+    .qr-expired-overlay.show { display:flex; }
+    .qr-expired-text { font-family:'DM Mono',monospace; font-size:0.8rem; color:var(--red); letter-spacing:0.05em; }
+    .qr-amount-label {
+      font-family:'DM Mono',monospace; font-size:1.5rem; font-weight:500;
+      color:var(--green); margin:0.5rem 0 0.2rem;
+    }
+    .qr-info { font-size:0.8rem; color:var(--muted); margin-bottom:1.2rem; }
+
+    /* Secure badge */
+    .secure-badge {
+      display:inline-flex; align-items:center; gap:0.4rem;
+      background:rgba(45,106,79,0.08); border:1px solid rgba(45,106,79,0.2);
+      color:var(--green); font-family:'DM Mono',monospace; font-size:0.68rem;
+      letter-spacing:0.1em; text-transform:uppercase;
+      padding:0.3rem 0.7rem; border-radius:100px; margin-bottom:1.6rem;
+    }
+    .secure-badge::before { content:'🔒'; font-size:0.7rem; }
+
+    /* Card footer */
+    .card-footer { margin-top:1.4rem; display:flex; align-items:center; justify-content:center; gap:1rem; flex-wrap:wrap; }
+    .footer-badge { display:flex; align-items:center; gap:0.3rem; font-family:'DM Mono',monospace; font-size:0.63rem; color:var(--muted); letter-spacing:0.06em; }
+
+    /* Toast */
+    .toast {
+      position:fixed; bottom:2rem; left:50%;
+      transform:translateX(-50%) translateY(100px);
+      background:var(--ink); color:#fff;
+      padding:0.85rem 1.5rem; border-radius:100px;
+      font-family:'DM Sans',sans-serif; font-size:0.88rem;
+      display:flex; align-items:center; gap:0.6rem;
+      z-index:999; transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1),opacity 0.3s;
+      opacity:0; white-space:nowrap; box-shadow:0 8px 30px rgba(0,0,0,0.25);
+    }
+    .toast.show { transform:translateX(-50%) translateY(0); opacity:1; }
+    .toast.success::before { content:'✓'; color:#6fcf97; font-weight:700; font-size:1rem; }
+    .toast.error::before { content:'✕'; color:#eb5757; font-weight:700; }
+
+    /* Success overlay */
+    .success-overlay {
+      display:none; position:absolute; inset:0; background:var(--card-bg);
+      border-radius:20px; z-index:10;
+      flex-direction:column; align-items:center; justify-content:center;
+      padding:2.5rem; text-align:center; animation:fadeIn 0.4s ease;
+    }
+    .success-overlay.active { display:flex; }
+    .success-icon {
+      width:72px; height:72px; background:rgba(45,106,79,0.1); border-radius:50%;
+      display:flex; align-items:center; justify-content:center; margin-bottom:1.2rem;
+      animation:popIn 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.2s both;
+    }
+    .success-icon svg { stroke:var(--green); }
+    @keyframes popIn { from{transform:scale(0);opacity:0} to{transform:scale(1);opacity:1} }
+    .success-title { font-family:'Playfair Display',serif; font-size:1.6rem; color:var(--ink); margin-bottom:0.5rem; }
+    .success-subtitle { font-size:0.88rem; color:var(--muted); margin-bottom:0.5rem; }
+    .success-amount { font-family:'DM Mono',monospace; font-size:2rem; color:var(--green); font-weight:500; margin:0.8rem 0; }
+    .txn-id { font-family:'DM Mono',monospace; font-size:0.7rem; color:var(--muted); background:var(--cream); padding:0.4rem 0.9rem; border-radius:100px; margin-bottom:1.5rem; }
+    .reset-btn { font-family:'DM Sans',sans-serif; font-size:0.88rem; padding:0.65rem 1.5rem; background:var(--cream); border:1.5px solid var(--border); border-radius:100px; cursor:pointer; color:var(--ink); transition:all 0.18s; }
+    .reset-btn:hover { background:var(--border); }
+
+    /* Transactions panel */
+    .txn-panel { margin-top:1.5rem; animation:fadeUp 0.6s ease 0.2s both; }
+    .txn-panel-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:0.8rem; }
+    .txn-panel-title { font-family:'Playfair Display',serif; font-size:1rem; color:var(--ink); }
+    .txn-count { font-family:'DM Mono',monospace; font-size:0.65rem; color:var(--muted); }
+    .txn-list { display:flex; flex-direction:column; gap:0.5rem; }
+    .txn-item {
+      background:var(--card-bg); border:1px solid var(--border);
+      border-radius:10px; padding:0.75rem 1rem;
+      display:flex; align-items:center; justify-content:space-between;
+      animation:fadeUp 0.3s ease both; box-shadow:0 1px 4px rgba(13,13,13,0.04);
+    }
+    .txn-left { display:flex; flex-direction:column; gap:0.2rem; }
+    .txn-name { font-size:0.88rem; color:var(--ink); font-weight:500; }
+    .txn-meta { font-family:'DM Mono',monospace; font-size:0.65rem; color:var(--muted); }
+    .txn-amount { font-family:'DM Mono',monospace; font-size:1rem; color:var(--green); font-weight:500; }
+    .txn-empty {
+      text-align:center; padding:1.2rem; font-size:0.82rem; color:var(--muted);
+      font-family:'DM Mono',monospace; background:var(--cream);
+      border-radius:10px; border:1px dashed var(--border);
+    }
+
+    /* Animations */
+    @keyframes fadeUp { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes fadeDown { from{opacity:0;transform:translateY(-12px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+
+    /* Payment mode tabs */
+    .mode-tabs { display:flex; gap:0.5rem; margin-bottom:1.5rem; }
+    .mode-tab {
+      flex:1; padding:0.65rem; border:1.5px solid var(--border);
+      border-radius:10px; background:transparent; cursor:pointer;
+      font-family:'DM Mono',monospace; font-size:0.7rem; letter-spacing:0.08em;
+      text-transform:uppercase; color:var(--muted); transition:all 0.2s;
+      display:flex; flex-direction:column; align-items:center; gap:0.3rem;
+    }
+    .mode-tab .tab-icon { font-size:1.2rem; }
+    .mode-tab.active { border-color:var(--gold); background:rgba(201,168,76,0.06); color:var(--ink); }
+    .mode-content { display:none; }
+    .mode-content.active { display:block; animation:fadeIn 0.3s ease; }
+  </style>
+</head>
+<body>
+
+<div class="bg-circle bg-circle-1"></div>
+<div class="bg-circle bg-circle-2"></div>
+
+<div class="wrapper">
+  <div class="brand">
+    <div class="brand-logo">
+      <div class="brand-icon"></div>
+      <div class="brand-name">Pay<span>Me</span></div>
+    </div>
+    <div class="brand-tagline">Secure · Instant · Reliable</div>
+  </div>
+
+  <div class="card">
+
+    <!-- ══════════════ AUTH PAGE ══════════════ -->
+    <div class="page active" id="page-auth">
+      <div class="tab-switcher">
+        <button class="tab-btn active" onclick="switchAuthTab('login')">Log In</button>
+        <button class="tab-btn" onclick="switchAuthTab('signup')">Sign Up</button>
+      </div>
+
+      <!-- Login Form -->
+      <div id="auth-login" class="mode-content active">
+        <div class="form-group">
+          <label class="form-label">Username</label>
+          <input type="text" id="login-username" class="form-control" placeholder="your_username" autocomplete="username"/>
+          <div class="error-msg" id="login-username-error" style="display:none"></div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" id="login-password" class="form-control" placeholder="••••••••" autocomplete="current-password"/>
+          <div class="error-msg" id="login-password-error" style="display:none"></div>
+        </div>
+        <div class="error-msg" id="login-general-error" style="display:none;margin-bottom:0.8rem;font-size:0.75rem;"></div>
+        <button class="btn-primary" id="login-btn" onclick="doLogin()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+          Log In
+        </button>
+      </div>
+
+      <!-- Sign Up Form -->
+      <div id="auth-signup" class="mode-content">
+        <div class="form-group">
+          <label class="form-label">Full Name</label>
+          <input type="text" id="signup-name" class="form-control" placeholder="Arjun Sharma" autocomplete="name"/>
+          <div class="error-msg" id="signup-name-error" style="display:none"></div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input type="email" id="signup-email" class="form-control" placeholder="arjun@email.com" autocomplete="email"/>
+          <div class="error-msg" id="signup-email-error" style="display:none"></div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Username</label>
+          <input type="text" id="signup-username" class="form-control" placeholder="arjun_sharma" autocomplete="username"/>
+          <div class="error-msg" id="signup-username-error" style="display:none"></div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" id="signup-password" class="form-control" placeholder="Min 6 characters" autocomplete="new-password"/>
+          <div class="error-msg" id="signup-password-error" style="display:none"></div>
+        </div>
+        <div class="error-msg" id="signup-general-error" style="display:none;margin-bottom:0.8rem;font-size:0.75rem;"></div>
+        <button class="btn-primary" id="signup-btn" onclick="doSignup()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+          Create Account
+        </button>
+      </div>
+    </div>
+
+    <!-- ══════════════ DASHBOARD PAGE ══════════════ -->
+    <div class="page" id="page-dashboard">
+
+      <!-- Success Overlay -->
+      <div class="success-overlay" id="success-overlay">
+        <div class="success-icon">
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 6L9 17l-5-5"/>
+          </svg>
+        </div>
+        <div class="success-title">Payment Sent!</div>
+        <div class="success-subtitle">Your transaction was processed successfully.</div>
+        <div class="success-amount" id="success-amount">₹0.00</div>
+        <div class="txn-id" id="txn-id-display">TXN-000000</div>
+        <button class="reset-btn" onclick="resetForm()">Make another payment</button>
+      </div>
+
+      <!-- User bar -->
+      <div class="user-bar">
+        <div class="user-bar-left">
+          <div class="user-avatar" id="user-avatar-initials">?</div>
+          <div>
+            <div class="user-name" id="user-display-name">Welcome</div>
+            <div class="user-balance" id="user-balance-display">Balance: ₹0.00</div>
+          </div>
+        </div>
+        <button class="logout-btn" onclick="doLogout()">Log Out</button>
+      </div>
+
+      <div class="secure-badge">256-bit SSL Encrypted</div>
+
+      <!-- Payment Mode Tabs -->
+      <div class="mode-tabs">
+        <button class="mode-tab active" onclick="switchMode('manual')" id="mode-manual">
+          <span class="tab-icon">💳</span>
+          <span>Pay Now</span>
+        </button>
+        <button class="mode-tab" onclick="switchMode('qr')" id="mode-qr">
+          <span class="tab-icon">📱</span>
+          <span>QR Code</span>
+        </button>
+      </div>
+
+      <!-- ── Manual Payment Mode ── -->
+      <div class="mode-content active" id="content-manual">
+        <div class="form-group" style="margin-bottom:1.4rem;">
+          <div class="section-title">Payer name</div>
+          <input type="text" id="payer-name" class="form-control" placeholder="Enter your full name" autocomplete="name"/>
+          <div class="error-msg" id="payer-name-error" style="display:none">Please enter your name.</div>
+        </div>
+        <div class="amount-block">
+          <div class="section-title">Enter amount</div>
+          <div class="amount-display" id="amount-display-wrap">
+            <span class="currency-symbol">₹</span>
+            <input type="number" id="amount-input" placeholder="0.00" min="1" step="0.01"/>
+          </div>
+          <div class="error-msg" id="amount-error" style="display:none">Please enter a valid amount.</div>
+          <div class="quick-amounts">
+            <button class="quick-btn" onclick="setAmount(100)">₹100</button>
+            <button class="quick-btn" onclick="setAmount(500)">₹500</button>
+            <button class="quick-btn" onclick="setAmount(1000)">₹1,000</button>
+            <button class="quick-btn" onclick="setAmount(5000)">₹5,000</button>
+          </div>
+        </div>
+        <div class="divider"><span>Secure Checkout</span></div>
+        <button class="btn-primary" id="pay-btn" onclick="processPayment()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+          Pay <span class="btn-amount" id="btn-amount">₹0.00</span>
+        </button>
+      </div>
+
+      <!-- ── QR Code Mode ── -->
+      <div class="mode-content" id="content-qr">
+        <div id="qr-generate-section">
+          <div class="amount-block">
+            <div class="section-title">Amount to receive</div>
+            <div class="amount-display" id="qr-amount-display-wrap">
+              <span class="currency-symbol">₹</span>
+              <input type="number" id="qr-amount-input" placeholder="0.00" min="1" step="0.01"/>
+            </div>
+            <div class="error-msg" id="qr-amount-error" style="display:none">Please enter a valid amount.</div>
+            <div class="quick-amounts">
+              <button class="quick-btn" onclick="setQrAmount(100)">₹100</button>
+              <button class="quick-btn" onclick="setQrAmount(500)">₹500</button>
+              <button class="quick-btn" onclick="setQrAmount(1000)">₹1,000</button>
+              <button class="quick-btn" onclick="setQrAmount(5000)">₹5,000</button>
+            </div>
+          </div>
+          <button class="btn-primary" onclick="generateQR()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h3v3h-3zM17 17h3v3h-3zM14 20h3"/></svg>
+            Generate QR Code
+          </button>
+        </div>
+
+        <div id="qr-display-section" style="display:none">
+          <div class="qr-panel">
+            <div class="qr-amount-label" id="qr-display-amount">₹0.00</div>
+            <div class="qr-info">Scan to pay · Valid for 5 minutes</div>
+            <div class="qr-wrap">
+              <img id="qr-image" src="" alt="QR Code"/>
+              <div class="qr-expired-overlay" id="qr-expired-overlay">
+                <div style="font-size:2rem">⏱️</div>
+                <div class="qr-expired-text">QR EXPIRED</div>
+              </div>
+            </div>
+            <div class="qr-timer">
+              <span>Expires in</span>
+              <span class="time" id="qr-countdown">5:00</span>
+            </div>
+          </div>
+          <div style="margin-top:1rem;display:flex;gap:0.6rem;">
+            <button class="btn-secondary" onclick="resetQR()" style="flex:1">New QR</button>
+            <button class="btn-secondary" onclick="checkQRPayment()" style="flex:1">Check Status</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-footer">
+        <div class="footer-badge">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+          Protected payment
+        </div>
+        <div class="footer-badge">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+          End-to-end encrypted
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /card -->
+
+  <!-- Transactions Panel (shown when logged in) -->
+  <div class="txn-panel" id="txn-panel" style="display:none">
+    <div class="txn-panel-header">
+      <div class="txn-panel-title">Recent Transactions</div>
+      <div class="txn-count" id="txn-count">0 payments</div>
+    </div>
+    <div class="txn-list" id="txn-list">
+      <div class="txn-empty">No transactions yet</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ── State ── */
+let currentUser = null;
+let qrToken     = null;
+let qrTimer     = null;
+let qrPollTimer = null;
+
+const SERVER = `http://${location.hostname}:3000`;
+
+/* ── Toast ── */
+function showToast(msg, type = 'success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = `toast ${type} show`;
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+/* ── Auth tab switch ── */
+function switchAuthTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach((b, i) => b.classList.toggle('active', (i === 0 && tab === 'login') || (i === 1 && tab === 'signup')));
+  document.getElementById('auth-login').classList.toggle('active', tab === 'login');
+  document.getElementById('auth-signup').classList.toggle('active', tab === 'signup');
+}
+
+/* ── Sign Up ── */
+async function doSignup() {
+  clearAuthErrors('signup');
+  const fullName = document.getElementById('signup-name').value.trim();
+  const email    = document.getElementById('signup-email').value.trim();
+  const username = document.getElementById('signup-username').value.trim();
+  const password = document.getElementById('signup-password').value;
+
+  let ok = true;
+  if (!fullName) { showAuthError('signup-name', 'Full name is required.'); ok = false; }
+  if (!email || !email.includes('@')) { showAuthError('signup-email', 'Valid email required.'); ok = false; }
+  if (!username || username.length < 3) { showAuthError('signup-username', 'At least 3 characters.'); ok = false; }
+  if (!password || password.length < 6) { showAuthError('signup-password', 'At least 6 characters.'); ok = false; }
+  if (!ok) return;
+
+  const btn = document.getElementById('signup-btn');
+  btn.classList.add('loading');
+  btn.innerHTML = '<div class="spinner"></div> Creating account…';
+
+  try {
+    const res  = await fetch(`${SERVER}/auth/signup`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password, fullName, email })
+    });
+    const data = await res.json();
+    if (!res.ok) { showAuthError('signup-general', data.error || 'Signup failed.'); return; }
+    showToast(`Welcome, ${data.fullName}! Account created ✓`);
+    enterDashboard(data);
+  } catch (e) {
+    showAuthError('signup-general', 'Cannot reach server. Is server.js running?');
+  } finally {
+    btn.classList.remove('loading');
+    btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg> Create Account';
+  }
+}
+
+/* ── Log In ── */
+async function doLogin() {
+  clearAuthErrors('login');
+  const username = document.getElementById('login-username').value.trim();
+  const password = document.getElementById('login-password').value;
+
+  if (!username) { showAuthError('login-username', 'Username required.'); return; }
+  if (!password) { showAuthError('login-password', 'Password required.'); return; }
+
+  const btn = document.getElementById('login-btn');
+  btn.classList.add('loading');
+  btn.innerHTML = '<div class="spinner"></div> Logging in…';
+
+  try {
+    const res  = await fetch(`${SERVER}/auth/login`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password })
+    });
+    const data = await res.json();
+    if (!res.ok) { showAuthError('login-general', data.error || 'Login failed.'); return; }
+    showToast(`Welcome back, ${data.fullName}! ✓`);
+    enterDashboard(data);
+  } catch (e) {
+    showAuthError('login-general', 'Cannot reach server. Is server.js running?');
+  } finally {
+    btn.classList.remove('loading');
+    btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg> Log In';
+  }
+}
+
+function clearAuthErrors(form) {
+  ['username','password','email','name','general'].forEach(f => {
+    const el = document.getElementById(`${form}-${f}-error`);
+    if (el) { el.style.display = 'none'; el.textContent = ''; }
+  });
+  document.querySelectorAll('.form-control').forEach(el => el.classList.remove('error'));
+}
+
+function showAuthError(id, msg) {
+  const el = document.getElementById(id + (id.includes('-error') ? '' : '-error'));
+  if (!el) return;
+  el.textContent = msg; el.style.display = 'block';
+}
+
+/* ── Dashboard ── */
+function enterDashboard(user) {
+  currentUser = user;
+  document.getElementById('page-auth').classList.remove('active');
+  document.getElementById('page-dashboard').classList.add('active');
+  document.getElementById('txn-panel').style.display = 'block';
+
+  const initials = user.fullName.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
+  document.getElementById('user-avatar-initials').textContent = initials;
+  document.getElementById('user-display-name').textContent = user.fullName;
+  updateBalanceDisplay(user.balance);
+  renderTransactions();
+}
+
+function updateBalanceDisplay(balance) {
+  document.getElementById('user-balance-display').textContent =
+    'Balance: ₹' + Number(balance).toLocaleString('en-IN', { minimumFractionDigits: 2 });
+}
+
+function doLogout() {
+  currentUser = null;
+  clearQrState();
+  document.getElementById('page-dashboard').classList.remove('active');
+  document.getElementById('page-auth').classList.add('active');
+  document.getElementById('txn-panel').style.display = 'none';
+  document.getElementById('success-overlay').classList.remove('active');
+  showToast('Logged out successfully');
+}
+
+/* ── Payment Mode Switch ── */
+function switchMode(mode) {
+  ['manual','qr'].forEach(m => {
+    document.getElementById('mode-' + m).classList.toggle('active', m === mode);
+    document.getElementById('content-' + m).classList.toggle('active', m === mode);
+  });
+  if (mode !== 'qr') clearQrState();
+}
+
+/* ── Manual Payment ── */
+function setAmount(val) {
+  document.getElementById('amount-input').value = val;
+  updateBtnAmount();
+}
+document.getElementById('amount-input').addEventListener('input', updateBtnAmount);
+function updateBtnAmount() {
+  const v = parseFloat(document.getElementById('amount-input').value) || 0;
+  document.getElementById('btn-amount').textContent = '₹' + Number(v).toLocaleString('en-IN',{minimumFractionDigits:2});
+}
+
+function clearErrors() {
+  ['amount','payer-name'].forEach(f => {
+    const el = document.getElementById(f + '-error');
+    if (el) el.style.display = 'none';
+  });
+  document.querySelectorAll('.form-control,.amount-display').forEach(el => el.classList.remove('error'));
+}
+
+function validate() {
+  clearErrors(); let ok = true;
+  const name = document.getElementById('payer-name').value.trim();
+  if (!name) { document.getElementById('payer-name-error').style.display='block'; ok=false; }
+  const amount = parseFloat(document.getElementById('amount-input').value);
+  if (!amount || amount <= 0) {
+    document.getElementById('amount-error').style.display='block';
+    document.getElementById('amount-display-wrap').classList.add('error');
+    ok=false;
+  }
+  return ok;
+}
+
+function formatINR(n) { return '₹' + Number(n).toLocaleString('en-IN',{minimumFractionDigits:2}); }
+
+async function processPayment() {
+  if (!validate()) return;
+  const btn = document.getElementById('pay-btn');
+  btn.classList.add('loading');
+  btn.innerHTML = '<div class="spinner"></div> Processing…';
+
+  await new Promise(r => setTimeout(r, 1500));
+
+  const amount    = parseFloat(document.getElementById('amount-input').value);
+  const payerName = document.getElementById('payer-name').value.trim();
+  const txnId     = 'TXN-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2,6).toUpperCase();
+
+  try {
+    const res = await fetch(`${SERVER}/payment`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        id: txnId, payer_name: payerName, amount_inr: amount,
+        amount_display: formatINR(amount), status: 'success',
+        paid_at: new Date().toISOString(), paid_at_local: new Date().toLocaleString('en-IN')
+      })
+    });
+    if (!res.ok) throw new Error('Server error');
+
+    document.getElementById('success-amount').textContent = formatINR(amount);
+    document.getElementById('txn-id-display').textContent = txnId;
+    document.getElementById('success-overlay').classList.add('active');
+    renderTransactions();
+  } catch (e) {
+    showToast('Could not reach server. Is server.js running?', 'error');
+    btn.classList.remove('loading');
+    btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg> Pay <span class="btn-amount" id="btn-amount">${formatINR(amount)}</span>`;
+  }
+}
+
+function resetForm() {
+  document.getElementById('success-overlay').classList.remove('active');
+  document.getElementById('amount-input').value = '';
+  document.getElementById('payer-name').value = '';
+  document.getElementById('btn-amount').textContent = '₹0.00';
+  const btn = document.getElementById('pay-btn');
+  btn.classList.remove('loading');
+  btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg> Pay <span class="btn-amount" id="btn-amount">₹0.00</span>`;
+  clearErrors();
+}
+
+/* ── QR Code ── */
+function setQrAmount(val) { document.getElementById('qr-amount-input').value = val; }
+
+async function generateQR() {
+  const amount = parseFloat(document.getElementById('qr-amount-input').value);
+  if (!amount || amount <= 0) {
+    document.getElementById('qr-amount-error').style.display = 'block';
+    document.getElementById('qr-amount-display-wrap').classList.add('error');
+    return;
+  }
+  document.getElementById('qr-amount-error').style.display = 'none';
+  document.getElementById('qr-amount-display-wrap').classList.remove('error');
+
+  try {
+    const res  = await fetch(`${SERVER}/qr/generate`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ username: currentUser.username, amount })
+    });
+    const data = await res.json();
+    if (!res.ok) { showToast(data.error || 'QR generation failed', 'error'); return; }
+
+    qrToken = data.token;
+    document.getElementById('qr-generate-section').style.display = 'none';
+    document.getElementById('qr-display-section').style.display  = 'block';
+    document.getElementById('qr-image').src = data.qrDataUrl;
+    document.getElementById('qr-display-amount').textContent = formatINR(data.amount);
+    document.getElementById('qr-expired-overlay').classList.remove('show');
+
+    startQrCountdown(data.expiresAt);
+    startQrPolling();
+    showToast('QR code generated — valid 5 minutes ✓');
+  } catch (e) {
+    showToast('Cannot reach server.', 'error');
+  }
+}
+
+function startQrCountdown(expiresAt) {
+  clearInterval(qrTimer);
+  function tick() {
+    const remaining = Math.max(0, Math.round((expiresAt - Date.now()) / 1000));
+    const m = Math.floor(remaining / 60), s = remaining % 60;
+    const el = document.getElementById('qr-countdown');
+    el.textContent = `${m}:${s.toString().padStart(2,'0')}`;
+    el.className = 'time' + (remaining < 60 ? ' urgent' : '');
+    if (remaining === 0) {
+      clearInterval(qrTimer);
+      document.getElementById('qr-expired-overlay').classList.add('show');
+      clearInterval(qrPollTimer);
+      showToast('QR code expired', 'error');
+    }
+  }
+  tick();
+  qrTimer = setInterval(tick, 1000);
+}
+
+function startQrPolling() {
+  clearInterval(qrPollTimer);
+  qrPollTimer = setInterval(async () => {
+    if (!qrToken) return;
+    try {
+      const res  = await fetch(`${SERVER}/qr/status/${qrToken}`);
+      const data = await res.json();
+      if (data.valid === false && data.reason === 'already_used') {
+        clearInterval(qrPollTimer);
+        clearInterval(qrTimer);
+        // Refresh balance
+        const acc = await fetch(`${SERVER}/account/${currentUser.username}`).then(r => r.json());
+        currentUser.balance = acc.balance;
+        updateBalanceDisplay(acc.balance);
+        renderTransactions();
+        showToast(`Payment received! ${formatINR(data.amount || '')} ✓`);
+        resetQR();
+      }
+    } catch {}
+  }, 3000);
+}
+
+async function checkQRPayment() {
+  if (!qrToken) return;
+  try {
+    const res  = await fetch(`${SERVER}/qr/status/${qrToken}`);
+    const data = await res.json();
+    if (!data.valid) {
+      showToast(data.reason === 'already_used' ? 'Payment already received ✓' : 'QR expired', data.reason === 'already_used' ? 'success' : 'error');
+    } else {
+      showToast('Waiting for payment…');
+    }
+  } catch { showToast('Cannot reach server.', 'error'); }
+}
+
+function resetQR() {
+  clearQrState();
+  document.getElementById('qr-generate-section').style.display = 'block';
+  document.getElementById('qr-display-section').style.display  = 'none';
+}
+
+function clearQrState() {
+  clearInterval(qrTimer);
+  clearInterval(qrPollTimer);
+  qrToken = null;
+}
+
+/* ── Transactions ── */
+async function renderTransactions() {
+  if (!currentUser) return;
+  try {
+    const acc  = await fetch(`${SERVER}/account/${currentUser.username}`).then(r => r.json());
+    const txns = acc.transactions || [];
+    const list = document.getElementById('txn-list');
+    document.getElementById('txn-count').textContent = txns.length + (txns.length === 1 ? ' payment' : ' payments');
+    if (txns.length === 0) { list.innerHTML = '<div class="txn-empty">No transactions yet</div>'; return; }
+    list.innerHTML = txns.slice(0, 5).map((t, i) => `
+      <div class="txn-item" style="animation-delay:${i*0.05}s">
+        <div class="txn-left">
+          <div class="txn-name">${esc(t.payer_name)}</div>
+          <div class="txn-meta">${t.transaction_id} · ${t.paid_at_local}</div>
+        </div>
+        <div class="txn-amount">${t.amount_display}</div>
+      </div>`).join('');
+  } catch {}
+}
+
+function esc(s) { return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+// Enter on login
+document.getElementById('login-password').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+document.getElementById('login-username').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+</script>
+
+</body>
+</html>
