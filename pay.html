@@ -175,7 +175,7 @@
 
 <script>
 const token  = location.pathname.split('/pay/')[1];
-const SERVER = `http://${location.hostname}:3000`;
+const SERVER = `https://${location.hostname}:3000`;
 let payData  = null, countdownTimer = null;
 
 function fmt(n) { return '₹' + Number(n).toLocaleString('en-IN', { minimumFractionDigits: 2 }); }

@@ -141,7 +141,8 @@ async function savePaymentToServer(txn) {
     paid_at_local : new Date(txn.timestamp).toLocaleString('en-IN'),
   };
 
-  const serverURL = `http://${window.location.hostname}:3000`;
+  // Hardcoded server IP for LAN access from other devices (e.g., phone)
+  const serverURL = `https://192.168.1.4:3000`;
   const res = await fetch(`${serverURL}/payment`, {
     method : 'POST',
     headers: { 'Content-Type': 'application/json' },

@@ -1,3 +1,4 @@
+
 const express  = require('express');
 const fs        = require('fs');
 const path      = require('path');
@@ -6,11 +7,19 @@ const os        = require('os');
 const crypto    = require('crypto');
 const QRCode    = require('qrcode');
 const { v4: uuidv4 } = require('uuid');
+const https     = require('https');
+
 
 const app       = express();
 const PORT      = 3000;
 const DATA_DIR  = path.join(__dirname, 'accounts');
 const PAYMENTS_FILE = path.join(__dirname, 'server.json');
+
+// HTTPS options for mkcert-generated certs
+const HTTPS_OPTIONS = {
+  key: fs.readFileSync(path.join(__dirname, '192.168.1.4-key.pem')),
+  cert: fs.readFileSync(path.join(__dirname, '192.168.1.4.pem'))
+};
 
 if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
 
@@ -355,13 +364,13 @@ app.post('/qr/pay', (req, res) => {
 });
 
 /* ══════════════════════════════════════════
-   START
+   START (HTTPS)
 ══════════════════════════════════════════ */
-app.listen(PORT, '0.0.0.0', () => {
+https.createServer(HTTPS_OPTIONS, app).listen(PORT, '0.0.0.0', () => {
   const lanIP = getLanIP();
-  console.log('\n🚀  PayMe server started!\n');
-  console.log(`   Local:    http://localhost:${PORT}`);
-  console.log(`   Network:  http://${lanIP}:${PORT}\n`);
+  console.log('\n🚀  PayMe server started with HTTPS!\n');
+  console.log(`   Local:    https://localhost:${PORT}`);
+  console.log(`   Network:  https://${lanIP}:${PORT}\n`);
   console.log(`📁  Accounts: ${DATA_DIR}`);
   console.log(`📄  Payments: ${PAYMENTS_FILE}`);
   console.log('──────────────────────────────────────────────────');
